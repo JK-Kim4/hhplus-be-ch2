@@ -5,6 +5,7 @@
 - document root path: /docs
 
 1. [시퀀스 다이어그램](#1시퀀스-다이어그램)
+2. [ERD](#2-erd)
 
 ---
 
@@ -24,22 +25,27 @@
 <br><br>
 
 #### 4. [주문 생성](/docs/sequence/seq_04_create_order.png)
-![사용자 포인트 조회](/docs/sequence/seq_04_create_order.png)
+![주문 생성](/docs/sequence/seq_04_create_order.png)
 <br><br>
 
 #### 5. [결제 요청](/docs/sequence/seq_05_request_payment.png)
-![사용자 포인트 조회](/docs/sequence/seq_05_request_payment.png)
+![결제 요청](/docs/sequence/seq_05_request_payment.png)
 <br><br>
 
 #### 6. [쿠폰 생성](/docs/sequence/seq_06_create_coupon.png)
-![사용자 포인트 조회](/docs/sequence/seq_06_create_coupon.png)
+![쿠폰 생성](/docs/sequence/seq_06_create_coupon.png)
 <br><br>
 
 #### 7. [쿠폰 발급](/docs/sequence/seq_07_issue_coupon.png)
-![사용자 포인트 조회](/docs/sequence/seq_07_issue_coupon.png)
+![쿠폰 발급](/docs/sequence/seq_07_issue_coupon.png)
 <br><br>
 
 
 #### 8. [판매 통계 데이터 저장 및 최근 3일간 판매량 TOP3 조회](/docs/sequence/seq_08_top3.png)
-![사용자 포인트 조회](/docs/sequence/seq_08_top3.png)
+![판매 통계 데이터 저장 및 최근 3일간 판매량 TOP3 조회](/docs/sequence/seq_08_top3.png)
 
+---
+## 2. ERD
+
+#### 1. [ERD](/docs/erd/erd.png)
+![erd](/docs/erd/erd.png)
