@@ -14,7 +14,7 @@ public interface PaymentApiSpec {
     @Operation(summary = "결제 요청 처리", description = "결제 요청(paymentRequest)를 처리합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "결제 처리 요청 성공",
-            content = @Content(schema = @Schema(implementation = PaymentProcessResponse.class))),
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PaymentProcessResponse.class))),
     })
     ResponseEntity<PaymentProcessResponse> processPayment(PaymentProcessRequest paymentProcessRequest);
 }
