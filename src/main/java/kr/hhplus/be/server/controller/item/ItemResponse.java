@@ -4,13 +4,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public class ItemResponse {
 
-    @Schema(description = "아이템 고유 번호", example = "1")
+    @Schema(name = "itemId", description = "아이템 고유 번호", example = "1")
     private Long itemId;
-    @Schema(description = "상품 명", example = "자전거")
+
+    @Schema(name = "name", description = "상품 명", example = "자전거")
     private String name;
-    @Schema(description = "상품 가격", example = "10000")
+
+    @Schema(name = "price", description = "상품 가격", example = "10000")
     private Integer price;
-    @Schema(description = "상품 재고", example = "5")
+
+    @Schema(name = "stock", description = "상품 재고", example = "5")
     private Integer stock;
 
     public Long getItemId() {

@@ -16,7 +16,7 @@ public class ItemApiController implements ItemApiSpec{
     @GetMapping("/{id}")
     public ResponseEntity<ItemResponse> findById(
             @PathVariable("id") Long id) {
-        return null;
+        return ResponseEntity.ok(new ItemResponse());
     }
 
     @Override

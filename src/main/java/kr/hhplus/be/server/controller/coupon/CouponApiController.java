@@ -11,7 +11,7 @@ public class CouponApiController implements CouponApiSpec{
     @PostMapping
     public ResponseEntity<CouponCreateResponse> createCoupon(
             @RequestBody CouponCreateRequest request) {
-        return null;
+        return ResponseEntity.ok(new CouponCreateResponse());
     }
 
     @Override
@@ -19,6 +19,6 @@ public class CouponApiController implements CouponApiSpec{
     public ResponseEntity<CouponIssueResponse> issueCoupon(
             @PathVariable("id") Long couponId,
             @RequestBody Long userId) {
-        return null;
+        return ResponseEntity.ok(new CouponIssueResponse());
     }
 }
