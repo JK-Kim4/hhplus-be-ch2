@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.controller;
 
-import kr.hhplus.be.server.controller.order.OrderApiController;
-import kr.hhplus.be.server.controller.order.OrderCreateRequest;
-import kr.hhplus.be.server.controller.order.OrderCreateResponse;
+import kr.hhplus.be.server.interfaces.api.order.OrderApiController;
+import kr.hhplus.be.server.interfaces.api.order.OrderCreateRequest;
+import kr.hhplus.be.server.interfaces.api.order.OrderCreateResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

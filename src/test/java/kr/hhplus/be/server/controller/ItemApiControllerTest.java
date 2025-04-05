@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.controller;
 
-import kr.hhplus.be.server.controller.item.ItemApiController;
-import kr.hhplus.be.server.controller.item.ItemResponse;
+import kr.hhplus.be.server.interfaces.api.item.ItemApiController;
+import kr.hhplus.be.server.interfaces.api.item.ItemResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
