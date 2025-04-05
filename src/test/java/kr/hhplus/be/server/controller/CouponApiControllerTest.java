@@ -1,9 +1,9 @@
 package kr.hhplus.be.server.controller;
 
-import kr.hhplus.be.server.controller.coupon.CouponApiController;
-import kr.hhplus.be.server.controller.coupon.CouponCreateRequest;
-import kr.hhplus.be.server.controller.coupon.CouponCreateResponse;
-import kr.hhplus.be.server.controller.coupon.CouponIssueResponse;
+import kr.hhplus.be.server.interfaces.api.coupon.CouponApiController;
+import kr.hhplus.be.server.interfaces.api.coupon.CouponCreateRequest;
+import kr.hhplus.be.server.interfaces.api.coupon.CouponCreateResponse;
+import kr.hhplus.be.server.interfaces.api.coupon.CouponIssueResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

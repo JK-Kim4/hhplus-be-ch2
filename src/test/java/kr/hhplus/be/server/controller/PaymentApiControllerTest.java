@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.controller;
 
-import kr.hhplus.be.server.controller.payment.PaymentApiController;
-import kr.hhplus.be.server.controller.payment.PaymentProcessRequest;
-import kr.hhplus.be.server.controller.payment.PaymentProcessResponse;
+import kr.hhplus.be.server.interfaces.api.payment.PaymentApiController;
+import kr.hhplus.be.server.interfaces.api.payment.PaymentProcessRequest;
+import kr.hhplus.be.server.interfaces.api.payment.PaymentProcessResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

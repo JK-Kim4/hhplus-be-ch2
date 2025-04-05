@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.controller;
 
-import kr.hhplus.be.server.controller.user.UserApiController;
-import kr.hhplus.be.server.controller.user.UserCouponResponse;
-import kr.hhplus.be.server.controller.user.UserResponse;
+import kr.hhplus.be.server.interfaces.api.user.UserApiController;
+import kr.hhplus.be.server.interfaces.api.user.UserCouponResponse;
+import kr.hhplus.be.server.interfaces.api.user.UserResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
