@@ -1,0 +1,565 @@
+openapi: 3.0.3
+info:
+  title: 항해 플러스 백엔드 2팀 김종완 E-Commerce API
+  description: 항해 플러스 백엔드 E-Commerce 시스템 API Document
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+tags:
+  - name: Coupon
+    description: 쿠폰 생성, 사용자 쿠폰 발급
+  - name: Item
+    description: 상품 상세 정보 조회, 인기 판매 순위 Top3 상품 목록 조회
+  - name: User
+    description: 사용자 상세 정보 조회, 사용자 포인트 잔액 조회, 사용자 보유 쿠폰 조회
+  - name: Payment
+    description: 결제 요청 처리
+  - name: Order
+    description: 주문 생성
+paths:
+  /api/payments/process:
+    post:
+      tags:
+        - Payment
+      summary: 결제 요청 처리
+      description: 결제 요청(paymentRequest)를 처리합니다.
+      operationId: processPayment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentProcessRequest'
+        required: true
+      responses:
+        '200':
+          description: 결제 처리 요청 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentProcessResponse'
+  /api/orders:
+    post:
+      tags:
+        - Order
+      summary: 주문 생성
+      description: 주문 생성 정보(orderCreateRequest)를 전달받아 신규 주문을 생성합니다.
+      operationId: createOrder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderCreateRequest'
+        required: true
+      responses:
+        '200':
+          description: 주문 생성 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderCreateResponse'
+  /api/coupons:
+    post:
+      tags:
+        - Coupon
+      summary: 쿠폰 생성
+      description: 새로운 쿠폰을 생성합니다.
+      operationId: createCoupon
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CouponCreateRequest'
+        required: true
+      responses:
+        '200':
+          description: 쿠폰 생성 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CouponCreateResponse'
+  /api/coupons/{id}/issue:
+    post:
+      tags:
+        - Coupon
+      summary: 사용자 쿠폰 발급
+      description: 사용자 쿠폰을 발급합니다.
+      operationId: issueCoupon
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: integer
+              format: int64
+            examples:
+              사용자 고유번호:
+                description: 사용자 고유번호
+                value: 10
+        required: true
+      responses:
+        '200':
+          description: 쿠폰 생성 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CouponIssueResponse'
+  /api/users/{id}/point:
+    get:
+      tags:
+        - User
+      summary: 사용자 포인트 잔액 조회
+      description: 사용자 고유 번호(userId)에 해당하는 사용자의 포인트 잔액을 조회합니다.
+      operationId: findUserPointById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 사용자 포인트 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPointResponse'
+    patch:
+      tags:
+        - User
+      summary: 사용자 포인트 충전
+      description: 사용자 고유 번호(userId)에 해당하는 사용자의 포인트 잔고를 충전합니다.
+      operationId: chargePoint
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: arg1
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: 사용자 포인트 충전 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPointResponse'
+  /api/users/{id}:
+    get:
+      tags:
+        - User
+      summary: 사용자 상세 정보 조회
+      description: 사용자 고유 번호(userId)에 해당하는 사용자의 상세 정보를 조회합니다.
+      operationId: findById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 사용자 상세정보 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+  /api/users/{id}/coupons:
+    get:
+      tags:
+        - User
+      summary: 사용자 보유 쿠폰 목록 조회
+      description: 사용자 고유 번호(userId)에 해당하는 사용자의 보유 쿠폰(사용, 미사용 일괄) 목록을 조회합니다.
+      operationId: findUserCouponListByUserId
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 사용자 쿠폰 목록 조회 성공
+          content:
+            application/json:
+              examples:
+                사용자 보유 쿠폰 목록:
+                  description: 사용자 보유 쿠폰 목록
+                  value:
+                    - userId: 1
+                      userCouponId: 1
+                      isUsed: true
+                    - userId: 1
+                      userCouponId: 2
+                      isUsed: true
+                    - userId: 1
+                      userCouponId: 9
+                      isUsed: false
+  /api/items/{id}:
+    get:
+      tags:
+        - Item
+      summary: 상품 상세 정보 조회
+      description: 상품 고유 번호(itemId)에 해당하는 상품의 상세 정보를 조회합니다.
+      operationId: findById_1
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 상품 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemResponse'
+  /api/items/ranking:
+    get:
+      tags:
+        - Item
+      summary: 최대 판매 상품 TOP3 조회
+      description: 현재 일시 기준 지난 3일간 가장 많이 팔린 상품 TOP3 목록을 조회합니다.
+      operationId: findItemRanking
+      responses:
+        '200':
+          description: 최다 판매 상품 목록 조회 성공
+          content:
+            application/json:
+              examples:
+                최대 판매 상품 TOP3 조회 응답:
+                  description: 최대 판매 상품 TOP3 조회 응답
+                  value:
+                    - itemId: 2
+                      name: 자전거
+                      price: 10000
+                      orderCount: 4552
+                    - itemId: 1
+                      name: 자동차
+                      price: 30000
+                      orderCount: 2000
+                    - itemId: 99
+                      name: 비행기
+                      price: 60000
+                      orderCount: 520
+components:
+  schemas:
+    PaymentProcessRequest:
+      type: object
+      properties:
+        orderId:
+          type: integer
+          format: int64
+          description: 주문 고유번호
+          example: 10
+        userId:
+          type: integer
+          format: int64
+          description: 사용자 고유번호
+          example: 8
+        finalPaymentPrice:
+          type: integer
+          format: int32
+          description: 최종 결제 금액
+          example: 9000
+    PaymentProcessResponse:
+      type: object
+      properties:
+        paymentId:
+          type: integer
+          format: int64
+          description: 결제 고유 번호
+          example: 938
+        paymentResponseMessage:
+          type: string
+          description: 결제 응답 메세지
+          example: SUCCESS
+        paymentRequestDateTime:
+          type: string
+          format: date-time
+          description: 결제 요청 시간
+          example: 2025-01-01H00:00:00
+        paymentResponseDateTime:
+          type: string
+          format: date-time
+          description: 결제 응답 시간
+          example: 2025-01-01H00:01:00
+    'OrderCreateRequest':
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+          description: 주문 생성 사용자 고유 번호
+          example: 1
+        userCouponId:
+          type: integer
+          format: int64
+          description: (선택) 사용자 쿠폰 고유번호
+          example: 50
+        orderItems:
+          type: array
+          description: 주문 상품 목록
+          items:
+            $ref: '#/components/schemas/OrderItemRequest'
+    'OrderItemRequest':
+      type: object
+      properties:
+        itemId:
+          type: integer
+          format: int64
+          description: 상품 고유 번호
+          example: 1
+        price:
+          type: integer
+          format: int32
+          description: 주문 요청 상품 가격
+          example: 10000
+        quantity:
+          type: integer
+          format: int32
+          description: 주문 수량
+          example: 30
+    OrderCreateResponse:
+      type: object
+      properties:
+        orderId:
+          type: integer
+          format: int64
+          description: 주문 고유 번호
+          example: 5
+        userId:
+          type: integer
+          format: int64
+          description: 사용자 고유 번호
+          example: 5
+        couponId:
+          type: integer
+          format: int64
+          description: (선택) 사용 쿠폰 고유 번호
+          example: 24
+        orderStatus:
+          type: string
+          description: 주문 상태
+          enum:
+            - ORDERED
+            - PAYMENT_COMPLETED
+            - PREPARING_PRODUCT
+            - SHIPPED
+            - DELIVERED
+            - CANCELLED
+            - REFUNDED
+          example: ORDERED
+        orderItems:
+          type: array
+          description: 주문 상품 목록
+          items:
+            $ref: '#/components/schemas/OrderItemResponse'
+        totalPrice:
+          type: integer
+          format: int32
+          description: 총 구매 가격
+          example: 10000
+        finalPaymentPrice:
+          type: integer
+          format: int32
+          description: 최종 결제 가격
+          example: 9000
+    OrderItemResponse:
+      type: object
+      properties:
+        itemId:
+          type: integer
+          format: int64
+          description: 상품 고유번호
+          example:
+            - '1'
+        orderId:
+          type: integer
+          format: int64
+          description: 주문 고유번호
+          example:
+            - '4'
+        orderItemId:
+          type: integer
+          format: int64
+          description: 주문 상품 고유번호
+          example:
+            - '205'
+        price:
+          type: integer
+          format: int32
+          description: 주문 생성 시 상품 가격
+          example:
+            - '10000'
+        quantity:
+          type: integer
+          format: int32
+          description: 주문 수량
+          example:
+            - '40'
+    'CouponCreateRequest':
+      type: object
+      properties:
+        name:
+          type: string
+          description: 쿠폰 이름
+          example: 전 상품 10% 할인 쿠폰
+        couponType:
+          type: string
+          description: '쿠폰 타입(RATE: % 할인, PRICE: 정액 할인)'
+          enum:
+            - RATE
+            - PRICE
+          example: RATE
+        discountRate:
+          type: number
+          format: float
+          description: (RATE 쿠폰) 쿠폰 할인률
+          example: 15
+        discountPrice:
+          type: integer
+          format: int32
+          description: (PRICE 쿠폰) 쿠폰 할인 금액
+          example: 50000
+        remainQuantity:
+          type: integer
+          format: int32
+          description: 쿠폰 잔여 수량
+          example: 30
+        expireDateTime:
+          type: string
+          format: date-time
+          description: 쿠폰 만료 일시
+          example: '2025-01-01T00:00:00'
+    'CouponCreateResponse':
+      type: object
+      properties:
+        couponId:
+          type: integer
+          format: int64
+          description: 쿠폰 고유 번호
+          example: 1
+        name:
+          type: string
+          description: 쿠폰 이름
+          example: 전 상품 10% 할인 쿠폰
+        couponType:
+          type: string
+          description: '쿠폰 타입(RATE: % 할인, PRICE: 정액 할인)'
+          enum:
+            - RATE
+            - PRICE
+          example: RATE
+        discountRate:
+          type: number
+          format: float
+          description: (RATE 쿠폰) 쿠폰 할인률
+          example: 15
+        discountPrice:
+          type: integer
+          format: int32
+          description: (PRICE 쿠폰) 쿠폰 할인 금액
+          example: 50000
+        remainQuantity:
+          type: integer
+          format: int32
+          description: 쿠폰 잔여 수량
+          example: 30
+        expireDateTime:
+          type: string
+          format: date-time
+          description: 쿠폰 만료 일시
+          example: '2025-01-01T00:00:00'
+    'CouponIssueResponse':
+      type: object
+      properties:
+        couponId:
+          type: integer
+          format: int64
+          description: 쿠폰 고유 번호
+          example: 1
+        userId:
+          type: integer
+          format: int64
+          description: 사용자 고유 번호
+          example: 10
+        userPointId:
+          type: integer
+          format: int64
+          description: 발급된 사용자 쿠폰 고유번호
+          example: 52
+        issueDateTime:
+          type: string
+          format: date-time
+          description: 발급 일시
+          example: 2025-01-01H00:00:00
+    UserPointResponse:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+          description: 사용자 고유번호
+          example: 10
+        point:
+          type: integer
+          format: int32
+          description: 현재 포인트 잔액
+          example: 20000
+    UserResponse:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+          description: 사용자 고유번호
+          example: 1
+        name:
+          type: string
+          description: 사용자 이름
+          example: 홍길동
+        point:
+          type: integer
+          format: int32
+          description: 포인트 잔액
+          example: 15000
+    ItemResponse:
+      type: object
+      properties:
+        itemId:
+          type: integer
+          format: int64
+          description: 아이템 고유 번호
+          example: 1
+        name:
+          type: string
+          description: 상품 명
+          example: 자전거
+        price:
+          type: integer
+          format: int32
+          description: 상품 가격
+          example: 10000
+        stock:
+          type: integer
+          format: int32
+          description: 상품 재고
+          example: 5
