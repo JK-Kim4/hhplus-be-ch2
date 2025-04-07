@@ -1,7 +1,6 @@
 package kr.hhplus.be.server.domain.user;
 
 import jakarta.persistence.NoResultException;
-import kr.hhplus.be.server.infrastructure.user.FakeUserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,7 +9,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public UserService(FakeUserRepository userRepository) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -38,6 +37,6 @@ public class UserService {
 
         user.chargePoint(chargeCommand.getAmount());
 
-        return userRepository.insertOrUpdate(user).point();
+        return user.point();
     }
 }
