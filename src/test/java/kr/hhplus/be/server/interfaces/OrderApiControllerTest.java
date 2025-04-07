@@ -10,20 +10,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-@SpringBootTest
 public class OrderApiControllerTest {
 
-    @Autowired
-    OrderApiController orderApiController;
 
-    OrderResponse.Create orderCreateResponse;
-    OrderRequest.Create orderCreateRequest;
+    OrderApiController orderApiController = new OrderApiController();
 
-    @BeforeEach
-    void setUp() {
-        orderCreateResponse = new OrderResponse.Create();
-        orderCreateRequest = new OrderRequest.Create();
-    }
+    OrderResponse.Create orderCreateResponse = new OrderResponse.Create();
+    OrderRequest.Create orderCreateRequest = new OrderRequest.Create();
 
     @DisplayName("주문 생성 성공 (HTTP STATUS 200)")
     @Test

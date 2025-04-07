@@ -10,19 +10,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-@SpringBootTest
 public class CouponApiControllerTest {
 
-    @Autowired
-    CouponApiController couponApiController;
 
-    private CouponRequest.Create request;
+    CouponApiController couponApiController = new CouponApiController();
 
-    @BeforeEach
-    void setUp() {
-        request = new CouponRequest.Create();
-    }
-
+    CouponRequest.Create request = new CouponRequest.Create();;
 
     @DisplayName("쿠폰 생성 요청 성공 (HTTP STATUS 200)")
     @Test

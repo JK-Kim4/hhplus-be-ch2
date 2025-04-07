@@ -12,18 +12,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-@SpringBootTest
 public class PaymentApiControllerTest {
 
-    @Autowired
-    PaymentApiController paymentApiController;
-
-    PaymentRequest paymentRequest;
-
-    @BeforeEach
-    void setUp() {
-        paymentRequest = new PaymentRequest();
-    }
+    PaymentApiController paymentApiController = new PaymentApiController();
+    PaymentRequest paymentRequest = new PaymentRequest();
 
     @DisplayName("결제 처리 성공 (HTTP STATUS 200)")
     @Test

@@ -11,14 +11,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-@SpringBootTest
 public class ItemApiControllerTest {
 
-    @Autowired
-    ItemApiController itemApiController;
-
-    @BeforeEach
-    public void init(){}
+    ItemApiController itemApiController = new ItemApiController();
 
     @DisplayName("상품 조회 요청 성공 (HTTP STATUS 200)")
     @Test

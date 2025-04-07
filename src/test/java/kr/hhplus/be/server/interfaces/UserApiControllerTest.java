@@ -11,14 +11,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-@SpringBootTest
 public class UserApiControllerTest {
 
-    @Autowired
-    UserApiController userApiController;
-
-    @BeforeEach
-    void setUp() {}
+    UserApiController userApiController = new UserApiController();
 
     @DisplayName("사용자 조회 성공(HTTP STATUS 200)")
     @Test
