@@ -11,6 +11,12 @@ public record UserPoint(Integer point) {
 
 
     public static UserPoint createOrDefault(Integer point) {
+        point = Objects.requireNonNullElse(point, 0);
+
+        if(point < 0){
+            throw new InvalidAmountException(InvalidAmountException.INVALID_POINT_ARGUMENT);
+        }
+
         return new UserPoint(Objects.requireNonNullElse(point, 0));
 
     }
@@ -28,7 +34,7 @@ public record UserPoint(Integer point) {
             throw new InvalidAmountException(InvalidAmountException.MAXIMUM_BALANCE_EXCEEDED);
         }
 
-        return new UserPoint(this.point + chargePoint);
+        return UserPoint.createOrDefault(this.point + chargePoint);
     }
 
     public UserPoint deduct(Integer deductPoint) {
@@ -36,6 +42,6 @@ public record UserPoint(Integer point) {
             throw new InvalidAmountException(InvalidAmountException.INSUFFICIENT_BALANCE);
         }
 
-        return new UserPoint(this.point - deductPoint);
+        return UserPoint.createOrDefault(this.point - deductPoint);
     }
 }
