@@ -6,8 +6,8 @@ import java.util.Objects;
 
 public record ItemPrice(Integer price) {
 
-    private static final Integer MAXIMUM_ITEM_PRICE = 100_000_000;
-    private static final Integer MINIMUM_ITEM_PRICE = 100;
+    public static final Integer MAXIMUM_ITEM_PRICE = 100_000_000;
+    public static final Integer MINIMUM_ITEM_PRICE = 100;
 
     public static ItemPrice createOrDefault(Integer price) {
         price = Objects.requireNonNullElse(price, MINIMUM_ITEM_PRICE);
@@ -30,6 +30,6 @@ public record ItemPrice(Integer price) {
             throw new InvalidPriceException(InvalidPriceException.OVER_MAXIMUM_PRICE);
         }
 
-        return new ItemPrice(price);
+        return ItemPrice.createOrDefault(price);
     }
 }

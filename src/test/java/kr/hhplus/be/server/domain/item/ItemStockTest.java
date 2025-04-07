@@ -97,7 +97,7 @@ public class ItemStockTest {
                     () -> itemStock.increase(zeroQuantity));
 
             //then
-            assertEquals(InvalidStockException.INSUFFICIENT_MINIMUM_STOCK_QUANTITY, invalidStockException.getMessage());
+            assertEquals(InvalidStockException.INVALID_INCREASE_QUANTITY, invalidStockException.getMessage());
         }
 
         @Test
@@ -124,6 +124,19 @@ public class ItemStockTest {
 
             //then
             assertEquals(currentStockQuantity-deductQuantity, itemStock.stock());
+        }
+
+        @Test
+        void 차감요청재고량이_0이하일경우_오류를_반환한다(){
+            //given
+            Integer zeroQuantity = 0;
+
+            //when
+            InvalidStockException invalidStockException = assertThrows(InvalidStockException.class,
+                    () -> itemStock.decrease(zeroQuantity));
+
+            //then
+            assertEquals(InvalidStockException.INVALID_DECREASE_QUANTITY, invalidStockException.getMessage());
         }
 
         @Test
