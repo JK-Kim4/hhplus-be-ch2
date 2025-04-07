@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.controller;
+package kr.hhplus.be.server.interfaces;
 
 import kr.hhplus.be.server.interfaces.api.item.ItemApiController;
 import kr.hhplus.be.server.interfaces.api.item.ItemResponse;

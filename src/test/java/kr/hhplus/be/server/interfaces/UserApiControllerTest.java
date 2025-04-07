@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.controller;
+package kr.hhplus.be.server.interfaces;
 
 import kr.hhplus.be.server.interfaces.api.user.UserApiController;
 import kr.hhplus.be.server.interfaces.api.user.UserResponse;
@@ -30,21 +30,21 @@ public class UserApiControllerTest {
     @DisplayName("사용자 포인트 조회 성공(HTTP STATUS 200)")
     @Test
     void test2(){
-        ResponseEntity<UserResponse.UserPoint> userPointById = userApiController.findUserPointById(1L);
+        ResponseEntity<UserResponse.Point> userPointById = userApiController.findUserPointById(1L);
         Assertions.assertEquals(HttpStatus.OK, userPointById.getStatusCode());
     }
 
     @DisplayName("사용자 쿠폰 조회 성공(HTTp STATUS 200)")
     @Test
     void test3(){
-        ResponseEntity<UserResponse.UserCoupon> userCouponListByUserId = userApiController.findUserCouponListByUserId(1L);
+        ResponseEntity<UserResponse.Coupon> userCouponListByUserId = userApiController.findUserCouponListByUserId(1L);
         Assertions.assertEquals(HttpStatus.OK, userCouponListByUserId.getStatusCode());
     }
 
     @DisplayName("사용자 포인트 충전 성공(HTTP STATUS 200)")
     @Test
     void test4(){
-        ResponseEntity<UserResponse.UserPoint> userPointResponseResponseEntity = userApiController.chargePoint(1L, 2000);
+        ResponseEntity<UserResponse.Point> userPointResponseResponseEntity = userApiController.chargePoint(1L, 2000);
         Assertions.assertEquals(HttpStatus.OK, userPointResponseResponseEntity.getStatusCode());
     }
 

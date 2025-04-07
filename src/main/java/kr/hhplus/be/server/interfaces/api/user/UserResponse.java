@@ -47,7 +47,7 @@ public class UserResponse {
         }
     }
 
-    static public class UserPoint{
+    static public class Point{
 
         @Schema(name = "userId", description = "사용자 고유번호", example = "10")
         private Long userId;
@@ -71,15 +71,15 @@ public class UserResponse {
             this.point = point;
         }
 
-        public UserPoint() {}
+        public Point() {}
 
-        public UserPoint(Long userId, Integer point) {
+        public Point(Long userId, Integer point) {
             this.userId = userId;
             this.point = point;
         }
     }
 
-    static public class UserCoupon{
+    static public class Coupon{
 
         @Schema(name = "userId", description = "사용자 고유번호", example = "1")
         private Long userId;
@@ -114,9 +114,9 @@ public class UserResponse {
             isUsed = used;
         }
 
-        public UserCoupon() {}
+        public Coupon() {}
 
-        public UserCoupon(Long userId, Long userCouponId, Boolean isUsed) {
+        public Coupon(Long userId, Long userCouponId, Boolean isUsed) {
             this.userId = userId;
             this.userCouponId = userCouponId;
             this.isUsed = isUsed;

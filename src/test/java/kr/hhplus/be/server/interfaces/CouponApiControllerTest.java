@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.controller;
+package kr.hhplus.be.server.interfaces;
 
 import kr.hhplus.be.server.interfaces.api.coupon.*;
 import org.junit.jupiter.api.Assertions;
