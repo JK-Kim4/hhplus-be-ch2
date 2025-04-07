@@ -12,8 +12,8 @@ public class PaymentApiController implements PaymentApiSpec {
 
     @Override
     @PostMapping("/process")
-    public ResponseEntity<PaymentProcessResponse> processPayment(
-            @RequestBody PaymentProcessRequest paymentProcessRequest) {
-        return ResponseEntity.ok(new PaymentProcessResponse());
+    public ResponseEntity<PaymentResponse> processPayment(
+            @RequestBody PaymentRequest paymentRequest) {
+        return ResponseEntity.ok(new PaymentResponse());
     }
 }

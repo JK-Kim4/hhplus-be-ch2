@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.controller;
 
 import kr.hhplus.be.server.interfaces.api.payment.PaymentApiController;
-import kr.hhplus.be.server.interfaces.api.payment.PaymentProcessRequest;
-import kr.hhplus.be.server.interfaces.api.payment.PaymentProcessResponse;
+import kr.hhplus.be.server.interfaces.api.payment.PaymentRequest;
+import kr.hhplus.be.server.interfaces.api.payment.PaymentResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,17 +18,17 @@ public class PaymentApiControllerTest {
     @Autowired
     PaymentApiController paymentApiController;
 
-    PaymentProcessRequest paymentProcessRequest;
+    PaymentRequest paymentRequest;
 
     @BeforeEach
     void setUp() {
-        paymentProcessRequest = new PaymentProcessRequest();
+        paymentRequest = new PaymentRequest();
     }
 
     @DisplayName("결제 처리 성공 (HTTP STATUS 200)")
     @Test
     void test(){
-        ResponseEntity<PaymentProcessResponse> paymentProcessResponseResponseEntity = paymentApiController.processPayment(paymentProcessRequest);
+        ResponseEntity<PaymentResponse> paymentProcessResponseResponseEntity = paymentApiController.processPayment(paymentRequest);
         Assertions.assertEquals(HttpStatus.OK, paymentProcessResponseResponseEntity.getStatusCode());
     }
 }

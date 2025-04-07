@@ -14,14 +14,14 @@ public class ItemApiController implements ItemApiSpec{
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<ItemResponse> findById(
+    public ResponseEntity<ItemResponse.Detail> findById(
             @PathVariable("id") Long id) {
-        return ResponseEntity.ok(new ItemResponse());
+        return ResponseEntity.ok(new ItemResponse.Detail());
     }
 
     @Override
     @GetMapping("/ranking")
-    public ResponseEntity<List<ItemRankResponse>> findItemRanking() {
+    public ResponseEntity<List<ItemResponse.Rank>> findItemRanking() {
         return null;
     }
 }

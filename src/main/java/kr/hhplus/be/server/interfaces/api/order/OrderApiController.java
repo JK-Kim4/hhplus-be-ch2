@@ -12,8 +12,8 @@ public class OrderApiController implements OrderApiSpec{
 
     @Override
     @PostMapping
-    public ResponseEntity<OrderCreateResponse> createOrder(
-            @RequestBody OrderCreateRequest request) {
-        return ResponseEntity.ok(new OrderCreateResponse());
+    public ResponseEntity<OrderResponse.Create> createOrder(
+            @RequestBody OrderRequest.Create request) {
+        return ResponseEntity.ok(new OrderResponse.Create());
     }
 }

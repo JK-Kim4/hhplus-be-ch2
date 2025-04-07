@@ -19,9 +19,9 @@ public interface ItemApiSpec {
     description = "상품 고유 번호(itemId)에 해당하는 상품의 상세 정보를 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "상품 조회 성공",
-            content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ItemResponse.class))})
+            content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ItemResponse.Detail.class))})
     })
-    ResponseEntity<ItemResponse> findById(@PathVariable(name = "itemId") Long id);
+    ResponseEntity<ItemResponse.Detail> findById(@PathVariable(name = "itemId") Long id);
 
 
     @Operation(summary = "최대 판매 상품 TOP3 조회",
@@ -56,5 +56,5 @@ public interface ItemApiSpec {
                             ))}
             )
     })
-    ResponseEntity<List<ItemRankResponse>> findItemRanking();
+    ResponseEntity<List<ItemResponse.Rank>> findItemRanking();
 }

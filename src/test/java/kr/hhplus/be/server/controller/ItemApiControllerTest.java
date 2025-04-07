@@ -23,7 +23,7 @@ public class ItemApiControllerTest {
     @DisplayName("상품 조회 요청 성공 (HTTP STATUS 200)")
     @Test
     void test(){
-        ResponseEntity<ItemResponse> byId = itemApiController.findById(1L);
+        ResponseEntity<ItemResponse.Detail> byId = itemApiController.findById(1L);
         Assertions.assertEquals(HttpStatus.OK, byId.getStatusCode());
     }
 }
