@@ -27,9 +27,16 @@ public class User {
         this.point = UserPoint.createOrDefault(point);
     }
 
+    public Long id() {
+        return id;
+    }
 
     public Integer point() {
         return this.point.getPoint();
+    }
+
+    public String name() {
+        return this.name;
     }
 
     public void chargePoint(Integer chargePoint) {

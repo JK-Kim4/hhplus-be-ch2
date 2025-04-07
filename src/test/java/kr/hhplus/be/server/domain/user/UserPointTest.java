@@ -11,7 +11,7 @@ public class UserPointTest {
 
     @Nested
     @DisplayName("충전 금액 정책 유효성 검증 테스트")
-    class PolicyValidation {
+    class user_point_charge_test {
 
         @Test
         void 포인트를_충전한다(){
@@ -59,7 +59,7 @@ public class UserPointTest {
 
     @Nested
     @DisplayName("금액 차감 정책 유효성 검증 테스트")
-    class UserPointUpdateTest{
+    class user_point_deduct_test{
 
         @Test
         void 포인트를_차감한다(){
