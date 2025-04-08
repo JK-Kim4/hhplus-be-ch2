@@ -28,7 +28,7 @@ public class User {
     }
 
     public Long id() {
-        return id;
+        return this.id;
     }
 
     public Integer point() {

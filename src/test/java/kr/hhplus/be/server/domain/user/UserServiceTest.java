@@ -1,9 +1,9 @@
 package kr.hhplus.be.server.domain.user;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import kr.hhplus.be.server.domain.user.pointHistory.PointHistory;
+import kr.hhplus.be.server.domain.user.pointHistory.PointHistoryRepository;
+import kr.hhplus.be.server.domain.user.pointHistory.PointHistoryType;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -13,12 +13,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
 
     @Mock
     UserRepository userRepository;
+
+    @Mock
+    PointHistoryRepository pointHistoryRepository;
 
     @InjectMocks
     UserService userService;
@@ -56,16 +61,24 @@ public class UserServiceTest {
 
         Integer validChargePoint = 15000;
         UserCommand.Charge chargeCommand = new UserCommand.Charge(userId, validChargePoint);
+        User user;
+        PointHistory pointHistory;
+
 
         @BeforeEach
         void setUp() {
-            User user = new User(userId, "test", initPoint);
-            Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+            user = new User(userId, "test", initPoint);
+            pointHistory = new PointHistory(userId,  validChargePoint, PointHistoryType.CHARGE);
+            Mockito.when(userRepository.findById(userId))
+                    .thenReturn(Optional.of(user));
+            Mockito.when(pointHistoryRepository.save(pointHistory))
+                    .thenReturn(pointHistory);
         }
 
         @Test
-        void 사용자_포인트를_충전한다(){
+        void 사용자_포인트를_충전하고_충전이력을_저장을_호출한다(){
             assertEquals(initPoint + validChargePoint, userService.charge(chargeCommand));
+            verify(pointHistoryRepository, times(1)).save(pointHistory);
         }
 
     }
