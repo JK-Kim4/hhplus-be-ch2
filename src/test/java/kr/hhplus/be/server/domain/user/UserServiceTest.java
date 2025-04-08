@@ -35,8 +35,6 @@ public class UserServiceTest {
     @DisplayName("사용자 조회 테스트")
     class find_user_test{
 
-        UserCommand.Find userFindCommand = new UserCommand.Find(userId);
-
         @BeforeEach
         void setUp() {
             User user = new User(userId, "test", initPoint);
@@ -45,12 +43,12 @@ public class UserServiceTest {
 
         @Test
         void 사용자_고유번호로_상세정보를_조회한다(){
-            assertEquals("test", userService.findById(userFindCommand).name());
+            assertEquals("test", userService.findById(userId).name());
         }
 
         @Test
         void 사용자_고유번호로_사용자의_현재보유포인트를_조횐한다(){
-            assertEquals(initPoint, userService.findPointById(userFindCommand));
+            assertEquals(initPoint, userService.findPointById(userId));
         }
 
     }

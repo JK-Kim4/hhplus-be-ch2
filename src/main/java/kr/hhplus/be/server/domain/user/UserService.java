@@ -21,16 +21,16 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public User findById(UserCommand.Find find) {
+    public User findById(Long userId) {
 
-        return userRepository.findById(find.getUserId())
+        return userRepository.findById(userId)
                 .orElseThrow(NoResultException::new);
     }
 
     @Transactional(readOnly = true)
-    public Integer findPointById(UserCommand.Find find) {
+    public Integer findPointById(Long userId) {
 
-        User user = userRepository.findById(find.getUserId())
+        User user = userRepository.findById(userId)
                 .orElseThrow(NoResultException::new);
 
         return user.point();
