@@ -9,9 +9,7 @@ import java.util.List;
 public class OrderCreateCommand {
 
     private Long userId;
-
     private Long userCouponId;
-
     private List<OrderItemCreateCommand> orderItems;
 
     public Long getUserId() {

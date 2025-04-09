@@ -39,16 +39,16 @@ public class OrderService {
 
         Order order = orderRepository.save(new Order(orderUser));
 
-        List<OrderItem> orderItems = this.saveOrderItems(order, command.getOrderItems());
+        List<OrderItem> orderItems = this.saveOrderItems(order, command.getOrderItems()).getOrderItems();
         order.calculateTotalPrice(orderItems);
 
         return new OrderCreateCommand.Response(order);
     }
 
-    public List<OrderItem> saveOrderItems(Order order, List<OrderItemCreateCommand> command){
+    public OrderItemCreateCommand.Response saveOrderItems(Order order, List<OrderItemCreateCommand> command){
         List<OrderItem> orderItems = this.createOrderItems(order, command);
         orderItemRepository.saveList(orderItems);
-        return orderItems;
+        return new OrderItemCreateCommand.Response(orderItems);
     }
 
     private List<OrderItem> createOrderItems(Order order, List<OrderItemCreateCommand> command){

@@ -6,6 +6,8 @@ import kr.hhplus.be.server.domain.order.orderItem.OrderItem;
 import kr.hhplus.be.server.interfaces.exception.InvalidPriceException;
 import kr.hhplus.be.server.interfaces.exception.NotEnoughStockException;
 
+import java.util.List;
+
 public class OrderItemCreateCommand {
 
 
@@ -42,5 +44,19 @@ public class OrderItemCreateCommand {
         }
 
         return new OrderItem(order, item, quantity);
+    }
+
+    static public class Response{
+
+        private List<OrderItem> orderItems;
+
+        public List<OrderItem> getOrderItems() {
+            return orderItems;
+        }
+
+        public Response(List<OrderItem> orderItems) {
+            this.orderItems = orderItems;
+        }
+
     }
 }

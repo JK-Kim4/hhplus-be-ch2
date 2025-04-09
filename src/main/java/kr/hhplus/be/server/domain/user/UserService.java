@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.domain.user;
 
 import jakarta.persistence.NoResultException;
+import kr.hhplus.be.server.domain.user.pointHistory.PointChargeCommand;
 import kr.hhplus.be.server.domain.user.pointHistory.PointHistory;
 import kr.hhplus.be.server.domain.user.pointHistory.PointHistoryRepository;
 import kr.hhplus.be.server.domain.user.pointHistory.PointHistoryType;
@@ -37,7 +38,7 @@ public class UserService {
     }
 
     @Transactional
-    public Integer charge(UserCommand.Charge chargeCommand) {
+    public Integer charge(PointChargeCommand chargeCommand) {
 
         User user = userRepository.findById(chargeCommand.getUserId())
                 .orElseThrow(NoResultException::new);

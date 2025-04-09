@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.user;
 
+import kr.hhplus.be.server.domain.user.pointHistory.PointChargeCommand;
 import kr.hhplus.be.server.domain.user.pointHistory.PointHistory;
 import kr.hhplus.be.server.domain.user.pointHistory.PointHistoryRepository;
 import kr.hhplus.be.server.domain.user.pointHistory.PointHistoryType;
@@ -58,7 +59,7 @@ public class UserServiceTest {
     class charge_user_point_test{
 
         Integer validChargePoint = 15000;
-        UserCommand.Charge chargeCommand = new UserCommand.Charge(userId, validChargePoint);
+        PointChargeCommand chargeCommand = new PointChargeCommand(userId, validChargePoint);
         User user;
         PointHistory pointHistory;
 

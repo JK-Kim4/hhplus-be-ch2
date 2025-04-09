@@ -75,7 +75,7 @@ public class OrderServiceTest {
     @DisplayName("주문 상품 목록 정보를 생성/저장한다.")
     void create_order_item_list_test(){
         //when
-        List<OrderItem> orderItems = orderService.saveOrderItems(order, commands);
+        List<OrderItem> orderItems = orderService.saveOrderItems(order, commands).getOrderItems();
 
         //then
         assertAll

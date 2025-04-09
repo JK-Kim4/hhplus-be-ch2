@@ -7,11 +7,8 @@ import kr.hhplus.be.server.interfaces.exception.NotEnoughStockException;
 public class OrderItem {
 
     private Long id;
-
     private Order order;
-
     private Item item;
-
     private Integer quantity;
 
     public Long getId() {
