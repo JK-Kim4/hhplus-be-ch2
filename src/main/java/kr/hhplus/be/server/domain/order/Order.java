@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.order;
 
+import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.order.orderItem.OrderItem;
 import kr.hhplus.be.server.domain.payment.Payment;
 import kr.hhplus.be.server.domain.user.User;
@@ -13,9 +14,11 @@ public class Order {
 
     private Long id;
     private User orderUser;
+    private Coupon coupon;
     private Payment payment;
     private OrderStatus orderStatus;
     private Integer totalPrice;
+    private Integer finalPaymentPrice;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -23,7 +26,7 @@ public class Order {
 
     public Order(User user){
         this.orderUser = user;
-        this.orderStatus = OrderStatus.ORDERED;
+        this.orderStatus = OrderStatus.ORDER_CREATED;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
@@ -32,7 +35,7 @@ public class Order {
         this.id = id;
         this.orderUser = orderUser;
         this.payment = payment;
-        this.orderStatus = OrderStatus.ORDERED;
+        this.orderStatus = OrderStatus.ORDER_CREATED;
     }
 
     public OrderStatus getOrderStatus() {
@@ -41,6 +44,10 @@ public class Order {
 
     public Integer getTotalPrice() {
         return this.totalPrice;
+    }
+
+    public Integer getFinalPaymentPrice() {
+        return finalPaymentPrice;
     }
 
     public Long getId() {
@@ -61,6 +68,10 @@ public class Order {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public void registerPayment(Payment payment) {
+        this.payment = payment;
     }
 
     public void updateOrderStatus(OrderStatus orderStatus) {

@@ -27,7 +27,7 @@ public class OrderItem {
         return quantity;
     }
 
-    public OrderItem() {}
+    protected OrderItem() {}
 
     public OrderItem(Order order, Item item, Integer quantity) {
         this.order = order;
@@ -42,11 +42,16 @@ public class OrderItem {
         this.quantity = quantity;
     }
 
-    public Integer calculatePrice() {
+    public boolean canOrder(){
         if(!item.hasEnoughStock(this.quantity)){
             throw new NotEnoughStockException(NotEnoughStockException.NOT_ENOUGH_STOCK);
         }
 
+        return true;
+    }
+
+    public Integer calculatePrice() {
+        canOrder();
         return this.item.getPrice() * this.quantity;
     }
 
