@@ -40,7 +40,18 @@ public class Item {
         this.price = ItemPrice.createOrDefault(price);
         this.stock = ItemStock.createOrDefault(stock);
     }
-    
+
+    public Long getId() {
+        return id;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
 
     public Integer getPrice() {
         return this.price.price();
