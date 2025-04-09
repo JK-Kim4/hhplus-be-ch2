@@ -1,11 +1,11 @@
 package kr.hhplus.be.server.domain.order;
 
+import jakarta.persistence.NoResultException;
 import kr.hhplus.be.server.domain.item.Item;
 import kr.hhplus.be.server.domain.item.ItemRepository;
 import kr.hhplus.be.server.domain.order.command.OrderCreateCommand;
 import kr.hhplus.be.server.domain.order.command.OrderItemCreateCommand;
 import kr.hhplus.be.server.domain.order.orderItem.OrderItem;
-import kr.hhplus.be.server.domain.order.orderItem.OrderItemRepository;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.UserRepository;
 import kr.hhplus.be.server.interfaces.exception.InvalidPriceException;
@@ -33,9 +33,6 @@ public class OrderServiceTest {
     OrderRepository orderRepository;
 
     @Mock
-    OrderItemRepository orderItemRepository;
-
-    @Mock
     UserRepository userRepository;
 
     @Mock
@@ -45,9 +42,7 @@ public class OrderServiceTest {
     OrderService orderService;
 
     List<OrderItemCreateCommand> commands = new ArrayList<>();
-    OrderItemCreateCommand command1;
-    OrderItemCreateCommand command2;
-    OrderItemCreateCommand command3;
+    OrderItemCreateCommand command1, command2, command3;
     User user;
     Order order;
 
@@ -82,7 +77,7 @@ public class OrderServiceTest {
         (
             "주문 상품 정보를 생성하고 등록한다",
             () -> verify(itemRepository, times(orderItems.size())).findById(any()),
-            () -> verify(orderItemRepository, times(1)).saveList(orderItems)
+            () -> verify(orderRepository, times(1)).saveOrderItemList(orderItems)
         );
     }
 
@@ -122,6 +117,15 @@ public class OrderServiceTest {
     @DisplayName("주문 정보와 주문 상품 목록 정보가 생성/저장한다.")
     void do_order_process_test(){
         //given
+        List<OrderItem> orderItems = commands.stream().map(
+                (commandItem) ->
+                        commandItem.toEntity(
+                                order,
+                                itemRepository.findById(commandItem.getItemId())
+                                        .orElseThrow(NoResultException::new),
+                                commandItem.getQuantity())).toList();
+
+        order.calculateTotalPrice(orderItems);
         when(userRepository.findById(user.getId()))
                 .thenReturn(Optional.of(user));
         when(orderRepository.save(order))
@@ -129,7 +133,7 @@ public class OrderServiceTest {
 
         //when
         OrderCreateCommand.Response save =
-                orderService.save(new OrderCreateCommand(user.getId(), null, commands));
+                orderService.createOrder(new OrderCreateCommand(user.getId(), null, commands));
 
         //then
         assertEquals(order.getOrderUser().getId(), save.getUserId());
