@@ -1,10 +1,21 @@
 package kr.hhplus.be.server.domain.order;
 
+import kr.hhplus.be.server.domain.order.orderItem.OrderItem;
+import kr.hhplus.be.server.domain.payment.Payment;
+import kr.hhplus.be.server.domain.user.User;
+import kr.hhplus.be.server.interfaces.exception.OrderMismatchException;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
+
 public class Order {
 
     private Long id;
 
     private User orderUser;
+
+    private Payment payment;
 
     private OrderStatus orderStatus;
 
@@ -17,25 +28,69 @@ public class Order {
 
     public Order() {}
 
-    public Order(
-            Long id, User orderUser,
-            OrderStatus orderStatus, Integer totalPrice,
-            LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
-        this.orderUser = orderUser;
+    public Order(OrderStatus orderStatus){
         this.orderStatus = orderStatus;
-        this.totalPrice = totalPrice;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 
+    public Order(
+            Long id, User orderUser, Payment payment,
+            OrderStatus orderStatus,  Integer totalPrice) {
+
+        this.id = id;
+        this.orderUser = orderUser;
+        this.payment = payment;
+        this.orderStatus = orderStatus;
+        this.totalPrice = totalPrice;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+
+    }
+
+    public Order(Long id, User orderUser, Payment payment){
+
+        this.id = id;
+        this.orderUser = orderUser;
+        this.payment = payment;
+        this.orderStatus = OrderStatus.ORDERED;
+
+    }
+
+    public OrderStatus getOrderStatus() {
+        return this.orderStatus;
+    }
+
+    public Integer getTotalPrice() {
+        return this.totalPrice;
+    }
 
     public void updateOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
-    public void calculateTotalPrice() {
+    public void calculateTotalPrice(List<OrderItem> orderItems) {
 
+        Integer totalPrice = 0;
+
+        for(OrderItem orderItem : orderItems) {
+            if (orderItem.getOrder() != this){
+                throw new OrderMismatchException();
+            }
+            totalPrice += orderItem.calculatePrice();
+        }
+
+        this.totalPrice = totalPrice;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return Objects.equals(id, order.id) && Objects.equals(orderUser, order.orderUser) && Objects.equals(payment, order.payment) && orderStatus == order.orderStatus && Objects.equals(totalPrice, order.totalPrice);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, orderUser, payment, orderStatus, totalPrice);
+    }
 }
