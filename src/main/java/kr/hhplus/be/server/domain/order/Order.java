@@ -28,22 +28,11 @@ public class Order {
 
     public Order() {}
 
-    public Order(OrderStatus orderStatus){
-        this.orderStatus = orderStatus;
-    }
-
-    public Order(
-            Long id, User orderUser, Payment payment,
-            OrderStatus orderStatus,  Integer totalPrice) {
-
-        this.id = id;
-        this.orderUser = orderUser;
-        this.payment = payment;
-        this.orderStatus = orderStatus;
-        this.totalPrice = totalPrice;
+    public Order(User user){
+        this.orderUser = user;
+        this.orderStatus = OrderStatus.ORDERED;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
-
     }
 
     public Order(Long id, User orderUser, Payment payment){
@@ -61,6 +50,26 @@ public class Order {
 
     public Integer getTotalPrice() {
         return this.totalPrice;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public User getOrderUser() {
+        return orderUser;
+    }
+
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
     public void updateOrderStatus(OrderStatus orderStatus) {

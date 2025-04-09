@@ -32,7 +32,7 @@ public class OrderItem {
 
     public OrderItem() {}
 
-    public OrderItem(Order order,Item item, Integer quantity) {
+    public OrderItem(Order order, Item item, Integer quantity) {
         this.order = order;
         this.item = item;
         this.quantity = quantity;
@@ -52,7 +52,6 @@ public class OrderItem {
 
         return this.item.getPrice() * this.quantity;
     }
-
 
     public void decreaseItemStock() {
         this.item.decreaseStock(this.quantity);
