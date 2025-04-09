@@ -1,23 +1,25 @@
 package kr.hhplus.be.server.domain.item;
 
+import kr.hhplus.be.server.interfaces.exception.InvalidStockException;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Item {
 
-    private Long id;
+    Long id;
 
-    private String name;
+    String name;
 
-    private ItemPrice price;
+    ItemPrice price;
 
-    private ItemStock stock;
+    ItemStock stock;
 
-    private LocalDateTime createdAt;
+    LocalDateTime createdAt;
 
-    private LocalDateTime updatedAt;
+    LocalDateTime updatedAt;
 
-    protected Item() {}
+    public Item() {}
 
     public Item(String name) {
         this.name = name;
@@ -45,28 +47,23 @@ public class Item {
     }
     
 
-    public Integer price(){
+    public Integer getPrice() {
         return this.price.price();
     }
 
-    public Integer stock(){
+    public Integer getStock(){
         return this.stock.stock();
     }
 
-    public String name(){
+    public String getName(){
         return this.name;
     }
 
-    private void setName(String name) {
-        this.name = name;
-    }
-
-    private void setPrice(ItemPrice price) {
-        this.price = price;
-    }
-
-    private void setStock(ItemStock stock) {
-        this.stock = stock;
+    public boolean hasEnoughStock(Integer quantity) {
+        if(quantity >= ItemStock.MAXIMUM_STOCK_QUANTITY){
+            throw new InvalidStockException(InvalidStockException.OVER_MAXIMUM_STOCK_QUANTITY);
+        }
+        return this.stock.stock() >= quantity;
     }
 
     public void updatePrice(Integer updatePrice) {
