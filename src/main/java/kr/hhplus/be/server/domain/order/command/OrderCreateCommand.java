@@ -63,7 +63,7 @@ public class OrderCreateCommand {
 
         public Response(Order order) {
             this.orderId = order.getId();
-            this.userId = order.getOrderUser().id();
+            this.userId = order.getOrderUser().getId();
             this.totalPrice = order.getTotalPrice();
             this.orderStatus = order.getOrderStatus();
             this.createdAt = order.getCreatedAt();

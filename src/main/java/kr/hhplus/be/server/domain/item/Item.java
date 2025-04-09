@@ -7,17 +7,12 @@ import java.util.Objects;
 
 public class Item {
 
-    Long id;
-
-    String name;
-
-    ItemPrice price;
-
-    ItemStock stock;
-
-    LocalDateTime createdAt;
-
-    LocalDateTime updatedAt;
+    private Long id;
+    private String name;
+    private ItemPrice price;
+    private ItemStock stock;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public Item() {}
 

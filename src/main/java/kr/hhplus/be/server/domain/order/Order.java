@@ -12,19 +12,12 @@ import java.util.Objects;
 public class Order {
 
     private Long id;
-
     private User orderUser;
-
     private Payment payment;
-
     private OrderStatus orderStatus;
-
     private Integer totalPrice;
-
     private LocalDateTime createdAt;
-
     private LocalDateTime updatedAt;
-
 
     public Order() {}
 
@@ -36,12 +29,10 @@ public class Order {
     }
 
     public Order(Long id, User orderUser, Payment payment){
-
         this.id = id;
         this.orderUser = orderUser;
         this.payment = payment;
         this.orderStatus = OrderStatus.ORDERED;
-
     }
 
     public OrderStatus getOrderStatus() {
@@ -89,7 +80,6 @@ public class Order {
 
         this.totalPrice = totalPrice;
     }
-
 
     @Override
     public boolean equals(Object o) {

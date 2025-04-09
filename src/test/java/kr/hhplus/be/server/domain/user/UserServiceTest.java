@@ -43,7 +43,7 @@ public class UserServiceTest {
 
         @Test
         void 사용자_고유번호로_상세정보를_조회한다(){
-            assertEquals("test", userService.findById(userId).name());
+            assertEquals("test", userService.findById(userId).getName());
         }
 
         @Test

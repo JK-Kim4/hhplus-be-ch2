@@ -27,15 +27,15 @@ public class User {
         this.point = UserPoint.createOrDefault(point);
     }
 
-    public Long id() {
+    public Long getId() {
         return this.id;
     }
 
-    public Integer point() {
+    public Integer getPoint() {
         return this.point.getPoint();
     }
 
-    public String name() {
+    public String getName() {
         return this.name;
     }
 

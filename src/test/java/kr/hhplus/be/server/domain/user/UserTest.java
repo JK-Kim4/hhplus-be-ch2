@@ -21,7 +21,7 @@ public class UserTest {
             User user = new User(id, name);
 
             //then
-            Assertions.assertEquals(defaultPoint, user.point());
+            Assertions.assertEquals(defaultPoint, user.getPoint());
         }
 
         @Test
@@ -35,7 +35,7 @@ public class UserTest {
             User user = new User(id, name, initPoint);
 
             //then
-            Assertions.assertEquals(initPoint, user.point());
+            Assertions.assertEquals(initPoint, user.getPoint());
         }
     }
 
@@ -55,7 +55,7 @@ public class UserTest {
             user.chargePoint(chargePoint);
 
             //then
-            Assertions.assertEquals(chargePoint, user.point());
+            Assertions.assertEquals(chargePoint, user.getPoint());
         }
 
         @Test
@@ -71,7 +71,7 @@ public class UserTest {
             user.deductPoint(deductPoint);
 
             //then
-            Assertions.assertEquals(defaultPoint - deductPoint, user.point());
+            Assertions.assertEquals(defaultPoint - deductPoint, user.getPoint());
         }
 
     }

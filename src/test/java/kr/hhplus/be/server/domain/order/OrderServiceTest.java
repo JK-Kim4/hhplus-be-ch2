@@ -122,17 +122,17 @@ public class OrderServiceTest {
     @DisplayName("주문 정보와 주문 상품 목록 정보가 생성/저장한다.")
     void do_order_process_test(){
         //given
-        when(userRepository.findById(user.id()))
+        when(userRepository.findById(user.getId()))
                 .thenReturn(Optional.of(user));
         when(orderRepository.save(order))
                 .thenReturn(order);
 
         //when
         OrderCreateCommand.Response save =
-                orderService.save(new OrderCreateCommand(user.id(), null, commands));
+                orderService.save(new OrderCreateCommand(user.getId(), null, commands));
 
         //then
-        assertEquals(order.getOrderUser().id(), save.getUserId());
+        assertEquals(order.getOrderUser().getId(), save.getUserId());
     }
 
 

@@ -33,7 +33,7 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(NoResultException::new);
 
-        return user.point();
+        return user.getPoint();
     }
 
     @Transactional
@@ -43,8 +43,8 @@ public class UserService {
                 .orElseThrow(NoResultException::new);
 
         user.chargePoint(chargeCommand.getAmount());
-        pointHistoryRepository.save(new PointHistory(user.id(), chargeCommand.getAmount(), PointHistoryType.CHARGE));
+        pointHistoryRepository.save(new PointHistory(user.getId(), chargeCommand.getAmount(), PointHistoryType.CHARGE));
 
-        return user.point();
+        return user.getPoint();
     }
 }
