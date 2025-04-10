@@ -1,6 +1,4 @@
-package kr.hhplus.be.server.interfaces.api.item;
-
-import kr.hhplus.be.server.domain.item.Item;
+package kr.hhplus.be.server.domain.item;
 
 public class ItemCommand {
 

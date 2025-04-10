@@ -2,6 +2,10 @@ package kr.hhplus.be.server.interfaces.api.item;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import kr.hhplus.be.server.domain.item.Item;
+import kr.hhplus.be.server.domain.item.ItemCommand;
+import kr.hhplus.be.server.domain.orderStatistics.OrderStatisticsCommand;
+
+import java.util.List;
 
 public class ItemResponse {
 
@@ -72,8 +76,21 @@ public class ItemResponse {
 
     static public class Rank{
 
+        private List<RankItem> rankItems;
+
         protected Rank() {
         }
+
+        public Rank(List<OrderStatisticsCommand.OrderRank> orderRanks) {
+            rankItems = orderRanks.stream().map(RankItem::new).toList();
+        }
+
+        public List<RankItem> getRankItems() {
+            return rankItems;
+        }
+    }
+
+    public static class RankItem{
 
         @Schema(name = "itemId", description = "상품 고유번호", example = "10")
         private Long itemId;
@@ -81,16 +98,21 @@ public class ItemResponse {
         @Schema(name = "name", description = "상품명", example = "자전거")
         private String name;
 
-        @Schema(name = "price", description = "상품 가격", example = "10000")
-        private Integer price;
-
         @Schema(name = "orderCount", description = "3일간 총 판매 수", example = "55213")
         private Integer orderCount;
 
-        public Rank(Long itemId, String name, Integer price, Integer orderCount) {
+        protected RankItem() {
+        }
+
+        public RankItem(OrderStatisticsCommand.OrderRank orderRank) {
+            this.itemId = orderRank.getItemId();
+            this.name = orderRank.getItemName();
+            this.orderCount = orderRank.getOrderCount();
+        }
+
+        public RankItem(Long itemId, String name, Integer orderCount) {
             this.itemId = itemId;
             this.name = name;
-            this.price = price;
             this.orderCount = orderCount;
         }
 
@@ -98,32 +120,12 @@ public class ItemResponse {
             return itemId;
         }
 
-        public void setItemId(Long itemId) {
-            this.itemId = itemId;
-        }
-
         public String getName() {
             return name;
         }
 
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public Integer getPrice() {
-            return price;
-        }
-
-        public void setPrice(Integer price) {
-            this.price = price;
-        }
-
         public Integer getOrderCount() {
             return orderCount;
-        }
-
-        public void setOrderCount(Integer orderCount) {
-            this.orderCount = orderCount;
         }
     }
 }

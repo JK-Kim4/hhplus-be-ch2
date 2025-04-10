@@ -1,7 +1,6 @@
 package kr.hhplus.be.server.domain.item;
 
 import jakarta.persistence.NoResultException;
-import kr.hhplus.be.server.interfaces.api.item.ItemCommand;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

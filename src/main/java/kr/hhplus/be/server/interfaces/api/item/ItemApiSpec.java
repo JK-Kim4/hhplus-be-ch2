@@ -10,8 +10,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.List;
-
 @Tag(name = "Item", description = "상품 상세 정보 조회, 인기 판매 순위 Top3 상품 목록 조회")
 public interface ItemApiSpec {
 
@@ -36,19 +34,16 @@ public interface ItemApiSpec {
                         {
                             "itemId": 2,
                             "name": "자전거",
-                            "price": 10000,
                             "orderCount": 4552
                         },
                         {
                             "itemId": 1,
                             "name": "자동차",
-                            "price": 30000,
                             "orderCount": 2000
                         },
                         {
                             "itemId": 99,
                             "name": "비행기",
-                            "price": 60000,
                             "orderCount": 520
                         }
                     ]
@@ -56,5 +51,5 @@ public interface ItemApiSpec {
                             ))}
             )
     })
-    ResponseEntity<List<ItemResponse.Rank>> findItemRanking();
+    ResponseEntity<ItemResponse.Rank> findItemRanking();
 }
