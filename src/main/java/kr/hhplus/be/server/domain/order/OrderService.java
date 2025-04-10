@@ -38,7 +38,7 @@ public class OrderService {
         List<OrderItem> orderItems = this.saveOrderItems(order, command.getOrderItems()).getOrderItems();
 
         order.calculateTotalPrice(orderItems);
-        this.decreaseOrderItemQuantity(orderItems);
+        orderItems.forEach(OrderItem::decreaseItemStock);
 
         orderRepository.save(order);
 
@@ -60,10 +60,6 @@ public class OrderService {
                                 itemRepository.findById(commandItem.getItemId())
                                     .orElseThrow(NoResultException::new),
                                 commandItem.getQuantity())).toList();
-    }
-
-    private void decreaseOrderItemQuantity(List<OrderItem> orderItems){
-        orderItems.forEach(OrderItem::decreaseItemStock);
     }
 
 }

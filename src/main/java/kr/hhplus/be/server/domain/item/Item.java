@@ -7,6 +7,8 @@ import java.util.Objects;
 
 public class Item {
 
+    private static Long cursor = 1L;
+
     private Long id;
     private String name;
     private ItemPrice price;
@@ -14,21 +16,26 @@ public class Item {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public Item() {}
+    public Item() {
+        this.id = cursor++;
+    }
 
     public Item(String name) {
+        this.id = cursor++;
         this.name = name;
         this.price = ItemPrice.createOrDefault(null);
         this.stock = ItemStock.createOrDefault(null);
     }
 
     public Item(String name, Integer price) {
+        this.id = cursor++;
         this.name = name;
         this.price = ItemPrice.createOrDefault(price);
         this.stock = ItemStock.createOrDefault(null);
     }
 
     public Item(String name, Integer price, Integer stock) {
+        this.id = cursor++;
         this.name = name;
         this.price = ItemPrice.createOrDefault(price);
         this.stock = ItemStock.createOrDefault(stock);
