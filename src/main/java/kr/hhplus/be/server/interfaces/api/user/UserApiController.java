@@ -29,13 +29,6 @@ public class UserApiController implements UserApiSpec {
     }
 
     @Override
-    @GetMapping("/{id}/coupons")
-    public ResponseEntity<UserResponse.Coupon> findUserCouponListByUserId(
-            @PathVariable("id") Long userId) {
-        return ResponseEntity.ok(new UserResponse.Coupon());
-    }
-
-    @Override
     @PatchMapping("/{id}/point")
     public ResponseEntity<UserResponse.Point> chargePoint(
             @PathVariable("id") Long userId,
