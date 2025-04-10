@@ -1,6 +1,8 @@
 package kr.hhplus.be.server.interfaces.api.order;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import kr.hhplus.be.server.application.order.OrderItemCriteria;
 import kr.hhplus.be.server.domain.order.command.OrderItemCreateCommand;
 
@@ -8,10 +10,13 @@ import kr.hhplus.be.server.domain.order.command.OrderItemCreateCommand;
 public class OrderItemRequest {
 
     @Schema(name = "itemId", description = "상품 고유 번호", example = "1")
+    @NotNull @Positive
     private Long itemId;
     @Schema(name = "price", description = "주문 요청 상품 가격", example = "10000")
+    @NotNull @Positive
     private Integer price;
     @Schema(name = "quantity", description = "주문 수량", example = "30")
+    @NotNull @Positive
     private Integer quantity;
 
 

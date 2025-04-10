@@ -20,9 +20,9 @@ public class OrderStatisticsTest {
         Order order1 = new Order(1L, null, null);
         Order order2 = new Order(2L, null, null);
         Order order3 = new Order(3L, null, null);
-        Item car = new Item("car", 1000, 50);
-        Item desk = new Item("desk", 5000, 50);
-        Item food = new Item("food", 3000, 50);
+        Item car = new Item(1L,"car", 1000, 50);
+        Item desk = new Item(2L, "desk", 5000, 50);
+        Item food = new Item(3L, "food", 3000, 50);
 
         List<OrderItem> orderItemList = List.of(
                 new OrderItem(order1, car, 5),
