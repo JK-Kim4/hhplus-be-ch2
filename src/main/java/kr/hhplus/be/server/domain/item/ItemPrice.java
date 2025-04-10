@@ -12,6 +12,10 @@ public record ItemPrice(Integer price) {
     public static ItemPrice createOrDefault(Integer price) {
         price = Objects.requireNonNullElse(price, MINIMUM_ITEM_PRICE);
 
+        if(price > MAXIMUM_ITEM_PRICE) {
+            throw new InvalidPriceException(InvalidPriceException.OVER_MAXIMUM_PRICE);
+        }
+
         if(price < MINIMUM_ITEM_PRICE) {
             throw new InvalidPriceException(InvalidPriceException.INSUFFICIENT_MINIMUM_PRICE);
         }

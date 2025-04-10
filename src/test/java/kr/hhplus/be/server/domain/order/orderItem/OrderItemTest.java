@@ -6,6 +6,7 @@ import kr.hhplus.be.server.interfaces.exception.NotEnoughStockException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -45,5 +46,20 @@ public class OrderItemTest {
 
         //then
         assertEquals((defaultItemStock - defaultOrderQuantity), item.getStock());
+    }
+
+
+    @Test
+    @DisplayName("재고가 충분할 경우 true를 리턴")
+    void canOrder_returnsTrue_whenStockIsEnough() {
+        assertTrue(orderItem.canOrder());
+    }
+
+    @Test
+    @DisplayName("재고가 부족할 경우 NotEnoughStockException 오류 응답")
+    void canOrder_throwsException_whenStockIsNotEnough() {
+        OrderItem orderItem = new OrderItem(new Order(), item, defaultOrderQuantity+1);
+
+        assertThrows(NotEnoughStockException.class, orderItem::canOrder);
     }
 }

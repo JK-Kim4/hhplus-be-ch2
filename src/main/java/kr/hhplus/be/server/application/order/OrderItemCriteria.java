@@ -6,6 +6,8 @@ public class OrderItemCriteria {
     private Integer price;
     private Integer quantity;
 
+    public OrderItemCriteria(){}
+
     public OrderItemCriteria(Long itemId, Integer price, Integer quantity) {
         this.itemId = itemId;
         this.price = price;

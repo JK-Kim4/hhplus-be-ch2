@@ -1,7 +1,12 @@
 package kr.hhplus.be.server.domain.item;
 
 import kr.hhplus.be.server.interfaces.exception.InvalidStockException;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -22,6 +27,15 @@ public class ItemStockTest {
 
             //then
             assertEquals(defaultStock, itemStock.stock());
+        }
+
+        @Test
+        void 상품_재고_최대_최소값에_해당하는_상품가격을_생성한다() {
+            ItemStock minStock = ItemStock.createOrDefault(ItemStock.MINIMUM_STOCK_QUANTITY);
+            ItemStock maxStock = ItemStock.createOrDefault(ItemStock.MAXIMUM_STOCK_QUANTITY);
+
+            assertEquals(ItemStock.MINIMUM_STOCK_QUANTITY, minStock.stock());
+            assertEquals(ItemStock.MAXIMUM_STOCK_QUANTITY, maxStock.stock());
         }
 
         @Test
@@ -87,8 +101,9 @@ public class ItemStockTest {
             assertEquals(currentStockQuantity+increaseQuantity, itemStock.stock());
         }
 
-        @Test
-        void 재고추가수량이_1개미만일경우_오류를반환한다(){
+        @ParameterizedTest
+        @ValueSource(ints = {-99999, -3000, -1000, -500, -200, -100, -50, -20, -10, -5, -1, 0})
+        void 재고추가수량이_0이하의_음수일경우_오류를반환한다(){
             //given
             Integer zeroQuantity = 0;
 
@@ -100,7 +115,8 @@ public class ItemStockTest {
             assertEquals(InvalidStockException.INVALID_INCREASE_QUANTITY, invalidStockException.getMessage());
         }
 
-        @Test
+        @ParameterizedTest
+        @ValueSource(ints = {100_000, 200_000, 999_999, Integer.MAX_VALUE})
         void 재고보유량은_최대보유가능수량_100_000개를_초과할수없다(){
             //given
             Integer overMaximumQuantity = 200_000;
@@ -126,7 +142,8 @@ public class ItemStockTest {
             assertEquals(currentStockQuantity-deductQuantity, itemStock.stock());
         }
 
-        @Test
+        @ParameterizedTest
+        @ValueSource(ints = {-99999, -3000, -1000, -500, -200, -100, -50, -20, -10, -5, -1, 0})
         void 차감요청재고량이_0이하일경우_오류를_반환한다(){
             //given
             Integer zeroQuantity = 0;

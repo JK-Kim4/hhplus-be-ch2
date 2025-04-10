@@ -5,6 +5,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -39,7 +41,8 @@ public class ItemPriceTest {
             assertEquals(initPrice, itemPrice.price());
         }
 
-        @Test
+        @ParameterizedTest
+        @ValueSource(ints = {Integer.MIN_VALUE, -99, -50, -40, -30, -10, -9, -8, -5, -1, 0, 1, 2, 3, 4, 10, 20, 30, 99})
         void 초기_상품가격이_최소_판매가격_미만일_경우_오류를_반환한다(){
             //given
             Integer insufficientMinimumPrice = 99;
@@ -50,6 +53,29 @@ public class ItemPriceTest {
 
             //then
             assertEquals(exception.getMessage(), InvalidPriceException.INSUFFICIENT_MINIMUM_PRICE);
+        }
+
+        @ParameterizedTest
+        @ValueSource(ints = {100_000_001, 200_000_000, 999_999_999, Integer.MAX_VALUE})
+        void 초기_상품가격이_최대_판매가격을_초과할경우_오류를_반환한다(){
+            //given
+            Integer insufficientMinimumPrice = 100_000_001;
+
+            //when
+            InvalidPriceException exception = assertThrows(InvalidPriceException.class,
+                    () -> ItemPrice.createOrDefault(insufficientMinimumPrice));
+
+            //then
+            assertEquals(exception.getMessage(), InvalidPriceException.OVER_MAXIMUM_PRICE);
+        }
+
+        @Test
+        void 상품가격_최대_최소값에_해당하는_상품가격을_생성한다() {
+            ItemPrice minPrice = ItemPrice.createOrDefault(ItemPrice.MINIMUM_ITEM_PRICE);
+            ItemPrice macPrice = ItemPrice.createOrDefault(ItemPrice.MAXIMUM_ITEM_PRICE);
+
+            assertEquals(ItemPrice.MINIMUM_ITEM_PRICE, minPrice.price());
+            assertEquals(ItemPrice.MAXIMUM_ITEM_PRICE, macPrice.price());
         }
     }
 
@@ -77,8 +103,9 @@ public class ItemPriceTest {
             assertEquals(updatePrice, itemPrice.price());
         }
 
-        @Test
-        void 판매_가격이_최소_판매_금액_미만일_경우_오류를_반환한다(){
+        @ParameterizedTest
+        @ValueSource(ints = {Integer.MIN_VALUE, -99, -50, -40, -30, -10, -9, -8, -5, -1, 0, 1, 2, 3, 4, 10, 20, 30, 99})
+        void 변경되는_판매_가격이_최소_판매_금액_미만일_경우_오류를_반환한다(){
             //given
             Integer insufficientMinimumPrice = 10;
 
@@ -91,8 +118,9 @@ public class ItemPriceTest {
         }
 
 
-        @Test
-        void 판매_가격이_최대_판매_금액_초과할_경우_오류를_반환한다(){
+        @ParameterizedTest
+        @ValueSource(ints = {100_000_001, 200_000_000, 999_999_999, Integer.MAX_VALUE})
+        void 변경되는_판매_가격이_최대_판매_금액_초과할_경우_오류를_반환한다(){
             //given
             Integer overMaximumPrice = 100_000_001;
 

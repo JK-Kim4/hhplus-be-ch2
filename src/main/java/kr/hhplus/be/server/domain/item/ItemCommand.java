@@ -14,6 +14,5 @@ public class ItemCommand {
             this.item = item;
         }
 
-
     }
 }
