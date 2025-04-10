@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.interfaces.api.item;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import kr.hhplus.be.server.domain.item.Item;
 
 public class ItemResponse {
 
@@ -25,6 +26,14 @@ public class ItemResponse {
             this.name = name;
             this.price = price;
             this.stock = stock;
+        }
+
+        public Detail(ItemCommand.Response response) {
+            Item item  = response.getItem();
+            this.itemId = item.getId();
+            this.name = item.getName();
+            this.price = item.getPrice();
+            this.stock = item.getStock();
         }
 
         public Long getItemId() {

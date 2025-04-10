@@ -17,4 +17,16 @@ public class PointChargeCommand {
     public Integer getAmount() {
         return amount;
     }
+
+    public static class Response {
+        private Integer point;
+
+        public Response(Integer point) {
+            this.point = point;
+        }
+
+        public Integer getPoint() {
+            return point;
+        }
+    }
 }

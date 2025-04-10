@@ -22,10 +22,9 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public User findById(Long userId) {
-
-        return userRepository.findById(userId)
-                .orElseThrow(NoResultException::new);
+    public UserCommand.Response findById(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(NoResultException::new);
+        return new UserCommand.Response(user);
     }
 
     @Transactional(readOnly = true)
@@ -38,7 +37,7 @@ public class UserService {
     }
 
     @Transactional
-    public Integer charge(PointChargeCommand chargeCommand) {
+    public PointChargeCommand.Response charge(PointChargeCommand chargeCommand) {
 
         User user = userRepository.findById(chargeCommand.getUserId())
                 .orElseThrow(NoResultException::new);
@@ -46,6 +45,6 @@ public class UserService {
         user.chargePoint(chargeCommand.getAmount());
         pointHistoryRepository.save(new PointHistory(user.getId(), chargeCommand.getAmount(), PointHistoryType.CHARGE));
 
-        return user.getPoint();
+        return new PointChargeCommand.Response(user.getPoint());
     }
 }

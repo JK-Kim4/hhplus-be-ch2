@@ -1,10 +1,23 @@
 package kr.hhplus.be.server.interfaces.api.payment;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import kr.hhplus.be.server.domain.payment.Payment;
+import kr.hhplus.be.server.domain.payment.PaymentCreateCommand;
+import kr.hhplus.be.server.domain.payment.PaymentProcessCommand;
 
 import java.time.LocalDateTime;
 
 public class PaymentResponse {
+
+    static public class Create{
+
+        public Payment payment;
+
+        public Create(PaymentCreateCommand.Response response) {
+            this.payment = response.getPayment();
+        }
+
+    }
 
     static public class Process {
         @Schema(name = "paymentId", description = "결제 고유 번호", example = "938")
@@ -51,7 +64,14 @@ public class PaymentResponse {
             this.paymentResponseDateTime = paymentResponseDateTime;
         }
 
-        public Process() {}
+        public Process(PaymentProcessCommand.Response response) {
+            Payment payment = response.getPayment();
+
+            this.paymentId = payment.getId();
+            this.paymentRequestDateTime = payment.getPaymentRequestDateTime();
+            this.paymentResponseDateTime = payment.getPaymentResponseDateTime();
+            this.paymentResponseMessage = payment.getPaymentStatus().name();
+        }
 
         public Process(Long paymentId, String paymentResponseMessage, LocalDateTime paymentRequestDateTime, LocalDateTime paymentResponseDateTime) {
             this.paymentId = paymentId;

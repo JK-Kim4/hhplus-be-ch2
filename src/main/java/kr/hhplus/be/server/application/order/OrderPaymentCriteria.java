@@ -8,6 +8,13 @@ public class OrderPaymentCriteria {
     private Long userCouponId;
     private List<OrderItemCriteria> orderItems;
 
+    public OrderPaymentCriteria(Long userId, Long userCouponId, List<OrderItemCriteria> orderItems) {
+        this.userId = userId;
+        this.userCouponId = userCouponId;
+        this.orderItems = orderItems;
+
+    }
+
     public Long getUserId() {
         return userId;
     }
@@ -19,4 +26,5 @@ public class OrderPaymentCriteria {
     public List<OrderItemCriteria> getOrderItems() {
         return orderItems;
     }
+
 }

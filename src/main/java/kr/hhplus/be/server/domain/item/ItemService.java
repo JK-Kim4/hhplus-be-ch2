@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.domain.item;
 
 import jakarta.persistence.NoResultException;
+import kr.hhplus.be.server.interfaces.api.item.ItemCommand;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,8 +15,12 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
-    public Item findById(Long itemId){
-        return itemRepository.findById(itemId).orElseThrow(NoResultException::new);
+    public ItemCommand.Response findById(Long itemId){
+
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(NoResultException::new);
+
+        return new ItemCommand.Response(item);
     }
 
 }

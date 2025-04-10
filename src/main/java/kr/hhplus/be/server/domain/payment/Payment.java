@@ -14,6 +14,8 @@ public class Payment {
     private Order order;
     private Integer paymentPrice;
     private PaymentStatus paymentStatus;
+    private LocalDateTime paymentRequestDateTime;
+    private LocalDateTime paymentResponseDateTime;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -26,6 +28,8 @@ public class Payment {
         this.order = order;
         this.paymentPrice = paymentPrice;
         this.paymentStatus = paymentStatus;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     public Payment(Order order){
@@ -33,6 +37,8 @@ public class Payment {
         this.paymentPrice = order.getTotalPrice();
         this.paymentStatus = PaymentStatus.PAYMENT_PENDING;
         this.order.updateOrderStatus(OrderStatus.PAYMENT_WAITING);
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -51,6 +57,14 @@ public class Payment {
         return paymentStatus;
     }
 
+    public LocalDateTime getPaymentRequestDateTime() {
+        return paymentRequestDateTime;
+    }
+
+    public LocalDateTime getPaymentResponseDateTime() {
+        return paymentResponseDateTime;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -59,13 +73,23 @@ public class Payment {
         return updatedAt;
     }
 
+    public void logRequestDateTime(LocalDateTime requestDateTime) {
+        this.paymentRequestDateTime = requestDateTime;
+    }
+
+    public void logResponseDateTime(LocalDateTime responseDateTime) {
+        this.paymentResponseDateTime = responseDateTime;
+    }
+
     public void updatePaymentStatus(PaymentStatus paymentStatus) {
         this.paymentStatus = paymentStatus;
     }
 
     public void pay(){
+        this.logRequestDateTime(LocalDateTime.now());
         this.order.getOrderUser().deductPoint(this.paymentPrice);
         this.paymentStatus = PaymentStatus.PAYMENT_COMPLETED;
+        this.logResponseDateTime(LocalDateTime.now());
     }
 
 
@@ -73,12 +97,15 @@ public class Payment {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Payment payment = (Payment) o;
-        return Objects.equals(id, payment.id) && Objects.equals(order, payment.order) && Objects.equals(paymentPrice, payment.paymentPrice) && paymentStatus == payment.paymentStatus && Objects.equals(createdAt, payment.createdAt) && Objects.equals(updatedAt, payment.updatedAt);
+        return Objects.equals(id, payment.id)
+                && Objects.equals(order, payment.order)
+                && Objects.equals(paymentPrice, payment.paymentPrice)
+                && paymentStatus == payment.paymentStatus;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, order, paymentPrice, paymentStatus, createdAt, updatedAt);
+        return Objects.hash(id, order, paymentPrice, paymentStatus);
     }
 
     @Override

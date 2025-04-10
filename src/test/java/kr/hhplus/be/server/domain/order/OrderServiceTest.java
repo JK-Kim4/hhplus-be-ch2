@@ -142,7 +142,7 @@ public class OrderServiceTest {
                 orderService.createOrder(new OrderCreateCommand(user.getId(), null, commands));
 
         //then
-        assertEquals(order.getOrderUser().getId(), save.getUserId());
+        assertEquals(order.getOrderUser().getId(), save.getOrder().getOrderUser().getId());
     }
 
 

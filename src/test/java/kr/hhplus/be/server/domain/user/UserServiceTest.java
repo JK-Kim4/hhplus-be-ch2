@@ -44,7 +44,7 @@ public class UserServiceTest {
 
         @Test
         void 사용자_고유번호로_상세정보를_조회한다(){
-            assertEquals("test", userService.findById(userId).getName());
+            assertEquals("test", userService.findById(userId).getUser().getName());
         }
 
         @Test
@@ -76,7 +76,7 @@ public class UserServiceTest {
 
         @Test
         void 사용자_포인트를_충전하고_충전이력을_저장을_호출한다(){
-            assertEquals(initPoint + validChargePoint, userService.charge(chargeCommand));
+            assertEquals(initPoint + validChargePoint, userService.charge(chargeCommand).getPoint());
             verify(pointHistoryRepository, times(1)).save(pointHistory);
         }
 

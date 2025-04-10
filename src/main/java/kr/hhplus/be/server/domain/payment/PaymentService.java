@@ -5,7 +5,6 @@ import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderRepository;
 import kr.hhplus.be.server.domain.order.OrderStatus;
 import kr.hhplus.be.server.domain.payment.paymentHistory.PaymentHistory;
-import kr.hhplus.be.server.domain.user.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,15 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class PaymentService {
 
     private final PaymentRepository paymentRepository;
-    private final UserRepository userRepository;
     private final OrderRepository orderRepository;
 
     public PaymentService(
             PaymentRepository paymentRepository,
-            UserRepository userRepository,
             OrderRepository orderRepository) {
         this.paymentRepository = paymentRepository;
-        this.userRepository = userRepository;
         this.orderRepository = orderRepository;
     }
 

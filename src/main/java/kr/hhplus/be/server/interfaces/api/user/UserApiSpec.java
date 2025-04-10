@@ -63,5 +63,5 @@ public interface UserApiSpec {
             @ApiResponse(responseCode = "200", description = "사용자 포인트 충전 성공",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.Point.class)))
     })
-    ResponseEntity<UserResponse.Point> chargePoint(Long userId, Integer chargePoint);
+    ResponseEntity<UserResponse.Point> chargePoint(Long userId, UserRequest.Charge point);
 }

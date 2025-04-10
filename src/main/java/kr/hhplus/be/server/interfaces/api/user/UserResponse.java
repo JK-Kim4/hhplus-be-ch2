@@ -1,6 +1,8 @@
 package kr.hhplus.be.server.interfaces.api.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import kr.hhplus.be.server.domain.user.User;
+import kr.hhplus.be.server.domain.user.UserCommand;
 
 public class UserResponse {
 
@@ -45,6 +47,13 @@ public class UserResponse {
             this.name = name;
             this.point = point;
         }
+
+        public Detail(UserCommand.Response command) {
+            User user = command.getUser();
+            this.userId = user.getId();
+            this.name = user.getName();
+            this.point = user.getPoint();
+        }
     }
 
     static public class Point{
@@ -59,16 +68,8 @@ public class UserResponse {
             return userId;
         }
 
-        public void setUserId(Long userId) {
-            this.userId = userId;
-        }
-
         public Integer getPoint() {
             return point;
-        }
-
-        public void setPoint(Integer point) {
-            this.point = point;
         }
 
         public Point() {}
@@ -76,6 +77,12 @@ public class UserResponse {
         public Point(Long userId, Integer point) {
             this.userId = userId;
             this.point = point;
+        }
+
+        public Point(UserCommand.Response command) {
+            User user = command.getUser();
+            this.userId = user.getId();
+            this.point = user.getPoint();
         }
     }
 

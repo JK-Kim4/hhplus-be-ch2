@@ -1,6 +1,8 @@
 package kr.hhplus.be.server.interfaces.api.order;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import kr.hhplus.be.server.application.order.OrderItemCriteria;
+import kr.hhplus.be.server.domain.order.command.OrderItemCreateCommand;
 
 @Schema(name = "OrderItemRequest: 주문 상품 요청")
 public class OrderItemRequest {
@@ -19,6 +21,14 @@ public class OrderItemRequest {
         this.itemId = itemId;
         this.price = price;
         this.quantity = quantity;
+    }
+
+    public OrderItemCreateCommand toCommand(){
+        return new OrderItemCreateCommand(itemId, price, quantity);
+    }
+
+    public OrderItemCriteria toCriteria(){
+        return new OrderItemCriteria(itemId, price, quantity);
     }
 
     public Long getItemId() {

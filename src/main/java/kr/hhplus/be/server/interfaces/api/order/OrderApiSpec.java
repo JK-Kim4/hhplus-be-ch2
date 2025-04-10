@@ -18,4 +18,12 @@ public interface OrderApiSpec {
             content = {@Content(mediaType = "application/json", schema = @Schema(implementation = OrderRequest.Create.class))})
     })
     ResponseEntity<OrderResponse.Create> createOrder(OrderRequest.Create request);
+
+    @Operation(summary = "주문/결제 일괄 처리",
+                description = "주문생성과 결제 진행을 일괄로 처리합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "주문 생성 / 결제 성공",
+            content = {@Content(mediaType = "application/json", schema = @Schema(implementation = OrderRequest.OrderPayment.class))})
+    })
+    ResponseEntity<OrderResponse.OrderPayment> orderPayment(OrderRequest.OrderPayment request);
 }
