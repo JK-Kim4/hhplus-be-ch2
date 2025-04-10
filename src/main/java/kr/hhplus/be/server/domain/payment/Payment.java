@@ -34,7 +34,7 @@ public class Payment {
 
     public Payment(Order order){
         this.order = order;
-        this.paymentPrice = order.getTotalPrice();
+        this.paymentPrice = order.getFinalPaymentPrice();
         this.paymentStatus = PaymentStatus.PAYMENT_PENDING;
         this.order.updateOrderStatus(OrderStatus.PAYMENT_WAITING);
         this.createdAt = LocalDateTime.now();

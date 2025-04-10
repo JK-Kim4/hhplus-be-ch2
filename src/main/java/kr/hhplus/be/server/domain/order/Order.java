@@ -1,9 +1,9 @@
 package kr.hhplus.be.server.domain.order;
 
-import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.order.orderItem.OrderItem;
 import kr.hhplus.be.server.domain.payment.Payment;
 import kr.hhplus.be.server.domain.user.User;
+import kr.hhplus.be.server.domain.userCoupon.UserCoupon;
 import kr.hhplus.be.server.interfaces.exception.OrderMismatchException;
 
 import java.time.LocalDateTime;
@@ -14,7 +14,7 @@ public class Order {
 
     private Long id;
     private User orderUser;
-    private Coupon coupon;
+    private UserCoupon coupon;
     private Payment payment;
     private OrderStatus orderStatus;
     private Integer totalPrice;
@@ -92,6 +92,18 @@ public class Order {
         }
 
         this.totalPrice = totalPrice;
+        this.finalPaymentPrice = totalPrice;
+    }
+
+    public void applyCoupon(UserCoupon userCoupon) {
+
+        if(this.orderUser != userCoupon.getUser()) {
+            throw new IllegalArgumentException("사용할 수 없는 쿠폰입니다.");
+        }
+
+        this.coupon = userCoupon;
+        this.finalPaymentPrice = coupon.discount(this.totalPrice);
+
     }
 
     @Override
@@ -105,4 +117,5 @@ public class Order {
     public int hashCode() {
         return Objects.hash(id, orderUser, payment, orderStatus, totalPrice);
     }
+
 }
