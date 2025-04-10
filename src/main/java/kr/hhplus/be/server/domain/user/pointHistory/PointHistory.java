@@ -8,13 +8,9 @@ import java.util.Objects;
 public class PointHistory {
 
     private Long id;
-
     private Long userId;
-
     private PointHistoryType pointHistoryType;
-
     private Integer point;
-
     private LocalDateTime createdAt;
 
     public PointHistory(){}

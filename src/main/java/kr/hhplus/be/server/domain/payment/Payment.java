@@ -8,6 +8,8 @@ import java.util.Objects;
 
 public class Payment {
 
+    private static Long cursor = 1L;
+
     private Long id;
     private Order order;
     private Integer paymentPrice;
@@ -15,9 +17,12 @@ public class Payment {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public Payment(){}
+    public Payment(){
+        this.id = cursor++;
+    }
 
     public Payment(Order order, Integer paymentPrice, PaymentStatus paymentStatus) {
+        this.id = cursor++;
         this.order = order;
         this.paymentPrice = paymentPrice;
         this.paymentStatus = paymentStatus;
@@ -60,6 +65,7 @@ public class Payment {
 
     public void pay(){
         this.order.getOrderUser().deductPoint(this.paymentPrice);
+        this.paymentStatus = PaymentStatus.PAYMENT_COMPLETED;
     }
 
 
@@ -73,5 +79,17 @@ public class Payment {
     @Override
     public int hashCode() {
         return Objects.hash(id, order, paymentPrice, paymentStatus, createdAt, updatedAt);
+    }
+
+    @Override
+    public String toString() {
+        return "Payment{" +
+                "id=" + id +
+                ", order=" + order +
+                ", paymentPrice=" + paymentPrice +
+                ", paymentStatus=" + paymentStatus +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 }
