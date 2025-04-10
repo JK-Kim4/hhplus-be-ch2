@@ -10,7 +10,9 @@ import kr.hhplus.be.server.domain.user.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -45,10 +47,26 @@ public class OrderService {
         return new OrderCreateCommand.Response(order);
     }
 
+    @Transactional
     public OrderItemCreateCommand.Response saveOrderItems(Order order, List<OrderItemCreateCommand> command){
         List<OrderItem> orderItems = this.createOrderItems(order, command);
         orderRepository.saveOrderItemList(orderItems);
         return new OrderItemCreateCommand.Response(orderItems);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Order> findOrdersByDateAndStatus(LocalDate orderedDate, OrderStatus status) {
+        List<Order> orders = orderRepository.findByDateAndStatus(orderedDate, status);
+
+        return orders;
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderItem> findOrderItemsByOrderIds(List<Order> orders) {
+        List<Long> orderIds = orders.stream().map(Order::getId).collect(Collectors.toList());
+        List<OrderItem> orderItems = orderRepository.findOrderItemsByOrderIds(orderIds);
+
+        return orderItems;
     }
 
     private List<OrderItem> createOrderItems(Order order, List<OrderItemCreateCommand> command){
