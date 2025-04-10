@@ -12,8 +12,6 @@ import java.util.Objects;
 
 public class Order {
 
-    private static Long cursor = 1L;
-
     private Long id;
     private User orderUser;
     private Coupon coupon;
@@ -27,24 +25,10 @@ public class Order {
     public Order() {}
 
     public Order(User user){
-        this.id = cursor++;
         this.orderUser = user;
         this.orderStatus = OrderStatus.ORDER_CREATED;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
-    }
-
-    public Order(Long id, User user){
-        this.id = id;
-        this.orderUser = user;
-        this.orderStatus = OrderStatus.ORDER_CREATED;
-    }
-
-    public Order(User orderUser, Payment payment){
-        this.id = cursor++;
-        this.orderUser = orderUser;
-        this.payment = payment;
-        this.orderStatus = OrderStatus.ORDER_CREATED;
     }
 
     public Order(Long id, User orderUser, Payment payment){
@@ -52,6 +36,8 @@ public class Order {
         this.orderUser = orderUser;
         this.payment = payment;
         this.orderStatus = OrderStatus.ORDER_CREATED;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     public OrderStatus getOrderStatus() {
@@ -119,5 +105,4 @@ public class Order {
     public int hashCode() {
         return Objects.hash(id, orderUser, payment, orderStatus, totalPrice);
     }
-
 }

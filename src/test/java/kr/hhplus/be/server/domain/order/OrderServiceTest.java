@@ -10,6 +10,7 @@ import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.UserRepository;
 import kr.hhplus.be.server.interfaces.exception.InvalidPriceException;
 import kr.hhplus.be.server.interfaces.exception.NotEnoughStockException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,6 +65,11 @@ public class OrderServiceTest {
                 .thenReturn(Optional.of(new Item(2L, "test", 100, 5)));
         when(itemRepository.findById(3L))
                 .thenReturn(Optional.of(new Item(3L, "test", 100, 5)));
+    }
+
+    @AfterEach
+    void tearDown() {
+        order = null;
     }
 
     @Test
