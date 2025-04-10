@@ -47,7 +47,7 @@ public class PaymentServiceTest {
     @BeforeEach
     void setUp() {
         user = new User(1L, "Test");
-        order = new Order(10L, user);
+        order = new Order(user);
         item = new Item("test", 5000, 50);
         orderItem = new OrderItem(order, item, 10);
         orderItems.add(orderItem);

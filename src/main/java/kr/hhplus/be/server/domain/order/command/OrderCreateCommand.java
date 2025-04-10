@@ -1,10 +1,10 @@
 package kr.hhplus.be.server.domain.order.command;
 
+import kr.hhplus.be.server.application.order.OrderPaymentCriteria;
 import kr.hhplus.be.server.domain.order.Order;
-import kr.hhplus.be.server.domain.order.OrderStatus;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OrderCreateCommand {
 
@@ -30,41 +30,28 @@ public class OrderCreateCommand {
         this.orderItems = orderItems;
     }
 
+    public static OrderCreateCommand from(OrderPaymentCriteria criteria){
+        List<OrderItemCreateCommand> itemList =
+                criteria.getOrderItems().stream()
+                        .map(OrderItemCreateCommand::from)
+                        .collect(Collectors.toList());
+
+        return new OrderCreateCommand(
+                criteria.getUserId(),
+                criteria.getUserId(),
+                itemList);
+    }
 
     public static class Response {
 
-        private Long orderId;
-        private Long userId;
-        private Integer totalPrice;
-        private OrderStatus orderStatus;
-        private LocalDateTime createdAt;
-
-        public Long getOrderId() {
-            return orderId;
-        }
-
-        public Long getUserId() {
-            return userId;
-        }
-
-        public Integer getTotalPrice() {
-            return totalPrice;
-        }
-
-        public OrderStatus getOrderStatus() {
-            return orderStatus;
-        }
-
-        public LocalDateTime getCreatedAt() {
-            return createdAt;
-        }
+        private Order order;
 
         public Response(Order order) {
-            this.orderId = order.getId();
-            this.userId = order.getOrderUser().getId();
-            this.totalPrice = order.getTotalPrice();
-            this.orderStatus = order.getOrderStatus();
-            this.createdAt = order.getCreatedAt();
+            this.order = order;
+        }
+
+        public Order getOrder() {
+            return order;
         }
     }
 

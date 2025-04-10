@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.order.command;
 
+import kr.hhplus.be.server.application.order.OrderItemCriteria;
 import kr.hhplus.be.server.domain.item.Item;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.orderItem.OrderItem;
@@ -21,6 +22,10 @@ public class OrderItemCreateCommand {
         this.itemId = itemId;
         this.price = price;
         this.quantity = quantity;
+    }
+
+    public static OrderItemCreateCommand from(OrderItemCriteria criteria) {
+        return new OrderItemCreateCommand(criteria.getItemId(), criteria.getPrice(), criteria.getQuantity());
     }
 
     public Long getItemId() {return itemId;}
