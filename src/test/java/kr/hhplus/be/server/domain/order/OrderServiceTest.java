@@ -8,6 +8,7 @@ import kr.hhplus.be.server.domain.order.command.OrderItemCreateCommand;
 import kr.hhplus.be.server.domain.order.orderItem.OrderItem;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.UserRepository;
+import kr.hhplus.be.server.domain.userCoupon.UserCouponRepository;
 import kr.hhplus.be.server.interfaces.exception.InvalidPriceException;
 import kr.hhplus.be.server.interfaces.exception.NotEnoughStockException;
 import org.junit.jupiter.api.*;
@@ -21,10 +22,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
@@ -37,6 +36,9 @@ public class OrderServiceTest {
 
     @Mock
     ItemRepository itemRepository;
+
+    @Mock
+    UserCouponRepository userCouponRepository;
 
     @InjectMocks
     OrderService orderService;
