@@ -15,7 +15,15 @@ public interface OrderApiSpec {
             description = "주문 생성 정보(orderCreateRequest)를 전달받아 신규 주문을 생성합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "주문 생성 성공",
-            content = {@Content(mediaType = "application/json", schema = @Schema(implementation = OrderCreateResponse.class))})
+            content = {@Content(mediaType = "application/json", schema = @Schema(implementation = OrderRequest.Create.class))})
     })
-    ResponseEntity<OrderCreateResponse> createOrder(OrderCreateRequest request);
+    ResponseEntity<OrderResponse.Create> createOrder(OrderRequest.Create request);
+
+    @Operation(summary = "주문/결제 일괄 처리",
+                description = "주문생성과 결제 진행을 일괄로 처리합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "주문 생성 / 결제 성공",
+            content = {@Content(mediaType = "application/json", schema = @Schema(implementation = OrderRequest.OrderPayment.class))})
+    })
+    ResponseEntity<OrderResponse.OrderPayment> orderPayment(OrderRequest.OrderPayment request);
 }

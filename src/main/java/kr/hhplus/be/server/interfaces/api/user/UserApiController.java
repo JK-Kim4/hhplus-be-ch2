@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.interfaces.api.user;
 
+import kr.hhplus.be.server.domain.user.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -7,31 +8,39 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/users")
 public class UserApiController implements UserApiSpec {
 
+    private final UserService userService;
+
+    public UserApiController(UserService userService) {
+        this.userService = userService;
+    }
+
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> findById(
+    public ResponseEntity<UserResponse.Detail> findById(
             @PathVariable("id") Long userId) {
-        return ResponseEntity.ok(new UserResponse());
+        return ResponseEntity.ok(new UserResponse.Detail(userService.findById(userId)));
     }
 
     @Override
     @GetMapping("/{id}/point")
-    public ResponseEntity<UserPointResponse> findUserPointById(
+    public ResponseEntity<UserResponse.Point> findUserPointById(
             @PathVariable("id") Long userId) {
-        return ResponseEntity.ok(new UserPointResponse());
+        return ResponseEntity.ok(new UserResponse.Point(userService.findById(userId)));
     }
 
     @Override
     @GetMapping("/{id}/coupons")
-    public ResponseEntity<UserCouponResponse> findUserCouponListByUserId(
+    public ResponseEntity<UserResponse.Coupon> findUserCouponListByUserId(
             @PathVariable("id") Long userId) {
-        return ResponseEntity.ok(new UserCouponResponse());
+        return ResponseEntity.ok(new UserResponse.Coupon());
     }
 
     @Override
     @PatchMapping("/{id}/point")
-    public ResponseEntity<UserPointResponse> chargePoint(
-            @PathVariable("id") Long userId, Integer chargePoint) {
-        return ResponseEntity.ok(new UserPointResponse());
+    public ResponseEntity<UserResponse.Point> chargePoint(
+            @PathVariable("id") Long userId,
+            @RequestBody UserRequest.Charge point) {
+        return ResponseEntity.ok(
+                new UserResponse.Point(userId, userService.charge(point.toCommand(userId)).getPoint()));
     }
 }
