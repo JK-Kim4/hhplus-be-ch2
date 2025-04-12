@@ -16,17 +16,17 @@ public interface UserApiSpec {
             description = "사용자 고유 번호(userId)에 해당하는 사용자의 상세 정보를 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "사용자 상세정보 조회 성공",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.Detail.class)))
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class)))
     })
-    ResponseEntity<UserResponse.Detail> findById(Long userId);
+    ResponseEntity<UserResponse> findById(Long userId);
 
     @Operation(summary = "사용자 포인트 잔액 조회",
             description = "사용자 고유 번호(userId)에 해당하는 사용자의 포인트 잔액을 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "사용자 포인트 조회 성공",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.Point.class)))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserPointResponse.class)))
     })
-    ResponseEntity<UserResponse.Point> findUserPointById(Long userId);
+    ResponseEntity<UserPointResponse> findUserPointById(Long userId);
 
     @Operation(summary = "사용자 보유 쿠폰 목록 조회",
             description = "사용자 고유 번호(userId)에 해당하는 사용자의 보유 쿠폰(사용, 미사용 일괄) 목록을 조회합니다.")
@@ -55,13 +55,13 @@ public interface UserApiSpec {
                                             ]
                                             """))}
             )})
-    ResponseEntity<UserResponse.Coupon> findUserCouponListByUserId(Long userId);
+    ResponseEntity<UserCouponResponse> findUserCouponListByUserId(Long userId);
 
     @Operation(summary = "사용자 포인트 충전",
     description = "사용자 고유 번호(userId)에 해당하는 사용자의 포인트 잔고를 충전합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "사용자 포인트 충전 성공",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.Point.class)))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserPointResponse.class)))
     })
-    ResponseEntity<UserResponse.Point> chargePoint(Long userId, UserRequest.Charge point);
+    ResponseEntity<UserPointResponse> chargePoint(Long userId, Integer chargePoint);
 }

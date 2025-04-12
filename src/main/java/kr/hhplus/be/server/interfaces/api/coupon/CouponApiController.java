@@ -9,16 +9,16 @@ public class CouponApiController implements CouponApiSpec{
 
     @Override
     @PostMapping
-    public ResponseEntity<CouponResponse.Create> createCoupon(
-            @RequestBody CouponRequest.Create request) {
-        return ResponseEntity.ok(new CouponResponse.Create());
+    public ResponseEntity<CouponCreateResponse> createCoupon(
+            @RequestBody CouponCreateRequest request) {
+        return ResponseEntity.ok(new CouponCreateResponse());
     }
 
     @Override
     @PostMapping("/{id}/issue")
-    public ResponseEntity<CouponResponse.Issue> issueCoupon(
+    public ResponseEntity<CouponIssueResponse> issueCoupon(
             @PathVariable("id") Long couponId,
             @RequestBody Long userId) {
-        return ResponseEntity.ok(new CouponResponse.Issue());
+        return ResponseEntity.ok(new CouponIssueResponse());
     }
 }
