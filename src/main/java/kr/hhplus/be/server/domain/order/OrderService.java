@@ -7,6 +7,8 @@ import kr.hhplus.be.server.domain.order.command.OrderItemCreateCommand;
 import kr.hhplus.be.server.domain.order.orderItem.OrderItem;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.UserRepository;
+import kr.hhplus.be.server.domain.userCoupon.UserCoupon;
+import kr.hhplus.be.server.domain.userCoupon.UserCouponRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,14 +22,17 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
+    private final UserCouponRepository userCouponRepository;
 
     public OrderService(
             OrderRepository orderRepository,
             UserRepository userRepository,
-            ItemRepository itemRepository) {
+            ItemRepository itemRepository,
+            UserCouponRepository userCouponRepository) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.itemRepository = itemRepository;
+        this.userCouponRepository = userCouponRepository;
     }
 
     @Transactional
@@ -40,6 +45,13 @@ public class OrderService {
         List<OrderItem> orderItems = this.saveOrderItems(order, command.getOrderItems()).getOrderItems();
 
         order.calculateTotalPrice(orderItems);
+
+        if(command.getUserCouponId() != null){
+            UserCoupon userCoupon = userCouponRepository.findById(command.getUserCouponId())
+                    .orElseThrow(NoResultException::new);
+            order.applyCoupon(userCoupon);
+        }
+
         orderItems.forEach(OrderItem::decreaseItemStock);
 
         orderRepository.save(order);
