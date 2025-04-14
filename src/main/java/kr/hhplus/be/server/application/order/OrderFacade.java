@@ -1,19 +1,23 @@
 package kr.hhplus.be.server.application.order;
 
+import kr.hhplus.be.server.domain.item.Item;
 import kr.hhplus.be.server.domain.item.ItemService;
+import kr.hhplus.be.server.domain.order.Order;
+import kr.hhplus.be.server.domain.order.OrderItem;
 import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.order.command.OrderCommand;
-import kr.hhplus.be.server.domain.order.command.OrderInfo;
-import kr.hhplus.be.server.domain.payment.command.PaymentCreateCommand;
-import kr.hhplus.be.server.domain.payment.command.PaymentInfo;
-import kr.hhplus.be.server.domain.payment.command.PaymentProcessCommand;
+import kr.hhplus.be.server.domain.payment.Payment;
 import kr.hhplus.be.server.domain.payment.PaymentService;
+import kr.hhplus.be.server.domain.user.User;
+import kr.hhplus.be.server.domain.user.UserService;
+import kr.hhplus.be.server.domain.userCoupon.UserCoupon;
 import kr.hhplus.be.server.domain.userCoupon.UserCouponService;
 import kr.hhplus.be.server.interfaces.adaptor.RestTemplateAdaptor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class OrderFacade {
@@ -21,42 +25,65 @@ public class OrderFacade {
     private final OrderService orderService;
     private final PaymentService paymentService;
     private final ItemService itemService;
-    private final RestTemplateAdaptor restTemplateAdaptor;
     private final UserCouponService userCouponService;
+    private final UserService userService;
+    private final RestTemplateAdaptor restTemplateAdaptor;
 
     public OrderFacade(
             OrderService orderService,
             PaymentService paymentService,
             ItemService itemService,
-            RestTemplateAdaptor restTemplateAdaptor, UserCouponService userCouponService) {
+            RestTemplateAdaptor restTemplateAdaptor,
+            UserCouponService userCouponService,
+            UserService userService) {
         this.orderService = orderService;
         this.paymentService = paymentService;
         this.itemService = itemService;
         this.restTemplateAdaptor = restTemplateAdaptor;
         this.userCouponService = userCouponService;
+        this.userService = userService;
     }
 
     @Transactional
     public void orderPayment(OrderPaymentCriteria criteria){
-
-        criteria.getOrderItems().forEach(oi -> {
-            itemService.canOrder(oi.toCanOrderCommand());
-            itemService.decreaseStock(oi.toDecreaseStockCommand());
-        });
-
-        OrderInfo.Create ocResponse = orderService.createOrder(criteria.toCommand());
-
-        if(Objects.nonNull(criteria.getUserCouponId())){
-            userCouponService.applyDiscount(ocResponse.getOrderId(), criteria.getUserCouponId());
+        //상품 주문 가능 여부 확인
+        for (OrderItemCriteria orderItem : criteria.getOrderItems()) {
+            Item item = itemService.findItemById(orderItem.getItemId());
+            item.hasEnoughStock(orderItem.getQuantity());
         }
 
-        PaymentInfo.Create pcResponse =
-                paymentService.createPayment(PaymentCreateCommand.of(ocResponse.getOrderId()));
+        //주문 객체 생성(User)
+        User user = userService.findUserById(criteria.getUserId());
+        Order order = new Order(user);
 
-        PaymentInfo.Process ppResponse =
-                paymentService.processPayment(new PaymentProcessCommand(pcResponse.getPaymentId()));
+        //주문 상품 객체 생성(OrderItem)
+        List<OrderItem> orderItems = orderService.createOrderItems(order, criteria.getOrderItemCreateCommand());
+        order.addOderItems(orderItems);
+        order.calculateTotalPrice();
 
-        restTemplateAdaptor.post("/external/api-call", ppResponse, ExternalResponse.class);
+        //쿠폰 적용
+        if(criteria.getUserCouponId() != null){
+            UserCoupon userCoupon = userCouponService.findUserCouponById(criteria.getUserCouponId());
+            userCoupon.isUsable(LocalDateTime.now());
+            order.applyCoupon(userCoupon);
+        }
+
+        //결제 생성
+        Payment payment = new Payment(order, user);
+
+
+        //결제 처리
+        order.deductOrderItemStock();
+        payment.pay();
+
+
+        //결과 저장
+        orderService.save(order);
+        paymentService.save(payment);
+
+
+        //외부 API Call
+        restTemplateAdaptor.post("/external/api-call", payment, ExternalResponse.class);
     }
 
     public OrderResult.Create createOrder(OrderCommand.Create command) {

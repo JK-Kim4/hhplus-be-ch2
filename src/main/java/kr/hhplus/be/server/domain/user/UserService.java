@@ -30,4 +30,9 @@ public class UserService {
 
         return UserInfo.User.from(user);
     }
+
+    public User findUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(NoResultException::new);
+    }
 }

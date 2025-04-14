@@ -20,6 +20,12 @@ public class OrderUser {
         return user;
     }
 
+    public void hasEnoughPoint(){
+        if(user.getPoint().getAmount() < order.getFinalPaymentPrice()){
+            throw new IllegalArgumentException("잔액이 부족합니다.");
+        }
+    }
+
     public void deductPrice(Integer price) {
         if(!order.getFinalPaymentPrice().equals(price)){
             throw new IllegalArgumentException("결제 금액이 올바르지않습니다.");

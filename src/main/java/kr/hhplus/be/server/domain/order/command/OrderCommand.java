@@ -1,6 +1,8 @@
 package kr.hhplus.be.server.domain.order.command;
 
+import kr.hhplus.be.server.domain.item.Item;
 import kr.hhplus.be.server.domain.order.Order;
+import kr.hhplus.be.server.domain.order.OrderItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,9 +13,9 @@ public class OrderCommand {
     public static class Create {
         private Long userId;
         private Long userCouponId;
-        private List<OrderItem> orderItems = new ArrayList<>();
+        private List<OrderItemCreate> orderItems = new ArrayList<>();
 
-        public static Create of(Long userId, Long userCouponId, List<OrderItem> orderItemCommands) {
+        public static Create of(Long userId, Long userCouponId, List<OrderItemCreate> orderItemCommands) {
             return new Create(userId, userCouponId, orderItemCommands);
         }
 
@@ -23,7 +25,7 @@ public class OrderCommand {
             return order;
         }
 
-        private Create(Long userId, Long userCouponId, List<OrderItem> orderItems) {
+        private Create(Long userId, Long userCouponId, List<OrderItemCreate> orderItems) {
             this.userId = userId;
             this.userCouponId = userCouponId;
             this.orderItems = orderItems;
@@ -37,12 +39,12 @@ public class OrderCommand {
             return userCouponId;
         }
 
-        public List<OrderItem> getOrderItems() {
+        public List<OrderItemCreate> getOrderItems() {
             return orderItems;
         }
     }
 
-    public static class OrderItem{
+    public static class OrderItemCreate{
 
         private Long itemId;
         private Integer price;
@@ -52,12 +54,16 @@ public class OrderCommand {
             return new OrderItem(itemId, price, quantity);
         }
 
-        public kr.hhplus.be.server.domain.order.OrderItem toEntity(){
-            return new kr.hhplus.be.server.domain.order.OrderItem(itemId, price, quantity);
+        public OrderItem toEntity(Item item){
+            return new OrderItem(item, price, quantity);
+        }
+
+        public OrderItem toEntity(){
+            return new OrderItem(itemId, price, quantity);
         }
 
 
-        public OrderItem(Long itemId, Integer price, Integer quantity) {
+        public OrderItemCreate(Long itemId, Integer price, Integer quantity) {
             this.itemId = itemId;
             this.price = price;
             this.quantity = quantity;

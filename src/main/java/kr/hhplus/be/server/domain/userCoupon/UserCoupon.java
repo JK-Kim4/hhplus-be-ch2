@@ -32,8 +32,12 @@ public class UserCoupon {
         return coupon;
     }
 
-    public boolean isUsable(LocalDateTime targetDateTime) {
-        return this.coupon.isUsable(targetDateTime) && !this.isUsed;
+    public void isUsable(LocalDateTime targetDateTime) {
+        coupon.isUsable(targetDateTime);
+
+        if(isUsed){
+            throw new IllegalArgumentException("이미 사용된 쿠폰입니다.");
+        }
     }
 
     public boolean isCouponOwner(Long userId) {

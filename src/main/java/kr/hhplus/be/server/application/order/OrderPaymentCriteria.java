@@ -3,6 +3,7 @@ package kr.hhplus.be.server.application.order;
 import kr.hhplus.be.server.domain.order.command.OrderCommand;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OrderPaymentCriteria {
 
@@ -30,10 +31,14 @@ public class OrderPaymentCriteria {
     }
 
     public OrderCommand.Create toCommand() {
-        List<OrderCommand.OrderItem> orderItemList = orderItems.stream()
+        List<OrderCommand.OrderItemCreate> orderItemList = orderItems.stream()
                 .map(OrderItemCriteria::toCommand)
                 .toList();
 
         return OrderCommand.Create.of(this.userId, this.userCouponId, orderItemList);
+    }
+
+    public List<OrderCommand.OrderItemCreate> getOrderItemCreateCommand() {
+        return orderItems.stream().map(OrderItemCriteria::toCommand).collect(Collectors.toList());
     }
 }

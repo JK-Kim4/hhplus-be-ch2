@@ -68,4 +68,8 @@ public class PaymentService {
     private PaymentHistory savePaymentHistory(Payment payment) {
         return paymentRepository.savePaymentHistory(new PaymentHistory(payment));
     }
+
+    public void save(Payment payment) {
+        paymentRepository.save(payment);
+    }
 }

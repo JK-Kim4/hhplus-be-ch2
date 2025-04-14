@@ -87,7 +87,16 @@ public class Payment {
         this.paymentStatus = paymentStatus;
     }
 
+    public void isPayable(){
+        if(this.paymentStatus != PaymentStatus.PAYMENT_PENDING){
+            throw new IllegalArgumentException("진행할 수 없는 결제입니다.");
+        }
+
+        orderUser.hasEnoughPoint();
+    }
+
     public void pay(){
+        isPayable();
         this.logRequestDateTime(LocalDateTime.now());
         this.orderUser.deductPrice(paymentPrice);
         this.paymentStatus = PaymentStatus.PAYMENT_COMPLETED;

@@ -68,12 +68,9 @@ public abstract class Coupon {
         return updatedAt;
     }
 
-    public boolean isUsable(LocalDateTime targetDateTime) {
-
+    public void isUsable(LocalDateTime targetDateTime) {
         if(expireDateTime.isBefore(targetDateTime)) {
-            throw new IllegalArgumentException("만료된 쿠폰은 사용할수없습니다.");
+            throw new IllegalArgumentException("만료된 쿠폰입니다.");
         }
-
-        return true;
     }
 }

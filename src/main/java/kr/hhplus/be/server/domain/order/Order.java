@@ -81,6 +81,9 @@ public class Order {
     }
 
     public void calculateTotalPrice() {
+        if(orderItems.empty()){
+            throw new IllegalArgumentException("주문 상품이 존재하지않습니다.");
+        }
         this.totalPrice = orderItems.calculateTotalPrice();
         this.finalPaymentPrice = orderItems.calculateTotalPrice();
     }
@@ -108,5 +111,13 @@ public class Order {
     public void registerOrderItems(OrderItems orderItems) {
         this.orderItems = orderItems;
         orderItems.setOrder(this);
+    }
+
+    public void addOderItems(List<OrderItem> orderItems) {
+        this.orderItems = new OrderItems(orderItems, this);
+    }
+
+    public void deductOrderItemStock() {
+        orderItems.deductStock();
     }
 }

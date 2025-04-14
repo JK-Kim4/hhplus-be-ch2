@@ -13,8 +13,8 @@ public class OrderItemCriteria {
         return new OrderItemCriteria(itemId, price, quantity);
     }
 
-    public OrderCommand.OrderItem toCommand(){
-        return new OrderCommand.OrderItem(itemId, price, quantity);
+    public OrderCommand.OrderItemCreate toCommand(){
+        return new OrderCommand.OrderItemCreate(itemId, price, quantity);
     }
 
     public ItemCommand.DecreaseStock toDecreaseStockCommand(){

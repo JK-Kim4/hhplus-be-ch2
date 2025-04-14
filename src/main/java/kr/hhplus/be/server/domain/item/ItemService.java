@@ -4,6 +4,8 @@ import jakarta.persistence.NoResultException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class ItemService {
 
@@ -11,6 +13,10 @@ public class ItemService {
 
     public ItemService(ItemRepository itemRepository) {
         this.itemRepository = itemRepository;
+    }
+
+    public Item findItemById(Long itemId){
+        return itemRepository.findById(itemId).orElseThrow(NoResultException::new);
     }
 
     @Transactional(readOnly = true)
@@ -36,5 +42,9 @@ public class ItemService {
                 .orElseThrow(NoResultException::new);
 
         item.decreaseStock(command.getQuantity());
+    }
+
+    public List<Item> findByIds(List<Long> itemIds) {
+        return itemRepository.findByIds(itemIds);
     }
 }

@@ -56,4 +56,9 @@ public class UserCouponService {
 
         order.applyCoupon(userCoupon);
     }
+
+    public UserCoupon findUserCouponById(Long userCouponId) {
+        return userCouponRepository.findById(userCouponId)
+                .orElseThrow(NoResultException::new);
+    }
 }
