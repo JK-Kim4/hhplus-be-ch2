@@ -3,6 +3,9 @@ package kr.hhplus.be.server.domain.orderStatistics;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Service
 public class OrderStatisticsService {
 
@@ -17,10 +20,11 @@ public class OrderStatisticsService {
         orderStatisticsRepository.save(command);
     }
 
-    public OrderStatisticsCommand.Response findByDateBetween(OrderStatisticsCommand command) {
 
-        return new OrderStatisticsCommand.Response(
-                orderStatisticsRepository.findByDateBetween(command.getStartDate(), command.getEndDate()));
+    public OrderStatisticsInfo.Rank findByDateBetween(LocalDate startDate, LocalDate endDate) {
+        List<OrderStatistics> byDateBetween =
+                orderStatisticsRepository.findByDateBetween(startDate, endDate);
+        return new OrderStatisticsInfo.Rank(byDateBetween);
     }
 
 }

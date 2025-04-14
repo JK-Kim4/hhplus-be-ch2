@@ -10,14 +10,14 @@ public class UserCoupon {
     private Long id;
     private User user;
     private Coupon coupon;
+    private boolean isUsed;
     private LocalDateTime issueDateTime;
-    private boolean active;
 
     public UserCoupon(User user, Coupon coupon) {
         this.user = user;
         this.coupon = coupon;
+        this.isUsed = false;
         this.issueDateTime = LocalDateTime.now();
-        this.active = true;
     }
 
     public Long getId() {
@@ -32,19 +32,23 @@ public class UserCoupon {
         return coupon;
     }
 
-    public boolean isActive() {
-        return active;
+    public boolean isUsable(LocalDateTime targetDateTime) {
+        return this.coupon.isUsable(targetDateTime) && !this.isUsed;
+    }
+
+    public boolean isCouponOwner(Long userId) {
+        return userId.equals(this.user.getId());
     }
 
     public LocalDateTime getIssueDateTime() {
         return issueDateTime;
     }
 
-    public void updateActive(boolean active) {
-        this.active = active;
-    }
-
     public Integer discount(Integer price) {
         return coupon.discount(price);
+    }
+
+    public void updateUsedFlag(boolean value) {
+        this.isUsed = value;
     }
 }

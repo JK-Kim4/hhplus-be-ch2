@@ -1,59 +1,71 @@
 package kr.hhplus.be.server.domain.user;
 
-import java.time.LocalDateTime;
+import kr.hhplus.be.server.domain.point.Point;
 
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class User {
 
-    private static Long cursor = 1L;
-
     private Long id;
     private String name;
-    private UserPoint point;
+    protected Point point;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+
+    public User() {}
+
+    public User(Long id, String name){
+        this.id = id;
+        this.name = name;
+    }
+
     public User(String name) {
-        this.id = cursor++;
         this.name = name;
-        this.point = UserPoint.createOrDefault(null);
-    }
-
-    public User(Long id, String name) {
-        this.id = id;
-        this.name = name;
-        this.point = UserPoint.createOrDefault(null);
-    }
-
-    public User(String name, Integer point) {
-        this.id = cursor++;
-        this.name = name;
-        this.point = UserPoint.createOrDefault(point);
-    }
-
-    public User(Long id, String name, Integer point) {
-        this.id = id;
-        this.name = name;
-        this.point = UserPoint.createOrDefault(point);
     }
 
     public Long getId() {
-        return this.id;
+        return id;
     }
 
-    public Integer getPoint() {
-        return this.point.getPoint();
+    public Point getPoint() {
+        return point;
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
-    public void chargePoint(Integer chargePoint) {
-        this.point = this.point.charge(chargePoint);
+    public Integer point(){
+        return point.getAmount();
     }
 
-    public void deductPoint(Integer deductPoint) {
-        this.point = this.point.deduct(deductPoint);
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void chargePoint(Integer amount) {
+        this.point.charge(amount);
+    }
+
+    public void deductPoint(Integer amount) {
+        this.point.deduct(amount);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) && Objects.equals(name, user.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 }

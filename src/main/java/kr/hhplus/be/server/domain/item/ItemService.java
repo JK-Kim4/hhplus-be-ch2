@@ -14,12 +14,27 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
-    public ItemCommand.Response findById(Long itemId){
+    public ItemCommand.Item findById(Long itemId){
 
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(NoResultException::new);
 
-        return new ItemCommand.Response(item);
+        return ItemCommand.Item.from(item);
     }
 
+    public void canOrder(ItemCommand.CanOrder command) {
+
+        Item item = itemRepository.findById(command.getItemId())
+                .orElseThrow(NoResultException::new);
+
+        item.isSamePrice(command.getPrice());
+        item.hasEnoughStock(command.getQuantity());
+    }
+
+    public void decreaseStock(ItemCommand.DecreaseStock command) {
+        Item item = itemRepository.findById(command.getItemId())
+                .orElseThrow(NoResultException::new);
+
+        item.decreaseStock(command.getQuantity());
+    }
 }

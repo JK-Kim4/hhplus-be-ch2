@@ -1,5 +1,6 @@
-package kr.hhplus.be.server.domain.payment;
+package kr.hhplus.be.server.domain.payment.command;
 
+import kr.hhplus.be.server.domain.payment.Payment;
 import kr.hhplus.be.server.domain.payment.paymentHistory.PaymentHistory;
 
 public class PaymentProcessCommand {

@@ -2,16 +2,16 @@ package kr.hhplus.be.server.domain.user;
 
 public class UserCommand {
 
-    public static class Response {
+    public static class Create{
 
-        private User user;
+        private String name;
 
-        public Response(User user) {
-            this.user = user;
+        public Create(String name){
+            this.name = name;
         }
 
-        public User getUser() {
-            return user;
+        public String getName() {
+            return name;
         }
     }
 }

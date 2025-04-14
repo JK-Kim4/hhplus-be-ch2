@@ -11,7 +11,6 @@ import java.util.List;
 @RequestMapping("/api/coupons")
 public class CouponApiController implements CouponApiSpec{
 
-
     private final CouponFacade couponFacade;
 
     public CouponApiController(CouponFacade couponFacade) {

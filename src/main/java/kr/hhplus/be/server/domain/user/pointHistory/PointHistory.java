@@ -27,7 +27,7 @@ public class PointHistory {
     public PointHistory(User user, PointHistoryType pointHistoryType) {
 
         this.userId = user.getId();
-        this.point = user.getPoint();
+        this.point = user.getPoint().getAmount();
         this.pointHistoryType = pointHistoryType;
         this.createdAt = LocalDateTime.now();
 

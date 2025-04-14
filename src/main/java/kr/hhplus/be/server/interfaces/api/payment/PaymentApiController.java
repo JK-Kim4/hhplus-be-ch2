@@ -22,7 +22,7 @@ public class PaymentApiController implements PaymentApiSpec {
     public ResponseEntity<PaymentResponse.Create> createPayment(
             @RequestBody PaymentRequest.Create request) {
         return ResponseEntity.ok(
-                new PaymentResponse.Create(paymentService.save(request.toCommand())));
+                new PaymentResponse.Create(paymentService.createPayment(request.toCommand())));
     }
 
     @Override

@@ -19,7 +19,7 @@ public class PaymentHistory {
 
     public PaymentHistory(Payment payment) {
 
-        this.userId = payment.getOrder().getOrderUser().getId();
+        this.userId = payment.getOrder().getUserId();
         this.orderId = payment.getOrder().getId();
         this.paymentId = payment.getId();
         this.price = payment.getPaymentPrice();

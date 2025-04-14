@@ -1,13 +1,12 @@
 package kr.hhplus.be.server.application.order;
 
 import kr.hhplus.be.server.domain.order.Order;
+import kr.hhplus.be.server.domain.order.command.OrderInfo;
 import kr.hhplus.be.server.domain.order.OrderService;
-import kr.hhplus.be.server.domain.order.command.OrderCreateCommand;
 import kr.hhplus.be.server.domain.payment.Payment;
-import kr.hhplus.be.server.domain.payment.PaymentCreateCommand;
-import kr.hhplus.be.server.domain.payment.PaymentProcessCommand;
+import kr.hhplus.be.server.domain.payment.command.PaymentInfo;
 import kr.hhplus.be.server.domain.payment.PaymentService;
-import kr.hhplus.be.server.interfaces.adptor.RestTemplateAdaptor;
+import kr.hhplus.be.server.interfaces.adaptor.RestTemplateAdaptor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,12 +43,12 @@ public class OrderFacaseTest {
         when(order.getId()).thenReturn(1L);
         when(payment.getId()).thenReturn(1L);
 
-        OrderCreateCommand.Response ocResponse = new OrderCreateCommand.Response(order);
-        PaymentCreateCommand.Response pcResponse = new PaymentCreateCommand.Response(payment);
-        PaymentProcessCommand.Response ppResponse = new PaymentProcessCommand.Response(payment);
+        OrderInfo.Create ocResponse = OrderInfo.Create.from(order);
+        PaymentInfo.Create pcResponse = new PaymentInfo.Create(payment.getId());
+        PaymentInfo.Process ppResponse = new PaymentInfo.Process(payment);
 
         when(orderService.createOrder(any())).thenReturn(ocResponse);
-        when(paymentService.save(any())).thenReturn(pcResponse);
+        when(paymentService.createPayment(any())).thenReturn(pcResponse);
         when(paymentService.processPayment(any())).thenReturn(ppResponse);
 
         OrderPaymentCriteria criteria = new OrderPaymentCriteria(1L, null, orderItems);

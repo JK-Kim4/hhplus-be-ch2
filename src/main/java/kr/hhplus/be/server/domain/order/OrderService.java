@@ -1,14 +1,7 @@
 package kr.hhplus.be.server.domain.order;
 
-import jakarta.persistence.NoResultException;
-import kr.hhplus.be.server.domain.item.ItemRepository;
-import kr.hhplus.be.server.domain.order.command.OrderCreateCommand;
-import kr.hhplus.be.server.domain.order.command.OrderItemCreateCommand;
-import kr.hhplus.be.server.domain.order.orderItem.OrderItem;
-import kr.hhplus.be.server.domain.user.User;
-import kr.hhplus.be.server.domain.user.UserRepository;
-import kr.hhplus.be.server.domain.userCoupon.UserCoupon;
-import kr.hhplus.be.server.domain.userCoupon.UserCouponRepository;
+import kr.hhplus.be.server.domain.order.command.OrderCommand;
+import kr.hhplus.be.server.domain.order.command.OrderInfo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,51 +13,24 @@ import java.util.stream.Collectors;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final UserRepository userRepository;
-    private final ItemRepository itemRepository;
-    private final UserCouponRepository userCouponRepository;
 
-    public OrderService(
-            OrderRepository orderRepository,
-            UserRepository userRepository,
-            ItemRepository itemRepository,
-            UserCouponRepository userCouponRepository) {
+    public OrderService(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
-        this.userRepository = userRepository;
-        this.itemRepository = itemRepository;
-        this.userCouponRepository = userCouponRepository;
     }
 
-    @Transactional
-    public OrderCreateCommand.Response createOrder(OrderCreateCommand command){
-        User orderUser = userRepository.findById(command.getUserId())
-                .orElseThrow(NoResultException::new);
+    public OrderInfo.Create createOrder(OrderCommand.Create command){
+        List<OrderItem> orderItemV2List = command.getOrderItems().stream()
+                .map(OrderCommand.OrderItem::toEntity)
+                .toList();
 
-        Order order = new Order(orderUser);
+        OrderItems orderItems = new OrderItems(orderItemV2List);
+//        OrderItems orderItems = OrderItems.from(command.getOrderItems());
+        Order order = orderRepository.save(command.toEntity(orderItemV2List));
+        order.registerOrderItems(orderItems);
 
-        List<OrderItem> orderItems = this.saveOrderItems(order, command.getOrderItems()).getOrderItems();
-
-        order.calculateTotalPrice(orderItems);
-
-        if(command.getUserCouponId() != null){
-            UserCoupon userCoupon = userCouponRepository.findById(command.getUserCouponId())
-                    .orElseThrow(NoResultException::new);
-            order.applyCoupon(userCoupon);
-        }
-
-        orderItems.forEach(OrderItem::decreaseItemStock);
-
-        orderRepository.save(order);
-
-        return new OrderCreateCommand.Response(order);
+        return OrderInfo.Create.from(order);
     }
 
-    @Transactional
-    public OrderItemCreateCommand.Response saveOrderItems(Order order, List<OrderItemCreateCommand> command){
-        List<OrderItem> orderItems = this.createOrderItems(order, command);
-        orderRepository.saveOrderItemList(orderItems);
-        return new OrderItemCreateCommand.Response(orderItems);
-    }
 
     @Transactional(readOnly = true)
     public List<Order> findOrdersByDateAndStatus(LocalDate orderedDate, OrderStatus status) {
@@ -80,16 +46,4 @@ public class OrderService {
 
         return orderItems;
     }
-
-    private List<OrderItem> createOrderItems(Order order, List<OrderItemCreateCommand> command){
-
-        return command.stream().map(
-                (commandItem) ->
-                        commandItem.toEntity(
-                                order,
-                                itemRepository.findById(commandItem.getItemId())
-                                    .orElseThrow(NoResultException::new),
-                                commandItem.getQuantity())).toList();
-    }
-
 }

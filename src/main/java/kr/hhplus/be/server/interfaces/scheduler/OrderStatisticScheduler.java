@@ -1,9 +1,10 @@
 package kr.hhplus.be.server.interfaces.scheduler;
 
-import kr.hhplus.be.server.domain.order.Order;
+import kr.hhplus.be.server.domain.item.ItemService;
 import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.order.OrderStatus;
-import kr.hhplus.be.server.domain.order.orderItem.OrderItem;
+import kr.hhplus.be.server.domain.order.OrderItem;
+import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.orderStatistics.OrderStatistics;
 import kr.hhplus.be.server.domain.orderStatistics.OrderStatisticsCommand;
 import kr.hhplus.be.server.domain.orderStatistics.OrderStatisticsService;
@@ -17,12 +18,15 @@ import java.util.List;
 public class OrderStatisticScheduler {
 
     private final OrderService orderService;
+    private final ItemService itemService;
     private final OrderStatisticsService orderStatisticsService;
 
     public OrderStatisticScheduler(
             OrderService orderService,
+            ItemService itemService,
             OrderStatisticsService  orderStatisticsService) {
         this.orderService = orderService;
+        this.itemService = itemService;
         this.orderStatisticsService = orderStatisticsService;
     }
 

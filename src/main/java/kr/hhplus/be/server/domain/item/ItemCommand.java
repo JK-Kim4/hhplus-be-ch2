@@ -1,18 +1,115 @@
 package kr.hhplus.be.server.domain.item;
 
+import java.util.Objects;
+
 public class ItemCommand {
 
-    public static class Response {
+    public static class Item {
 
-        public Item item;
+        private Long itemId;
+        private String name;
+        private Integer price;
+        private Integer stock;
 
-        public Item getItem() {
-            return item;
+        public static Item from(kr.hhplus.be.server.domain.item.Item item) {
+            return new Item(item);
         }
 
-        public Response(Item item) {
-            this.item = item;
+        public Item(kr.hhplus.be.server.domain.item.Item item) {
+            this.itemId = item.getId();
+            this.name = item.getName();
+            this.price = item.getPrice();
+            this.stock = item.getStock();
         }
 
+        public Long getItemId() {
+            return itemId;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Integer getPrice() {
+            return price;
+        }
+
+        public Integer getStock() {
+            return stock;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == null || getClass() != o.getClass()) return false;
+            Item item = (Item) o;
+            return Objects.equals(itemId, item.itemId) && Objects.equals(name, item.name) && Objects.equals(price, item.price) && Objects.equals(stock, item.stock);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(itemId, name, price, stock);
+        }
+
+        @Override
+        public String toString() {
+            return "Item{" +
+                    "itemId=" + itemId +
+                    ", name='" + name + '\'' +
+                    ", price=" + price +
+                    ", stock=" + stock +
+                    '}';
+        }
+    }
+
+    public static class DecreaseStock {
+
+        private Long itemId;
+        private Integer quantity;
+
+        public DecreaseStock() {}
+
+        public DecreaseStock(Long itemId) {
+            this.itemId = itemId;
+        }
+
+        public DecreaseStock(Long itemId, Integer quantity) {
+            this.itemId = itemId;
+            this.quantity = quantity;
+        }
+
+        public Long getItemId() {
+            return itemId;
+        }
+
+        public Integer getQuantity() {
+            return quantity;
+        }
+    }
+
+    public static class CanOrder {
+
+        private Long ItemId;
+        private Integer price;
+        private Integer quantity;
+
+        public CanOrder() {}
+
+        public CanOrder(Long itemId, Integer price, Integer quantity) {
+            ItemId = itemId;
+            this.price = price;
+            this.quantity = quantity;
+        }
+
+        public Long getItemId() {
+            return ItemId;
+        }
+
+        public Integer getPrice() {
+            return price;
+        }
+
+        public Integer getQuantity() {
+            return quantity;
+        }
     }
 }

@@ -5,9 +5,9 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import kr.hhplus.be.server.application.order.OrderItemCriteria;
 import kr.hhplus.be.server.application.order.OrderPaymentCriteria;
-import kr.hhplus.be.server.domain.order.command.OrderCreateCommand;
-import kr.hhplus.be.server.domain.order.command.OrderItemCreateCommand;
+import kr.hhplus.be.server.domain.order.command.OrderCommand;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,7 +26,7 @@ public class OrderRequest {
         private Long userCouponId;
 
         @Schema(name = "orderItems", description = "주문 상품 목록")
-        private List<OrderItemRequest> orderItems;
+        private List<OrderItemRequest> orderItems = new ArrayList<>();
 
         public Create(Long userId, Long userCouponId, List<OrderItemRequest> orderItems) {
             this.userId = userId;
@@ -34,34 +34,14 @@ public class OrderRequest {
             this.orderItems = orderItems;
         }
 
-        public Long getUserId() {
-            return userId;
-        }
 
-        public void setUserId(Long userId) {
-            this.userId = userId;
-        }
+        public OrderCommand.Create toCommand(){
+            List<OrderCommand.OrderItem> orderItemList =
+                    this.orderItems.stream()
+                        .map(OrderItemRequest::toCommand)
+                        .collect(Collectors.toList());
 
-        public Long getUserCouponId() {
-            return userCouponId;
-        }
-
-        public void setUserCouponId(Long userCouponId) {
-            this.userCouponId = userCouponId;
-        }
-
-        public List<OrderItemRequest> getOrderItems() {
-            return orderItems;
-        }
-
-        public void setOrderItems(List<OrderItemRequest> orderItems) {
-            this.orderItems = orderItems;
-        }
-
-        public OrderCreateCommand toCommand() {
-            List<OrderItemCreateCommand> orderItemListCommands = this.orderItems.stream().map(OrderItemRequest::toCommand)
-                    .collect(Collectors.toList());
-            return new OrderCreateCommand(this.userId, this.userCouponId, orderItemListCommands);
+            return OrderCommand.Create.of(this.userId, this.userCouponId, orderItemList);
         }
     }
 

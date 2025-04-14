@@ -1,5 +1,7 @@
 package kr.hhplus.be.server.application.order;
 
+import kr.hhplus.be.server.domain.order.command.OrderCommand;
+
 import java.util.List;
 
 public class OrderPaymentCriteria {
@@ -27,4 +29,11 @@ public class OrderPaymentCriteria {
         return orderItems;
     }
 
+    public OrderCommand.Create toCommand() {
+        List<OrderCommand.OrderItem> orderItemList = orderItems.stream()
+                .map(OrderItemCriteria::toCommand)
+                .toList();
+
+        return OrderCommand.Create.of(this.userId, this.userCouponId, orderItemList);
+    }
 }

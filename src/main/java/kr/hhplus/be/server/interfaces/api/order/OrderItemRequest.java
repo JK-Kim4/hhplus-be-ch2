@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import kr.hhplus.be.server.application.order.OrderItemCriteria;
-import kr.hhplus.be.server.domain.order.command.OrderItemCreateCommand;
+import kr.hhplus.be.server.domain.order.command.OrderCommand;
 
 @Schema(name = "OrderItemRequest: 주문 상품 요청")
 public class OrderItemRequest {
@@ -28,8 +28,8 @@ public class OrderItemRequest {
         this.quantity = quantity;
     }
 
-    public OrderItemCreateCommand toCommand(){
-        return new OrderItemCreateCommand(itemId, price, quantity);
+    public OrderCommand.OrderItem toCommand(){
+        return new OrderCommand.OrderItem(itemId, price, quantity);
     }
 
     public OrderItemCriteria toCriteria(){

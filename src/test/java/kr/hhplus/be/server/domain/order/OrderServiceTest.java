@@ -1,191 +1,96 @@
 package kr.hhplus.be.server.domain.order;
 
-import jakarta.persistence.NoResultException;
-import kr.hhplus.be.server.domain.item.Item;
-import kr.hhplus.be.server.domain.item.ItemRepository;
-import kr.hhplus.be.server.domain.order.command.OrderCreateCommand;
-import kr.hhplus.be.server.domain.order.command.OrderItemCreateCommand;
-import kr.hhplus.be.server.domain.order.orderItem.OrderItem;
-import kr.hhplus.be.server.domain.user.User;
-import kr.hhplus.be.server.domain.user.UserRepository;
-import kr.hhplus.be.server.domain.userCoupon.UserCouponRepository;
-import kr.hhplus.be.server.interfaces.exception.InvalidPriceException;
-import kr.hhplus.be.server.interfaces.exception.NotEnoughStockException;
-import org.junit.jupiter.api.*;
+import kr.hhplus.be.server.domain.order.command.OrderCommand;
+import kr.hhplus.be.server.domain.order.command.OrderInfo;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
 
-    @Mock
-    OrderRepository orderRepository;
+    private OrderRepository orderRepository;
+    private OrderService orderService;
 
-    @Mock
-    UserRepository userRepository;
-
-    @Mock
-    ItemRepository itemRepository;
-
-    @Mock
-    UserCouponRepository userCouponRepository;
-
-    @InjectMocks
-    OrderService orderService;
-
-    List<OrderItemCreateCommand> commands = new ArrayList<>();
-    OrderItemCreateCommand command1, command2, command3;
-    User user;
-    Order order;
+    @BeforeEach
+    void setUp() {
+        orderRepository = mock(OrderRepository.class);
+        orderService = new OrderService(orderRepository);
+    }
 
     @Test
-    @DisplayName("OrderCreateCommand로 전달받은 파라미터로 주문을 생성하고 저장하고 OrderCreateCommand.Response를 반환한다.")
-    void createOrder_success() {
-        // Given
-        Long userId = 1L;
-        Long itemId = 10L;
-        int quantity = 2;
+    void testCreateOrder_success() {
+        // given
+        OrderCommand.OrderItem item1 = mock(OrderCommand.OrderItem.class);
+        OrderCommand.OrderItem item2 = mock(OrderCommand.OrderItem.class);
+        List<OrderCommand.OrderItem> commandItems = List.of(item1, item2);
+        OrderCommand.Create command = mock(OrderCommand.Create.class);
+        when(command.getOrderItems()).thenReturn(commandItems);
 
-        user = new User(userId, "testUser");
-        Item item = new Item(itemId, "itemName", 5000, 10);
-        OrderCreateCommand command = new OrderCreateCommand(
-                userId,
-                null,
-                List.of(new OrderItemCreateCommand(itemId, 5000, quantity))
-        );
+        OrderItem orderItemEntity1 = mock(OrderItem.class);
+        OrderItem orderItemEntity2 = mock(OrderItem.class);
+        when(item1.toEntity()).thenReturn(orderItemEntity1);
+        when(item2.toEntity()).thenReturn(orderItemEntity2);
 
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(itemRepository.findById(itemId)).thenReturn(Optional.of(item));
+        List<OrderItem> itemEntities = List.of(orderItemEntity1, orderItemEntity2);
+        Order orderEntity = mock(Order.class);
+        when(command.toEntity(itemEntities)).thenReturn(orderEntity);
+        when(orderRepository.save(any(Order.class))).thenReturn(orderEntity);
 
-        // When
-        OrderCreateCommand.Response response = orderService.createOrder(command);
+        // when
+        OrderInfo.Create result = orderService.createOrder(command);
 
-        // Then
-        assertAll(
-                "생성된 응답 Command 객체 검사",
-                () -> assertNotNull(response),
-                () -> assertNotNull(response.getOrder()),
-                () -> assertEquals(user, response.getOrder().getOrderUser()),
-                () -> verify(orderRepository).save(any(Order.class))
-        );
-
+        // then
+        verify(orderRepository).save(orderEntity);
+        verify(orderEntity).registerOrderItems(any(OrderItems.class));
+        assertNotNull(result);
     }
 
-    @Nested
-    @DisplayName("주문 상품 테스트")
-    class OrderItemTest{
+    @Test
+    void testFindOrdersByDateAndStatus_success() {
+        // given
+        LocalDate date = LocalDate.now();
+        OrderStatus status = OrderStatus.PAYMENT_COMPLETED;
+        List<Order> mockOrders = List.of(mock(Order.class), mock(Order.class));
 
-        @BeforeEach
-        void setUp() {
-            //given
-            user = new User(1L, "test");
-            order = new Order(user);
-            command1 = new OrderItemCreateCommand(1L, 100, 1);
-            command2 = new OrderItemCreateCommand(2L, 100, 2);
-            command3 = new OrderItemCreateCommand(3L, 100, 3);
-            commands.add(command1);
-            commands.add(command2);
-            commands.add(command3);
+        when(orderRepository.findByDateAndStatus(date, status)).thenReturn(mockOrders);
 
-            when(itemRepository.findById(1L))
-                    .thenReturn(Optional.of(new Item(1L, "test", 100, 5)));
-            when(itemRepository.findById(2L))
-                    .thenReturn(Optional.of(new Item(2L, "test", 100, 5)));
-            when(itemRepository.findById(3L))
-                    .thenReturn(Optional.of(new Item(3L, "test", 100, 5)));
-        }
+        // when
+        List<Order> result = orderService.findOrdersByDateAndStatus(date, status);
 
-        @AfterEach
-        void tearDown() {
-            order = null;
-        }
-
-
-        @Test
-        @DisplayName("주문 상품 목록 정보를 생성/저장한다.")
-        void create_order_item_list_test(){
-            //when
-            List<OrderItem> orderItems = orderService.saveOrderItems(order, commands).getOrderItems();
-
-            //then
-            assertAll
-                    (
-                            "주문 상품 정보를 생성하고 등록한다",
-                            () -> verify(itemRepository, times(orderItems.size())).findById(any()),
-                            () -> verify(orderRepository, times(1)).saveOrderItemList(orderItems)
-                    );
-        }
-
-        @Test
-        @DisplayName("주문 상품의 가격 정보가 일치하지 않으면 오류를 반환한다.")
-        void create_order_item_test_price_mismatch(){
-            //given
-            commands.add(new OrderItemCreateCommand(4L, 300, 3));
-            when(itemRepository.findById(4L))
-                    .thenReturn(Optional.of(new Item(4L, "test", 150, 5)));
-
-            //when
-            InvalidPriceException invalidPriceException = assertThrows(InvalidPriceException.class,
-                    () -> orderService.saveOrderItems(order, commands));
-
-            //then
-            assertEquals(String.format(InvalidPriceException.ITEM_PRICE_MISMATCH, 4L), invalidPriceException.getMessage());
-        }
-
-        @Test
-        @DisplayName("상품의 수량이 부족할 경우 오류를 반환한다.")
-        void create_order_item_test_not_enough_stock(){
-            //given
-            commands.add(new OrderItemCreateCommand(4L, 300, 10));
-            when(itemRepository.findById(4L))
-                    .thenReturn(Optional.of(new Item(4L, "test", 300, 5)));
-
-            //when
-            NotEnoughStockException notEnoughStockException = assertThrows(NotEnoughStockException.class,
-                    () -> orderService.saveOrderItems(order, commands));
-
-            //then
-            assertEquals(String.format(NotEnoughStockException.NOT_ENOUGH_STOCK, 4L), notEnoughStockException.getMessage());
-        }
-
-        @Test
-        @DisplayName("주문 정보와 주문 상품 목록 정보가 생성/저장한다.")
-        void do_order_process_test(){
-            //given
-            List<OrderItem> orderItems = commands.stream().map(
-                    (commandItem) ->
-                            commandItem.toEntity(
-                                    order,
-                                    itemRepository.findById(commandItem.getItemId())
-                                            .orElseThrow(NoResultException::new),
-                                    commandItem.getQuantity())).toList();
-
-            order.calculateTotalPrice(orderItems);
-            when(userRepository.findById(user.getId()))
-                    .thenReturn(Optional.of(user));
-            when(orderRepository.save(order))
-                    .thenReturn(order);
-
-            //when
-            OrderCreateCommand.Response save =
-                    orderService.createOrder(new OrderCreateCommand(user.getId(), null, commands));
-
-            //then
-            assertEquals(order.getOrderUser().getId(), save.getOrder().getOrderUser().getId());
-        }
-
+        // then
+        assertEquals(mockOrders, result);
+        verify(orderRepository).findByDateAndStatus(date, status);
     }
 
+    @Test
+    void testFindOrderItemsByOrderIds_success() {
+        // given
+        Order order1 = mock(Order.class);
+        Order order2 = mock(Order.class);
+        when(order1.getId()).thenReturn(1L);
+        when(order2.getId()).thenReturn(2L);
+
+        List<Order> orders = List.of(order1, order2);
+        List<OrderItem> mockOrderItems = List.of(mock(OrderItem.class));
+
+        when(orderRepository.findOrderItemsByOrderIds(List.of(1L, 2L))).thenReturn(mockOrderItems);
+
+        // when
+        List<OrderItem> result = orderService.findOrderItemsByOrderIds(orders);
+
+        // then
+        assertEquals(mockOrderItems, result);
+        verify(orderRepository).findOrderItemsByOrderIds(List.of(1L, 2L));
+    }
 
 
 

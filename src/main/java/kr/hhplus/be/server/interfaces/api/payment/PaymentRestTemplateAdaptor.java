@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.interfaces.api.payment;
 
-import kr.hhplus.be.server.interfaces.adptor.RestTemplateAdaptor;
+import kr.hhplus.be.server.interfaces.adaptor.RestTemplateAdaptor;
 
 public class PaymentRestTemplateAdaptor implements RestTemplateAdaptor {
 

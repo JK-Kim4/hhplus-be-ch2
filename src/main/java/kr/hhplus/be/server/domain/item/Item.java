@@ -7,8 +7,6 @@ import java.util.Objects;
 
 public class Item {
 
-    private static Long cursor = 1L;
-
     private Long id;
     private String name;
     private ItemPrice price;
@@ -17,25 +15,21 @@ public class Item {
     private LocalDateTime updatedAt;
 
     public Item() {
-        this.id = cursor++;
     }
 
     public Item(String name) {
-        this.id = cursor++;
         this.name = name;
         this.price = ItemPrice.createOrDefault(null);
         this.stock = ItemStock.createOrDefault(null);
     }
 
     public Item(String name, Integer price) {
-        this.id = cursor++;
         this.name = name;
         this.price = ItemPrice.createOrDefault(price);
         this.stock = ItemStock.createOrDefault(null);
     }
 
     public Item(String name, Integer price, Integer stock) {
-        this.id = cursor++;
         this.name = name;
         this.price = ItemPrice.createOrDefault(price);
         this.stock = ItemStock.createOrDefault(stock);
@@ -79,6 +73,14 @@ public class Item {
         return this.stock.stock() >= quantity;
     }
 
+    public boolean isSamePrice(Integer price){
+        if(!this.getPrice().equals(price)){
+            throw new IllegalArgumentException("가격이 일치하지않습니다. 확인후 다시 시도해주세요.");
+        }
+
+        return true;
+    }
+
     public void updatePrice(Integer updatePrice) {
         this.price = ItemPrice.update(updatePrice);
         this.updatedAt = LocalDateTime.now();
@@ -101,9 +103,7 @@ public class Item {
         return Objects.equals(id, item.id)
                 && Objects.equals(name, item.name)
                 && Objects.equals(price, item.price)
-                && Objects.equals(stock, item.stock)
-                && Objects.equals(createdAt, item.createdAt)
-                && Objects.equals(updatedAt, item.updatedAt);
+                && Objects.equals(stock, item.stock);
     }
 
     @Override

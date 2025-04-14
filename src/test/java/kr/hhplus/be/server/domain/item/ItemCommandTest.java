@@ -14,24 +14,9 @@ public class ItemCommandTest {
         Item item = new Item("Test Item", 1000, 10);
 
         // When
-        ItemCommand.Response response = new ItemCommand.Response(item);
+        ItemCommand.Item itemCommand = ItemCommand.Item.from(item);
 
         // Then
-        assertNotNull(response.getItem());
-        assertEquals(item, response.getItem());
-    }
-
-    @Test
-    @DisplayName("Item Command Resonse의 Item 객체와 생성된 Item 객체는 동일합니다.")
-    void getItem_returnsCorrectItem() {
-        // Given
-        Item item = new Item("Another Item", 5000, 5);
-        ItemCommand.Response response = new ItemCommand.Response(item);
-
-        // When
-        Item result = response.getItem();
-
-        // Then
-        assertSame(item, result);
+        assertEquals(item.getName(), itemCommand.getName());
     }
 }

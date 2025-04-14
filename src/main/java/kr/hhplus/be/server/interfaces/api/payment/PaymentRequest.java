@@ -2,8 +2,8 @@ package kr.hhplus.be.server.interfaces.api.payment;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import kr.hhplus.be.server.domain.payment.PaymentCreateCommand;
-import kr.hhplus.be.server.domain.payment.PaymentProcessCommand;
+import kr.hhplus.be.server.domain.payment.command.PaymentCreateCommand;
+import kr.hhplus.be.server.domain.payment.command.PaymentProcessCommand;
 
 public class PaymentRequest {
 

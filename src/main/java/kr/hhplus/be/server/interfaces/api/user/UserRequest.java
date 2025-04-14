@@ -2,7 +2,7 @@ package kr.hhplus.be.server.interfaces.api.user;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import kr.hhplus.be.server.domain.user.pointHistory.PointChargeCommand;
+import kr.hhplus.be.server.application.user.UserCriteria;
 
 public class UserRequest {
 
@@ -11,16 +11,16 @@ public class UserRequest {
         @NotNull @Positive
         private Integer chargePoint;
 
+        public UserCriteria.Charge toCriteria(Long userId) {
+            return UserCriteria.Charge.of(userId, chargePoint);
+        }
+
         public Charge(Integer chargePoint) {
             this.chargePoint = chargePoint;
         }
 
         public Integer getChargePoint() {
             return chargePoint;
-        }
-
-        public PointChargeCommand toCommand(Long userId) {
-            return new PointChargeCommand(userId, this.chargePoint);
         }
     }
 }

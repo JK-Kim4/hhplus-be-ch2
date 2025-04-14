@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.interfaces.adptor;
+package kr.hhplus.be.server.interfaces.adaptor;
 
 import org.springframework.stereotype.Component;
 

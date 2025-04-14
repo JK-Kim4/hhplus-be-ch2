@@ -1,60 +1,9 @@
 package kr.hhplus.be.server.interfaces.api.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import kr.hhplus.be.server.domain.user.User;
-import kr.hhplus.be.server.domain.user.UserCommand;
+import kr.hhplus.be.server.application.user.UserResult;
 
 public class UserResponse {
-
-    static public class Detail{
-        @Schema(name = "userId", description = "사용자 고유번호", example = "1")
-        private Long userId;
-
-        @Schema(name = "name", description = "사용자 이름", example = "홍길동")
-        private String name;
-
-        @Schema(name = "point", description = "포인트 잔액", example = "15000")
-        private Integer point;
-
-        public Long getUserId() {
-            return userId;
-        }
-
-        public void setUserId(Long userId) {
-            this.userId = userId;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public Integer getPoint() {
-            return point;
-        }
-
-        public void setPoint(Integer point) {
-            this.point = point;
-        }
-
-        public Detail() {}
-
-        public Detail(Long userId, String name, Integer point) {
-            this.userId = userId;
-            this.name = name;
-            this.point = point;
-        }
-
-        public Detail(UserCommand.Response command) {
-            User user = command.getUser();
-            this.userId = user.getId();
-            this.name = user.getName();
-            this.point = user.getPoint();
-        }
-    }
 
     static public class Point{
 
@@ -72,17 +21,15 @@ public class UserResponse {
             return point;
         }
 
-        public Point() {}
-
-        public Point(Long userId, Integer point) {
-            this.userId = userId;
-            this.point = point;
+        public static Point from(UserResult.Point point){
+            return new Point(point.getUserId(), point.getAmount());
         }
 
-        public Point(UserCommand.Response command) {
-            User user = command.getUser();
-            this.userId = user.getId();
-            this.point = user.getPoint();
+        private Point() {}
+
+        private Point(Long userId, Integer point) {
+            this.userId = userId;
+            this.point = point;
         }
     }
 

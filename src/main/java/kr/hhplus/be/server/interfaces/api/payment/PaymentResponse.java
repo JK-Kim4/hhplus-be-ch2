@@ -2,8 +2,7 @@ package kr.hhplus.be.server.interfaces.api.payment;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import kr.hhplus.be.server.domain.payment.Payment;
-import kr.hhplus.be.server.domain.payment.PaymentCreateCommand;
-import kr.hhplus.be.server.domain.payment.PaymentProcessCommand;
+import kr.hhplus.be.server.domain.payment.command.PaymentInfo;
 
 import java.time.LocalDateTime;
 
@@ -13,8 +12,10 @@ public class PaymentResponse {
 
         public Payment payment;
 
-        public Create(PaymentCreateCommand.Response response) {
-            this.payment = response.getPayment();
+        public Long paymentId;
+
+        public Create(PaymentInfo.Create paymentInfo) {
+            this.paymentId = paymentInfo.getPaymentId();
         }
 
     }
@@ -64,8 +65,8 @@ public class PaymentResponse {
             this.paymentResponseDateTime = paymentResponseDateTime;
         }
 
-        public Process(PaymentProcessCommand.Response response) {
-            Payment payment = response.getPayment();
+        public Process(PaymentInfo.Process paymentInfo) {
+            Payment payment = paymentInfo.getPayment();
 
             this.paymentId = payment.getId();
             this.paymentRequestDateTime = payment.getPaymentRequestDateTime();

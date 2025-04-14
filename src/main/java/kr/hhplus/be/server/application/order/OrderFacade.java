@@ -1,45 +1,65 @@
 package kr.hhplus.be.server.application.order;
 
+import kr.hhplus.be.server.domain.item.ItemService;
 import kr.hhplus.be.server.domain.order.OrderService;
-import kr.hhplus.be.server.domain.order.command.OrderCreateCommand;
-import kr.hhplus.be.server.domain.payment.PaymentCreateCommand;
-import kr.hhplus.be.server.domain.payment.PaymentProcessCommand;
+import kr.hhplus.be.server.domain.order.command.OrderCommand;
+import kr.hhplus.be.server.domain.order.command.OrderInfo;
+import kr.hhplus.be.server.domain.payment.command.PaymentCreateCommand;
+import kr.hhplus.be.server.domain.payment.command.PaymentInfo;
+import kr.hhplus.be.server.domain.payment.command.PaymentProcessCommand;
 import kr.hhplus.be.server.domain.payment.PaymentService;
-import kr.hhplus.be.server.interfaces.adptor.RestTemplateAdaptor;
+import kr.hhplus.be.server.domain.userCoupon.UserCouponService;
+import kr.hhplus.be.server.interfaces.adaptor.RestTemplateAdaptor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
 
 @Service
 public class OrderFacade {
 
     private final OrderService orderService;
     private final PaymentService paymentService;
+    private final ItemService itemService;
     private final RestTemplateAdaptor restTemplateAdaptor;
+    private final UserCouponService userCouponService;
 
     public OrderFacade(
             OrderService orderService,
             PaymentService paymentService,
-            RestTemplateAdaptor restTemplateAdaptor) {
+            ItemService itemService,
+            RestTemplateAdaptor restTemplateAdaptor, UserCouponService userCouponService) {
         this.orderService = orderService;
         this.paymentService = paymentService;
+        this.itemService = itemService;
         this.restTemplateAdaptor = restTemplateAdaptor;
+        this.userCouponService = userCouponService;
     }
 
     @Transactional
-    public OrderPaymentResult orderPayment(OrderPaymentCriteria criteria){
+    public void orderPayment(OrderPaymentCriteria criteria){
 
-        OrderCreateCommand.Response ocResponse =
-                orderService.createOrder(OrderCreateCommand.from(criteria));
+        criteria.getOrderItems().forEach(oi -> {
+            itemService.canOrder(oi.toCanOrderCommand());
+            itemService.decreaseStock(oi.toDecreaseStockCommand());
+        });
 
-        PaymentCreateCommand.Response pcResponse =
-                paymentService.save(new PaymentCreateCommand(ocResponse.getOrder().getId()));
+        OrderInfo.Create ocResponse = orderService.createOrder(criteria.toCommand());
 
-        PaymentProcessCommand.Response ppResponse =
-                paymentService.processPayment(new PaymentProcessCommand(pcResponse.getPayment().getId()));
+        if(Objects.nonNull(criteria.getUserCouponId())){
+            userCouponService.applyDiscount(ocResponse.getOrderId(), criteria.getUserCouponId());
+        }
 
-        //외부 API 요청
+        PaymentInfo.Create pcResponse =
+                paymentService.createPayment(PaymentCreateCommand.of(ocResponse.getOrderId()));
+
+        PaymentInfo.Process ppResponse =
+                paymentService.processPayment(new PaymentProcessCommand(pcResponse.getPaymentId()));
+
         restTemplateAdaptor.post("/external/api-call", ppResponse, ExternalResponse.class);
+    }
 
-        return new OrderPaymentResult(ocResponse, ppResponse);
+    public OrderResult.Create createOrder(OrderCommand.Create command) {
+        return OrderResult.Create.from(orderService.createOrder(command));
     }
 }

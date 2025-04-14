@@ -2,16 +2,16 @@ package kr.hhplus.be.server.domain.payment;
 
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderStatus;
+import kr.hhplus.be.server.domain.order.OrderUser;
+import kr.hhplus.be.server.domain.user.User;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Payment {
 
-    private static Long cursor = 1L;
-
     private Long id;
-    private Order order;
+    private OrderUser orderUser;
     private Integer paymentPrice;
     private PaymentStatus paymentStatus;
     private LocalDateTime paymentRequestDateTime;
@@ -20,23 +20,21 @@ public class Payment {
     private LocalDateTime updatedAt;
 
     public Payment(){
-        this.id = cursor++;
     }
 
-    public Payment(Order order, Integer paymentPrice, PaymentStatus paymentStatus) {
-        this.id = cursor++;
-        this.order = order;
+    public Payment(Order order, User user, Integer paymentPrice, PaymentStatus paymentStatus) {
+        this.orderUser = new OrderUser(order, user);
         this.paymentPrice = paymentPrice;
         this.paymentStatus = paymentStatus;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
-    public Payment(Order order){
-        this.order = order;
+    public Payment(Order order, User user){
+        this.orderUser = new OrderUser(order, user);
         this.paymentPrice = order.getFinalPaymentPrice();
         this.paymentStatus = PaymentStatus.PAYMENT_PENDING;
-        this.order.updateOrderStatus(OrderStatus.PAYMENT_WAITING);
+        this.orderUser.updateOrderStatus(OrderStatus.PAYMENT_WAITING);
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
@@ -46,7 +44,11 @@ public class Payment {
     }
 
     public Order getOrder() {
-        return order;
+        return orderUser.getOrder();
+    }
+
+    public User getUser() {
+        return orderUser.getUser();
     }
 
     public Integer getPaymentPrice() {
@@ -87,7 +89,7 @@ public class Payment {
 
     public void pay(){
         this.logRequestDateTime(LocalDateTime.now());
-        this.order.getOrderUser().deductPoint(this.paymentPrice);
+        this.orderUser.deductPrice(paymentPrice);
         this.paymentStatus = PaymentStatus.PAYMENT_COMPLETED;
         this.logResponseDateTime(LocalDateTime.now());
     }
@@ -98,21 +100,20 @@ public class Payment {
         if (o == null || getClass() != o.getClass()) return false;
         Payment payment = (Payment) o;
         return Objects.equals(id, payment.id)
-                && Objects.equals(order, payment.order)
+                && Objects.equals(orderUser, payment.orderUser)
                 && Objects.equals(paymentPrice, payment.paymentPrice)
                 && paymentStatus == payment.paymentStatus;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, order, paymentPrice, paymentStatus);
+        return Objects.hash(id, orderUser, paymentPrice, paymentStatus);
     }
 
     @Override
     public String toString() {
         return "Payment{" +
                 "id=" + id +
-                ", order=" + order +
                 ", paymentPrice=" + paymentPrice +
                 ", paymentStatus=" + paymentStatus +
                 ", createdAt=" + createdAt +

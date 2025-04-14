@@ -4,7 +4,12 @@ import jakarta.persistence.NoResultException;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderRepository;
 import kr.hhplus.be.server.domain.order.OrderStatus;
+import kr.hhplus.be.server.domain.payment.command.PaymentCreateCommand;
+import kr.hhplus.be.server.domain.payment.command.PaymentInfo;
+import kr.hhplus.be.server.domain.payment.command.PaymentProcessCommand;
 import kr.hhplus.be.server.domain.payment.paymentHistory.PaymentHistory;
+import kr.hhplus.be.server.domain.user.User;
+import kr.hhplus.be.server.domain.user.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,30 +18,36 @@ public class PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final OrderRepository orderRepository;
+    private final UserRepository userRepository;
 
     public PaymentService(
             PaymentRepository paymentRepository,
-            OrderRepository orderRepository) {
+            OrderRepository orderRepository,
+            UserRepository userRepository) {
         this.paymentRepository = paymentRepository;
         this.orderRepository = orderRepository;
+        this.userRepository = userRepository;
     }
 
     @Transactional
-    public PaymentCreateCommand.Response save(PaymentCreateCommand command) {
+    public PaymentInfo.Create createPayment(PaymentCreateCommand command) {
         Order order = orderRepository.findById(command.getOrderId())
                 .orElseThrow(NoResultException::new);
-        Payment payment = paymentRepository.save(new Payment(order));
 
+        User user = userRepository.findById(order.getUserId())
+                .orElseThrow(NoResultException::new);
+
+        Payment payment = paymentRepository.save(new Payment(order, user));
         order.registerPayment(payment);
 
         this.savePaymentHistory(payment);
 
-        return new PaymentCreateCommand.Response(payment);
+        return new PaymentInfo.Create(payment.getId());
     }
 
 
     @Transactional
-    public PaymentProcessCommand.Response processPayment(PaymentProcessCommand command) {
+    public PaymentInfo.Process processPayment(PaymentProcessCommand command) {
         Payment payment = paymentRepository.findById(command.getPaymentId())
                 .orElseThrow(NoResultException::new);
 
@@ -45,7 +56,7 @@ public class PaymentService {
 
         this.savePaymentHistory(payment);
 
-        return new PaymentProcessCommand.Response(payment);
+        return new PaymentInfo.Process(payment);
     }
 
     @Transactional(readOnly = true)
