@@ -1,8 +1,9 @@
 package kr.hhplus.be.server.application.user;
 
+import kr.hhplus.be.server.domain.point.Point;
 import kr.hhplus.be.server.domain.point.PointCommand;
 import kr.hhplus.be.server.domain.point.PointService;
-import kr.hhplus.be.server.domain.user.UserInfo;
+import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.UserService;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +19,12 @@ public class UserFacade {
     }
 
     public void charge(UserCriteria.Charge criteria) {
-        UserInfo.User user = userService.getUser(criteria.getUserId());
-        pointService.charge(PointCommand.Charge.of(user.getUserId(), criteria.getChargeAmount()));
+        User user = userService.findById(criteria.getUserId());
+        pointService.charge(PointCommand.Charge.of(user.getId(), criteria.getChargeAmount()));
     }
 
-    public UserResult.Point getPoint(Long userId){
-        return UserResult.Point.from(pointService.getPoint(userId));
+    public UserResult.Point findPointOrCreateDefaultByUserId(Long userId){
+        Point point = pointService.findPointByUserId(userId);
+        return UserResult.Point.from(point);
     }
 }

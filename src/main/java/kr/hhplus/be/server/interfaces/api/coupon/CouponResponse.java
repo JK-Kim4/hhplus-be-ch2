@@ -2,8 +2,11 @@ package kr.hhplus.be.server.interfaces.api.coupon;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import kr.hhplus.be.server.domain.coupon.CouponType;
+import kr.hhplus.be.server.domain.userCoupon.UserCoupon;
+import kr.hhplus.be.server.domain.userCoupon.UserCouponInfo;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class CouponResponse {
 
@@ -104,61 +107,36 @@ public class CouponResponse {
 
     static public class Issue {
 
-        @Schema(name = "couponId", description = "쿠폰 고유 번호", example = "1")
+        private Long userCouponId;
         private Long couponId;
-
-        @Schema(name = "userId", description = "사용자 고유 번호", example = "10")
         private Long userId;
-
-        @Schema(name = "userPointId", description = "발급된 사용자 쿠폰 고유번호", example = "52")
-        private Long userPointId;
-
-        @Schema(name = "issueDateTime", description = "발급 일시", example = "2025-01-01H00:00:00")
         private LocalDateTime issueDateTime;
 
-        public Issue() {
-        }
 
         public Issue(
                 Long couponId, Long userId,
-                Long userPointId, LocalDateTime issueDateTime) {
+                Long userCouponId, LocalDateTime issueDateTime) {
             this.couponId = couponId;
             this.userId = userId;
-            this.userPointId = userPointId;
+            this.userCouponId = userCouponId;
             this.issueDateTime = issueDateTime;
-
         }
 
-        public Long getCouponId() {
-            return couponId;
+        public static Issue from(UserCouponInfo.Issue issue) {
+            return new Issue(issue.getCouponId(), issue.getUserId(), issue.getUserCouponId(), issue.getIssueDateTime());
+        }
+    }
+
+    public static class UserCouponList {
+
+        private List<UserCoupon> userCouponList;
+
+        public static UserCouponList from(UserCouponInfo.UserCouponList userCouponList) {
+            return new UserCouponList(userCouponList.getUserCouponList());
         }
 
-        public void setCouponId(Long couponId) {
-            this.couponId = couponId;
-        }
-
-        public Long getUserId() {
-            return userId;
-        }
-
-        public void setUserId(Long userId) {
-            this.userId = userId;
-        }
-
-        public Long getUserPointId() {
-            return userPointId;
-        }
-
-        public void setUserPointId(Long userPointId) {
-            this.userPointId = userPointId;
-        }
-
-        public LocalDateTime getIssueDateTime() {
-            return issueDateTime;
-        }
-
-        public void setIssueDateTime(LocalDateTime issueDateTime) {
-            this.issueDateTime = issueDateTime;
+        public UserCouponList(List<UserCoupon> userCouponList) {
+            this.userCouponList = userCouponList;
         }
     }
 }

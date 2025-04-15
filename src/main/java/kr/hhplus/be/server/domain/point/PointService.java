@@ -13,18 +13,16 @@ public class PointService {
         this.pointRepository = pointRepository;
     }
 
+    //TODO. Logging Point.충전
     @Transactional
     public void charge(@Valid PointCommand.Charge chargeCommand) {
-        Point point = findPointOrCreateDefaultByUserId(chargeCommand.getUserId());
+        Point point = findPointByUserId(chargeCommand.getUserId());
         point.charge(chargeCommand.getAmount());
     }
 
-    public PointInfo.Point getPoint(Long userId) {
-        Point point = findPointOrCreateDefaultByUserId(userId);
-        return PointInfo.Point.from(point);
-    }
-
-    private Point findPointOrCreateDefaultByUserId(Long userId) {
+    //TODO. Logging Point.생성
+    @Transactional
+    public Point findPointByUserId(Long userId){
         return pointRepository.findByUserId(userId)
                 .orElseGet(() -> {
                     Point newPoint = Point.create(userId);

@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.interfaces.api.order;
 
-import kr.hhplus.be.server.application.order.OrderFacade;
+import kr.hhplus.be.server.application.orderPayment.OrderFacade;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +22,7 @@ public class OrderApiController implements OrderApiSpec{
     public ResponseEntity<Void> createOrder(
             @RequestBody OrderRequest.Create request) {
 
-        orderFacade.createOrder(request.toCommand());
+        orderFacade.createOrder(request.toCriteria());
         return ResponseEntity.ok().build();
     }
 

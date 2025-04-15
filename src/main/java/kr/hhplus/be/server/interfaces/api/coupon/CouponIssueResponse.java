@@ -1,13 +1,19 @@
 package kr.hhplus.be.server.interfaces.api.coupon;
 
-import kr.hhplus.be.server.domain.userCoupon.UserCouponIssueCommand;
+import kr.hhplus.be.server.domain.userCoupon.UserCouponInfo;
 
-public record CouponIssueResponse(Long userCouponId, Long couponId, Long userId) {
+public record CouponIssueResponse(
+        Long userCouponId,
+        Long couponId,
+        Long userId) {
 
-
-
-    public static CouponIssueResponse from(UserCouponIssueCommand.Response response) {
-        return new CouponIssueResponse(response.getUserCoupon().getId(), response.getUserCoupon().getCoupon().getId(), response.getUserCoupon().getUser().getId());
+    public static CouponIssueResponse from(UserCouponInfo.Issue info) {
+        return new CouponIssueResponse(
+                info.getUserCouponId(),
+                info.getCouponId(),
+                info.getUserId());
     }
+
+
 
 }

@@ -16,10 +16,6 @@ public class Order {
     private Long id;
     private Long userId;
     private Long userCouponId;
-
-    private User user;
-    private UserCoupon userCoupon;
-
     private Payment payment;
     private OrderStatus orderStatus;
     private OrderItems orderItems;
@@ -41,7 +37,7 @@ public class Order {
 
     public Order(User user){
         this.userId = user.getId();
-        this.user = user;
+        //this.user = user;
     }
 
     public void calculateTotalPrice() {
@@ -61,11 +57,7 @@ public class Order {
     }
 
     public void applyCoupon(UserCoupon userCoupon) {
-
-        if(!userCoupon.isCouponOwner(userId)) {
-            throw new IllegalArgumentException("사용할 수 없는 쿠폰입니다.");
-        }
-
+        userCoupon.isUsable(LocalDateTime.now(), userId);
         this.userCouponId = userCoupon.getId();
         this.finalPaymentPrice = userCoupon.discount(this.totalPrice);
         userCoupon.updateUsedFlag(true);

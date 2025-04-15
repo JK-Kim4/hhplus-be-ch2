@@ -16,10 +16,12 @@ public class OrderUser {
         this.user = user;
     }
 
-    public void hasEnoughPoint(){
+    public boolean hasEnoughPoint(){
         if(user.getPoint().getAmount() < order.getFinalPaymentPrice()){
             throw new IllegalArgumentException("잔액이 부족합니다.");
         }
+
+        return true;
     }
 
     public void deductPrice(Integer price) {
@@ -27,6 +29,10 @@ public class OrderUser {
             throw new IllegalArgumentException("결제 금액이 올바르지않습니다.");
         }
         user.deductPoint(price);
+    }
+
+    public void deductOrderItemStock() {
+        order.deductOrderItemStock();
     }
 
     public void updateOrderStatus(OrderStatus orderStatus) {

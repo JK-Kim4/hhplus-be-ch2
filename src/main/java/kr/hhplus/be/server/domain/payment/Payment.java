@@ -23,21 +23,22 @@ public class Payment {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public Payment(Order order, User user, Integer paymentPrice, PaymentStatus paymentStatus) {
-        this.orderUser = new OrderUser(order, user);
-        this.paymentPrice = paymentPrice;
-        this.paymentStatus = paymentStatus;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
-
     public Payment(Order order, User user){
+
+        if(!user.getId().equals(order.getUserId())){
+            throw new IllegalArgumentException("주문자 정보가 일치하지않습니다.");
+        }
+
         this.orderUser = new OrderUser(order, user);
         this.paymentPrice = order.getFinalPaymentPrice();
         this.paymentStatus = PaymentStatus.PAYMENT_PENDING;
         this.orderUser.updateOrderStatus(OrderStatus.PAYMENT_WAITING);
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+    }
+
+    public Order getOrder() {
+        return this.orderUser.getOrder();
     }
 
     public void logRequestDateTime(LocalDateTime requestDateTime) {
@@ -52,20 +53,21 @@ public class Payment {
         this.paymentStatus = paymentStatus;
     }
 
-    public void isPayable(){
+    public boolean isPayable(){
         if(this.paymentStatus != PaymentStatus.PAYMENT_PENDING){
             throw new IllegalArgumentException("진행할 수 없는 결제입니다.");
         }
 
-        orderUser.hasEnoughPoint();
+        return orderUser.hasEnoughPoint();
     }
 
     public void pay(){
-        isPayable();
+        this.orderUser.deductOrderItemStock();
         this.logRequestDateTime(LocalDateTime.now());
         this.orderUser.deductPrice(paymentPrice);
         this.paymentStatus = PaymentStatus.PAYMENT_COMPLETED;
         this.logResponseDateTime(LocalDateTime.now());
+        this.orderUser.updateOrderStatus(OrderStatus.PAYMENT_COMPLETED);
     }
 
 
@@ -93,9 +95,5 @@ public class Payment {
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';
-    }
-
-    public Order getOrder() {
-        return this.orderUser.getOrder();
     }
 }

@@ -1,11 +1,9 @@
 package kr.hhplus.be.server.interfaces.api.coupon;
 
 import kr.hhplus.be.server.application.coupon.CouponFacade;
-import kr.hhplus.be.server.domain.userCoupon.UserCoupon;
+import kr.hhplus.be.server.domain.userCoupon.UserCouponInfo;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/coupons")
@@ -26,17 +24,20 @@ public class CouponApiController implements CouponApiSpec{
 
     @Override
     @PostMapping("/{id}/issue")
-    public ResponseEntity<CouponIssueResponse> issueCoupon(
+    public ResponseEntity<CouponResponse.Issue> issueCoupon(
             @PathVariable("id") Long couponId,
-            @RequestBody CouponIssueRequest request) {
-        return ResponseEntity.ok(
-                CouponIssueResponse.from(couponFacade.issue(request.toUserCouponIssueCommand(couponId))));
+            @RequestBody CouponRequest.Issue request) {
+
+        UserCouponInfo.Issue issue = couponFacade.issue(request.toCriteria(couponId));
+        return ResponseEntity.ok(CouponResponse.Issue.from(issue));
     }
 
     @Override
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<UserCoupon>> findByUserId(
+    public ResponseEntity<CouponResponse.UserCouponList> findByUserId(
             @PathVariable("userId") Long userId) {
-        return ResponseEntity.ok(couponFacade.findByUserId(userId));
+
+        UserCouponInfo.UserCouponList result = couponFacade.findByUserId(userId);
+        return ResponseEntity.ok(CouponResponse.UserCouponList.from(result));
     }
 }

@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.interfaces.api.user;
 
 import kr.hhplus.be.server.application.user.UserFacade;
+import kr.hhplus.be.server.application.user.UserResult;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +19,10 @@ public class UserApiController implements UserApiSpec {
     @GetMapping("/{id}/point")
     public ResponseEntity<UserResponse.Point> findUserPointById(
             @PathVariable("id") Long userId) {
-        return ResponseEntity.ok(UserResponse.Point.from(userFacade.getPoint(userId)));
+
+        UserResult.Point result
+                = userFacade.findPointOrCreateDefaultByUserId(userId);
+        return ResponseEntity.ok(UserResponse.Point.from(result));
     }
 
     @Override

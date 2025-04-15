@@ -25,8 +25,15 @@ public class UserCoupon {
         this.issueDateTime = LocalDateTime.now();
     }
 
-    public void isUsable(LocalDateTime targetDateTime) {
-        coupon.isUsable(targetDateTime);
+    public void isUsable(LocalDateTime targetDateTime, Long userId) {
+
+        if(!coupon.isBeforeExpiredDate(targetDateTime)){
+            throw new IllegalArgumentException("만료된 쿠폰입니다.");
+        }
+
+        if(!isCouponOwner(userId)){
+            throw new IllegalArgumentException("사용할 수 없는 쿠폰입니다.");
+        }
 
         if(isUsed){
             throw new IllegalArgumentException("이미 사용된 쿠폰입니다.");

@@ -30,7 +30,7 @@ public class UserServiceTest {
         when(userRepository.save(new User(command.getName())))
                 .thenReturn(new User(command.getName()));
 
-        UserInfo.Create create = userService.create(command);
+        User create = userService.save(command);
 
         assertNotNull(create);
         assertEquals("test", create.getName());
@@ -46,7 +46,7 @@ public class UserServiceTest {
                 .thenReturn(Optional.of(user));
 
         IllegalArgumentException illegalArgumentException =
-                assertThrows(IllegalArgumentException.class, () -> userService.create(command));
+                assertThrows(IllegalArgumentException.class, () -> userService.save(command));
         assertEquals(illegalArgumentException.getMessage(), "이미 존재하는 회원입니다.");
     }
 

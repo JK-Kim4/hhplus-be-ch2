@@ -28,7 +28,6 @@ public class OrderService {
                 .toList();
 
         OrderItems orderItems = new OrderItems(orderItemV2List);
-//        OrderItems orderItems = OrderItems.from(command.getOrderItems());
         Order order = orderRepository.save(command.toEntity(orderItemV2List));
         order.registerOrderItems(orderItems);
 
@@ -69,5 +68,9 @@ public class OrderService {
 
     public void save(Order order) {
         orderRepository.save(order);
+    }
+
+    public Order findById(Long orderId) {
+        return orderRepository.findById(orderId).orElseThrow(NoResultException::new);
     }
 }

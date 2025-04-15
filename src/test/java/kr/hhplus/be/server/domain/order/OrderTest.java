@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 public class OrderTest {
@@ -71,16 +70,6 @@ public class OrderTest {
         assertEquals(99L, order.getUserCouponId());
         assertEquals(1500, order.getFinalPaymentPrice());
         verify(coupon).updateUsedFlag(true);
-    }
-
-    @Test
-    void testApplyCoupon_invalidUser() {
-        Order order = new Order(1L, null, itemList);
-        UserCoupon coupon = mock(UserCoupon.class);
-
-        when(coupon.isCouponOwner(1L)).thenReturn(false);
-
-        assertThrows(IllegalArgumentException.class, () -> order.applyCoupon(coupon));
     }
 
     @Test

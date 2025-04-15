@@ -2,6 +2,7 @@ package kr.hhplus.be.server.interfaces.api.coupon;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import kr.hhplus.be.server.domain.coupon.CouponType;
+import kr.hhplus.be.server.domain.userCoupon.UserCouponCriteria;
 
 import java.time.LocalDateTime;
 
@@ -88,5 +89,16 @@ public class CouponRequest {
         public void setExpireDateTime(LocalDateTime expireDateTime) {
             this.expireDateTime = expireDateTime;
         }
+    }
+
+    public static class Issue {
+
+        private Long userId;
+
+        public UserCouponCriteria.Issue toCriteria(Long couponId){
+            return new UserCouponCriteria.Issue(couponId, this.userId);
+        }
+
+
     }
 }

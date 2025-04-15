@@ -42,9 +42,7 @@ public abstract class Coupon {
         this.updatedAt = updatedAt;
     }
 
-    public void isUsable(LocalDateTime targetDateTime) {
-        if(expireDateTime.isBefore(targetDateTime)) {
-            throw new IllegalArgumentException("만료된 쿠폰입니다.");
-        }
+    public boolean isBeforeExpiredDate(LocalDateTime targetDateTime) {
+        return expireDateTime.isBefore(targetDateTime);
     }
 }

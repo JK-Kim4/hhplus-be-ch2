@@ -1,6 +1,5 @@
 package kr.hhplus.be.server.application.user;
 
-import kr.hhplus.be.server.domain.point.PointInfo;
 import kr.hhplus.be.server.domain.user.UserInfo;
 
 public class UserResult {
@@ -34,8 +33,8 @@ public class UserResult {
         private Long userId;
         private Integer amount;
 
-        public static Point from(PointInfo.Point pointInfo) {
-            return new Point(pointInfo.getUserId(), pointInfo.getAmount());
+        public static Point from(kr.hhplus.be.server.domain.point.Point point) {
+            return new Point(point.getUserId(), point.getAmount());
         }
 
         private Point(Long userId, Integer amount) {

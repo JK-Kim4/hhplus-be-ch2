@@ -1,5 +1,7 @@
 package kr.hhplus.be.server.interfaces.api.payment;
 
+import kr.hhplus.be.server.application.orderPayment.OrderFacade;
+import kr.hhplus.be.server.application.orderPayment.result.PaymentResult;
 import kr.hhplus.be.server.domain.payment.PaymentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,24 +14,30 @@ import org.springframework.web.bind.annotation.RestController;
 public class PaymentApiController implements PaymentApiSpec {
 
     private final PaymentService paymentService;
+    private final OrderFacade orderFacade;
 
-    public PaymentApiController(PaymentService paymentService) {
+    public PaymentApiController(
+            PaymentService paymentService,
+            OrderFacade orderFacade) {
         this.paymentService = paymentService;
+        this.orderFacade = orderFacade;
     }
 
     @Override
     @PostMapping
     public ResponseEntity<PaymentResponse.Create> createPayment(
             @RequestBody PaymentRequest.Create request) {
-        return ResponseEntity.ok(
-                new PaymentResponse.Create(paymentService.createPayment(request.toCommand())));
+        PaymentResult.Create result
+                = orderFacade.createPayment(request.toCriteria());
+        return ResponseEntity.ok(PaymentResponse.Create.from(result));
     }
 
     @Override
     @PostMapping("/process")
     public ResponseEntity<PaymentResponse.Process> processPayment(
             @RequestBody PaymentRequest.Process request) {
-        return ResponseEntity.ok(
-                new PaymentResponse.Process(paymentService.processPayment(request.toCommand())));
+        PaymentResult.Process result
+                = orderFacade.processPayment(request.toCriteria());
+        return ResponseEntity.ok(PaymentResponse.Process.from(result));
     }
 }

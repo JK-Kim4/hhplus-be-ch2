@@ -71,7 +71,7 @@ public class PointServiceTest {
 
         when(pointRepository.findByUserId(userId)).thenReturn(Optional.of(mockPoint));
 
-        PointInfo.Point result = pointService.getPoint(userId);
+        Point result = pointService.findPointByUserId(userId);
 
         assertNotNull(result);
         assertEquals(userId, result.getUserId());

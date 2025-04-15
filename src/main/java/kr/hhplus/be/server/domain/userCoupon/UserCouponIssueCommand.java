@@ -5,11 +5,13 @@ public class UserCouponIssueCommand {
     private Long couponId;
     private Long userId;
 
-    public UserCouponIssueCommand(){}
-
     public UserCouponIssueCommand(Long couponId, Long userId) {
         this.couponId = couponId;
         this.userId = userId;
+    }
+
+    public static UserCouponIssueCommand of(Long couponId, Long userId) {
+        return new UserCouponIssueCommand(couponId, userId);
     }
 
     public Long getCouponId() {

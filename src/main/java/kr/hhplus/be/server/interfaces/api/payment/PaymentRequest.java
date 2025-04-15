@@ -2,8 +2,7 @@ package kr.hhplus.be.server.interfaces.api.payment;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import kr.hhplus.be.server.domain.payment.command.PaymentCreateCommand;
-import kr.hhplus.be.server.domain.payment.command.PaymentProcessCommand;
+import kr.hhplus.be.server.application.orderPayment.criteria.OrderPaymentCriteria;
 
 public class PaymentRequest {
 
@@ -16,9 +15,10 @@ public class PaymentRequest {
             return orderId;
         }
 
-        public PaymentCreateCommand toCommand(){
-            return new PaymentCreateCommand(orderId);
+        public OrderPaymentCriteria.PaymentCreate toCriteria() {
+            return new OrderPaymentCriteria.PaymentCreate(this.orderId);
         }
+
     }
 
     static public class Process {
@@ -30,8 +30,8 @@ public class PaymentRequest {
             return paymentId;
         }
 
-        public PaymentProcessCommand toCommand(){
-            return new PaymentProcessCommand(paymentId);
+        public OrderPaymentCriteria.PaymentProcess toCriteria() {
+            return new OrderPaymentCriteria.PaymentProcess(this.paymentId);
         }
     }
 }

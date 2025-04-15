@@ -3,8 +3,8 @@ package kr.hhplus.be.server.interfaces.api.order;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import kr.hhplus.be.server.application.order.OrderItemCriteria;
-import kr.hhplus.be.server.application.order.OrderPaymentCriteria;
+import kr.hhplus.be.server.application.orderPayment.criteria.OrderItemCriteria;
+import kr.hhplus.be.server.application.orderPayment.criteria.OrderPaymentCriteria;
 import kr.hhplus.be.server.domain.order.command.OrderCommand;
 
 import java.util.ArrayList;
@@ -42,6 +42,15 @@ public class OrderRequest {
                         .collect(Collectors.toList());
 
             return OrderCommand.Create.of(this.userId, this.userCouponId, orderItemList);
+        }
+
+        public OrderPaymentCriteria toCriteria(){
+            List<OrderItemCriteria> orderItemList = orderItems.stream()
+                    .map(oi ->
+                            OrderItemCriteria.of(oi.getItemId(), oi.getPrice(), oi.getQuantity()))
+                    .collect(Collectors.toList());
+
+            return new OrderPaymentCriteria(this.userId, this.userCouponId, orderItemList);
         }
     }
 
