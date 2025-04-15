@@ -2,10 +2,14 @@ package kr.hhplus.be.server.domain.coupon;
 
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.userCoupon.UserCoupon;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class Coupon {
 
     private Long id;
@@ -19,8 +23,6 @@ public abstract class Coupon {
     abstract boolean validate(LocalDateTime targetDateTime);
     public abstract UserCoupon issue(User user);
     public abstract Integer discount(Integer integer);
-
-    public Coupon(){}
 
     public Coupon(CouponTemplate couponTemplate) {
         this.id = couponTemplate.getId();
@@ -38,34 +40,6 @@ public abstract class Coupon {
         this.expireDateTime = expireDateTime;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public CouponType getCouponType() {
-        return couponType;
-    }
-
-    public AtomicInteger getRemainingQuantity() {
-        return remainingQuantity;
-    }
-
-    public LocalDateTime getExpireDateTime() {
-        return expireDateTime;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
     }
 
     public void isUsable(LocalDateTime targetDateTime) {

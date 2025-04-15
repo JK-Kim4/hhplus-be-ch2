@@ -1,7 +1,11 @@
 package kr.hhplus.be.server.domain.point;
 
 import kr.hhplus.be.server.interfaces.exception.InvalidAmountException;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Point {
 
     public static final Integer MINIMUM_CHARGE_AMOUNT = 100;
@@ -11,8 +15,6 @@ public class Point {
     private Long userId;
     private Integer amount;
     private PointHistories pointHistories;
-
-    private Point() {}
 
     private Point(Long userId, Integer amount) {
         this.userId = userId;
@@ -46,14 +48,6 @@ public class Point {
         }
 
         this.amount -= deductAmount;
-    }
-
-    public Integer getAmount() {
-        return this.amount;
-    }
-
-    public Long getUserId() {
-        return userId;
     }
 
 }

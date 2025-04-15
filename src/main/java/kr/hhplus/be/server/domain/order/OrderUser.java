@@ -1,7 +1,11 @@
 package kr.hhplus.be.server.domain.order;
 
 import kr.hhplus.be.server.domain.user.User;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderUser {
 
     private Order order;
@@ -10,14 +14,6 @@ public class OrderUser {
     public OrderUser(Order order, User user) {
         this.order = order;
         this.user = user;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public User getUser() {
-        return user;
     }
 
     public void hasEnoughPoint(){

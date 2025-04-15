@@ -36,7 +36,7 @@ public class OrderRequest {
 
 
         public OrderCommand.Create toCommand(){
-            List<OrderCommand.OrderItem> orderItemList =
+            List<OrderCommand.OrderItemCreate> orderItemList =
                     this.orderItems.stream()
                         .map(OrderItemRequest::toCommand)
                         .collect(Collectors.toList());

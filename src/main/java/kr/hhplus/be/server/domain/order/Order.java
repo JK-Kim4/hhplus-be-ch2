@@ -3,10 +3,14 @@ package kr.hhplus.be.server.domain.order;
 import kr.hhplus.be.server.domain.payment.Payment;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.userCoupon.UserCoupon;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Order {
 
     private Long id;
@@ -38,46 +42,6 @@ public class Order {
     public Order(User user){
         this.userId = user.getId();
         this.user = user;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public Long getUserCouponId() {
-        return userCouponId;
-    }
-
-    public Payment getPayment() {
-        return payment;
-    }
-
-    public OrderStatus getOrderStatus() {
-        return orderStatus;
-    }
-
-    public OrderItems getOrderItems() {
-        return orderItems;
-    }
-
-    public Integer getTotalPrice() {
-        return totalPrice;
-    }
-
-    public Integer getFinalPaymentPrice() {
-        return finalPaymentPrice;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
     }
 
     public void calculateTotalPrice() {

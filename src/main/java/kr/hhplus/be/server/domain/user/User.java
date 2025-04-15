@@ -1,10 +1,14 @@
 package kr.hhplus.be.server.domain.user;
 
 import kr.hhplus.be.server.domain.point.Point;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
 
     private Long id;
@@ -13,41 +17,19 @@ public class User {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-
-    public User() {}
+    public User(String name) {
+        this.name = name;
+    }
 
     public User(Long id, String name){
         this.id = id;
         this.name = name;
     }
 
-    public User(String name) {
-        this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Point getPoint() {
-        return point;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     public Integer point(){
         return point.getAmount();
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
 
     public void chargePoint(Integer amount) {
         this.point.charge(amount);

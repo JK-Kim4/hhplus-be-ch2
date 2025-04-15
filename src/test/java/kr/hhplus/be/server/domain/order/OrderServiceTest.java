@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.order;
 
+import kr.hhplus.be.server.domain.item.ItemRepository;
 import kr.hhplus.be.server.domain.order.command.OrderCommand;
 import kr.hhplus.be.server.domain.order.command.OrderInfo;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,19 +20,21 @@ public class OrderServiceTest {
 
     private OrderRepository orderRepository;
     private OrderService orderService;
+    private ItemRepository itemRepository;
 
     @BeforeEach
     void setUp() {
         orderRepository = mock(OrderRepository.class);
-        orderService = new OrderService(orderRepository);
+        itemRepository = mock(ItemRepository.class);
+        orderService = new OrderService(orderRepository, itemRepository);
     }
 
     @Test
     void testCreateOrder_success() {
         // given
-        OrderCommand.OrderItem item1 = mock(OrderCommand.OrderItem.class);
-        OrderCommand.OrderItem item2 = mock(OrderCommand.OrderItem.class);
-        List<OrderCommand.OrderItem> commandItems = List.of(item1, item2);
+        OrderCommand.OrderItemCreate item1 = mock(OrderCommand.OrderItemCreate.class);
+        OrderCommand.OrderItemCreate item2 = mock(OrderCommand.OrderItemCreate.class);
+        List<OrderCommand.OrderItemCreate> commandItems = List.of(item1, item2);
         OrderCommand.Create command = mock(OrderCommand.Create.class);
         when(command.getOrderItems()).thenReturn(commandItems);
 

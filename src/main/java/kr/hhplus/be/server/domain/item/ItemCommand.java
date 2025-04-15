@@ -18,8 +18,8 @@ public class ItemCommand {
         public Item(kr.hhplus.be.server.domain.item.Item item) {
             this.itemId = item.getId();
             this.name = item.getName();
-            this.price = item.getPrice();
-            this.stock = item.getStock();
+            this.price = item.price();
+            this.stock = item.stock();
         }
 
         public Long getItemId() {

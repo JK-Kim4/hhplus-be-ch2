@@ -17,12 +17,6 @@ public class OrderItemCriteria {
         return new OrderCommand.OrderItemCreate(itemId, price, quantity);
     }
 
-    public ItemCommand.DecreaseStock toDecreaseStockCommand(){
-        return new ItemCommand.DecreaseStock(itemId, quantity);
-    }
-
-    private OrderItemCriteria(){}
-
     public OrderItemCriteria(Long itemId, Integer price, Integer quantity) {
         this.itemId = itemId;
         this.price = price;

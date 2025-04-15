@@ -2,9 +2,14 @@ package kr.hhplus.be.server.domain.userCoupon;
 
 import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.user.User;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserCoupon {
 
     private Long id;
@@ -20,18 +25,6 @@ public class UserCoupon {
         this.issueDateTime = LocalDateTime.now();
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public Coupon getCoupon() {
-        return coupon;
-    }
-
     public void isUsable(LocalDateTime targetDateTime) {
         coupon.isUsable(targetDateTime);
 
@@ -42,10 +35,6 @@ public class UserCoupon {
 
     public boolean isCouponOwner(Long userId) {
         return userId.equals(this.user.getId());
-    }
-
-    public LocalDateTime getIssueDateTime() {
-        return issueDateTime;
     }
 
     public Integer discount(Integer price) {

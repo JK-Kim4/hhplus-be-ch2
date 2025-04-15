@@ -29,8 +29,8 @@ public class ItemTest {
             //then
             assertAll("기본 상품은 100원의 판매가격, 0개의 재고량을 가진다",
                     () -> assertNotNull(item),
-                    () -> assertEquals(ItemPrice.MINIMUM_ITEM_PRICE, item.getPrice()),
-                    () -> assertEquals(ItemStock.MINIMUM_STOCK_QUANTITY, item.getStock())
+                    () -> assertEquals(ItemPrice.MINIMUM_ITEM_PRICE, item.price()),
+                    () -> assertEquals(ItemStock.MINIMUM_STOCK_QUANTITY, item.stock())
             );;
         }
 
@@ -41,8 +41,8 @@ public class ItemTest {
 
             //then
             assertAll("전달받은 판매가격과 0개의 재고량을 가진다.",
-                    () -> assertEquals(price, item.getPrice()),
-                    () -> assertEquals(ItemStock.MINIMUM_STOCK_QUANTITY, item.getStock())
+                    () -> assertEquals(price, item.price()),
+                    () -> assertEquals(ItemStock.MINIMUM_STOCK_QUANTITY, item.stock())
             );
         }
 
@@ -53,8 +53,8 @@ public class ItemTest {
 
             //then
             assertAll("전달받은 판매가격과 재고량을 가진다",
-                    () -> assertEquals(price, item.getPrice()),
-                    () -> assertEquals(stock, item.getStock())
+                    () -> assertEquals(price, item.price()),
+                    () -> assertEquals(stock, item.stock())
             ); ;
 
         }
@@ -82,7 +82,7 @@ public class ItemTest {
             item.updatePrice(price);
 
             //then
-            assertEquals(price, item.getPrice());
+            assertEquals(price, item.price());
         }
 
         @ParameterizedTest
@@ -130,7 +130,7 @@ public class ItemTest {
             item.decreaseStock(amount);
 
             //then
-            assertEquals(stock-amount, item.getStock());
+            assertEquals(stock-amount, item.stock());
         }
 
         @ParameterizedTest
@@ -151,7 +151,7 @@ public class ItemTest {
             item.increaseStock(amount);
 
             //then
-            assertEquals(stock+amount, item.getStock());
+            assertEquals(stock+amount, item.stock());
         }
 
         @ParameterizedTest

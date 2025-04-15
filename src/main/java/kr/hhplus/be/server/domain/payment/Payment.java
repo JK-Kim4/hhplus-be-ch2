@@ -4,10 +4,14 @@ import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderStatus;
 import kr.hhplus.be.server.domain.order.OrderUser;
 import kr.hhplus.be.server.domain.user.User;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Payment {
 
     private Long id;
@@ -18,9 +22,6 @@ public class Payment {
     private LocalDateTime paymentResponseDateTime;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
-    public Payment(){
-    }
 
     public Payment(Order order, User user, Integer paymentPrice, PaymentStatus paymentStatus) {
         this.orderUser = new OrderUser(order, user);
@@ -37,42 +38,6 @@ public class Payment {
         this.orderUser.updateOrderStatus(OrderStatus.PAYMENT_WAITING);
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Order getOrder() {
-        return orderUser.getOrder();
-    }
-
-    public User getUser() {
-        return orderUser.getUser();
-    }
-
-    public Integer getPaymentPrice() {
-        return paymentPrice;
-    }
-
-    public PaymentStatus getPaymentStatus() {
-        return paymentStatus;
-    }
-
-    public LocalDateTime getPaymentRequestDateTime() {
-        return paymentRequestDateTime;
-    }
-
-    public LocalDateTime getPaymentResponseDateTime() {
-        return paymentResponseDateTime;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
     }
 
     public void logRequestDateTime(LocalDateTime requestDateTime) {
@@ -128,5 +93,9 @@ public class Payment {
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';
+    }
+
+    public Order getOrder() {
+        return this.orderUser.getOrder();
     }
 }

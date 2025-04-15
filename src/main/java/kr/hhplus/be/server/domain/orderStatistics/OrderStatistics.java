@@ -1,6 +1,9 @@
 package kr.hhplus.be.server.domain.orderStatistics;
 
 import kr.hhplus.be.server.domain.order.OrderItem;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -8,14 +11,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderStatistics {
 
     private Long id;
     private Long itemId;
     private Integer orderCount;
     private LocalDate statisticDate;
-
-    public OrderStatistics(){}
 
     public OrderStatistics(Long itemId, Integer orderCount, LocalDate statisticDate) {
         this.itemId = itemId;
@@ -26,22 +28,6 @@ public class OrderStatistics {
     public OrderStatistics(Long itemId, Integer orderCount) {
         this.itemId = itemId;
         this.orderCount = orderCount;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public LocalDate getStatisticDate() {
-        return statisticDate;
-    }
-
-    public Long getItemId() {
-        return itemId;
-    }
-
-    public Integer getOrderCount() {
-        return orderCount;
     }
 
     public static List<OrderStatistics> calculateOrderStatistics(List<OrderItem> orderItems, LocalDate targetDate) {

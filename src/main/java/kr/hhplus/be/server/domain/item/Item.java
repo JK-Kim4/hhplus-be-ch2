@@ -1,10 +1,14 @@
 package kr.hhplus.be.server.domain.item;
 
 import kr.hhplus.be.server.interfaces.exception.InvalidStockException;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Item {
 
     private Long id;
@@ -13,9 +17,6 @@ public class Item {
     private ItemStock stock;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
-    public Item() {
-    }
 
     public Item(String name) {
         this.name = name;
@@ -42,28 +43,12 @@ public class Item {
         this.stock = ItemStock.createOrDefault(stock);
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public Integer getPrice() {
+    public Integer price(){
         return this.price.price();
     }
 
-    public Integer getStock(){
+    public Integer stock(){
         return this.stock.stock();
-    }
-
-    public String getName(){
-        return this.name;
     }
 
     public boolean hasEnoughStock(Integer quantity) {

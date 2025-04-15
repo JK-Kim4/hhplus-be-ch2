@@ -1,7 +1,11 @@
 package kr.hhplus.be.server.domain.order;
 
 import kr.hhplus.be.server.domain.item.Item;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderItem {
 
     private Long id;
@@ -24,7 +28,7 @@ public class OrderItem {
             throw new IllegalArgumentException("올바르지 않은 상품 정보입니다.");
         }
 
-        if (item.getPrice() != orderedPrice) {
+        if (!item.getPrice().equals(orderedPrice)) {
             throw new IllegalArgumentException("가격 정보가 일치하지 않습니다.");
         }
 
@@ -44,26 +48,6 @@ public class OrderItem {
         this.item = item;
         this.price = price;
         this.quantity = quantity;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public Long getItemId() {
-        return itemId;
-    }
-
-    public Integer getPrice() {
-        return price;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
     }
 
     protected void setOrder(Order order){
