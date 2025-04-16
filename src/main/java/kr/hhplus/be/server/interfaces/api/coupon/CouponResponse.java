@@ -2,8 +2,8 @@ package kr.hhplus.be.server.interfaces.api.coupon;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import kr.hhplus.be.server.domain.coupon.CouponType;
-import kr.hhplus.be.server.domain.userCoupon.UserCoupon;
-import kr.hhplus.be.server.domain.userCoupon.UserCouponInfo;
+import kr.hhplus.be.server.domain.user.userCoupon.UserCoupon;
+import kr.hhplus.be.server.domain.user.userCoupon.UserCouponInfo;
 
 import java.time.LocalDateTime;
 import java.util.List;
