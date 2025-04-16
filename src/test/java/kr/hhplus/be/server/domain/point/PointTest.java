@@ -31,7 +31,7 @@ public class PointTest {
     @Test
     @DisplayName("정상적인 사용자 정보로 Point 객체 생성")
     void createPointWithValidUser() {
-        Point point = Point.create(user.getId());
+        Point point = Point.create(user);
 
         assertNotNull(point);
         assertEquals(0, point.getAmount());
@@ -40,7 +40,7 @@ public class PointTest {
     @Test
     @DisplayName("충전 금액이 최소 금액보다 작으면 예외 발생")
     void chargeWithInvalidAmountThrowsException() {
-        Point point = Point.create(user.getId());
+        Point point = Point.create(user);
 
         InvalidAmountException exception = assertThrows(InvalidAmountException.class, () -> {
             point.charge(50);
@@ -52,7 +52,7 @@ public class PointTest {
     @Test
     @DisplayName("충전 시 최대 잔액 초과하면 예외 발생")
     void chargeExceedingMaximumBalanceThrowsException() {
-        Point point = Point.create(user.getId());
+        Point point = Point.create(user);
         point.charge(Point.MAXIMUM_BALANCE - 50); // 현재 잔액: MAX-50
 
         InvalidAmountException exception = assertThrows(InvalidAmountException.class, () -> {
@@ -65,7 +65,7 @@ public class PointTest {
     @Test
     @DisplayName("정상 충전 시 잔액 증가")
     void chargeIncreasesBalance() {
-        Point point = Point.create(user.getId());
+        Point point = Point.create(user);
         point.charge(500);
 
         assertEquals(500, point.getAmount());
@@ -74,7 +74,7 @@ public class PointTest {
     @Test
     @DisplayName("차감 금액이 잔액 초과 시 예외 발생")
     void deductWithInsufficientBalanceThrowsException() {
-        Point point = Point.create(user.getId());
+        Point point = Point.create(user);
         point.charge(300);
 
         InvalidAmountException exception = assertThrows(InvalidAmountException.class, () -> {
@@ -87,7 +87,7 @@ public class PointTest {
     @Test
     @DisplayName("정상 차감 시 잔액 감소")
     void deductDecreasesBalance() {
-        Point point = Point.create(user.getId());
+        Point point = Point.create(user);
         point.charge(1000);
         point.deduct(400);
 
