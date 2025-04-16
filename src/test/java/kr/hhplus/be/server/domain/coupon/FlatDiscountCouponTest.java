@@ -1,14 +1,13 @@
 package kr.hhplus.be.server.domain.coupon;
 
 import kr.hhplus.be.server.domain.user.User;
-import kr.hhplus.be.server.domain.userCoupon.UserCoupon;
+import kr.hhplus.be.server.domain.user.userCoupon.UserCoupon;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.LocalDateTime;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,7 +19,7 @@ public class FlatDiscountCouponTest {
             .id(10L)
             .name("flatCoupon")
             .couponType(CouponType.FLAT)
-            .remainingQuantity(new AtomicInteger(initAmount))
+            .remainingQuantity(initAmount)
             .expireDateTime(LocalDateTime.of(2099, 1, 1, 0, 0))
             .build();
 
@@ -57,7 +56,7 @@ public class FlatDiscountCouponTest {
                 .id(10L)
                 .name("flatCoupon")
                 .couponType(CouponType.FLAT)
-                .remainingQuantity(new AtomicInteger(0))
+                .remainingQuantity(0)
                 .expireDateTime(LocalDateTime.of(2099, 1, 1, 0, 0))
                 .build();
 
@@ -69,7 +68,7 @@ public class FlatDiscountCouponTest {
     @DisplayName("쿠폰 발급시 잔여 수량이 차감된다.")
     void coupon_issue_test(){
         flatCoupon.issue(user);
-        assertEquals(initAmount-1, flatCoupon.getRemainingQuantity().get());
+        assertEquals(initAmount-1, flatCoupon.getRemainingQuantity());
     }
 
     @Test
