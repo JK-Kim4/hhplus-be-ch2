@@ -1,14 +1,14 @@
 package kr.hhplus.be.server.domain.point;
 
-import kr.hhplus.be.server.domain.point.pointHistory.PointHistoryV2;
+import kr.hhplus.be.server.domain.point.pointHistory.PointHistory;
 
 import java.util.List;
 
 public class PointHistories {
 
-    private List<PointHistoryV2> pointHistories;
+    private List<PointHistory> pointHistories;
 
-    public void registerPointHistory(PointHistoryV2 pointHistory) {
+    public void registerPointHistory(PointHistory pointHistory) {
         pointHistories.add(pointHistory);
     }
 

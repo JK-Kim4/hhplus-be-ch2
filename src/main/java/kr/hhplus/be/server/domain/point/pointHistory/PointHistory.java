@@ -1,19 +1,33 @@
-package kr.hhplus.be.server.domain.user.pointHistory;
+package kr.hhplus.be.server.domain.point.pointHistory;
 
+import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.user.User;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@Entity
+@Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PointHistory {
 
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "point_history_id")
     private Long id;
-    private Long userId;
-    private PointHistoryType pointHistoryType;
-    private Integer point;
-    private LocalDateTime createdAt;
 
-    public PointHistory(){}
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Enumerated(EnumType.STRING)
+    private PointHistoryType pointHistoryType;
+
+    @Column(name = "point")
+    private Integer point;
+
+    @Column
+    private LocalDateTime createdAt;
 
     public PointHistory(Long userId, Integer point, PointHistoryType pointHistoryType) {
 

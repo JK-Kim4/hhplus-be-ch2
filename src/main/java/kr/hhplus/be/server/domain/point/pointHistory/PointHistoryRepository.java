@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.user.pointHistory;
+package kr.hhplus.be.server.domain.point.pointHistory;
 
 import org.springframework.stereotype.Repository;
 
