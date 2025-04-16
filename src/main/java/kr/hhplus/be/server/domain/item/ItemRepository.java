@@ -1,12 +1,11 @@
 package kr.hhplus.be.server.domain.item;
 
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.Optional;
 
-@Repository
 public interface ItemRepository {
+
+    Item save(Item item);
 
     Optional<Item> findById(Long id);
 

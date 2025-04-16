@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class ItemService {
 
     private final ItemRepository itemRepository;
@@ -15,6 +16,12 @@ public class ItemService {
         this.itemRepository = itemRepository;
     }
 
+    public Item save(ItemCommand.Create command){
+        Item item = new Item(command.getName(), command.getPrice(), command.getStock());
+        return itemRepository.save(item);
+    }
+
+    @Transactional(readOnly = true)
     public Item findItemById(Long itemId){
         return itemRepository.findById(itemId).orElseThrow(NoResultException::new);
     }
@@ -26,22 +33,6 @@ public class ItemService {
                 .orElseThrow(NoResultException::new);
 
         return ItemCommand.Item.from(item);
-    }
-
-    public void canOrder(ItemCommand.CanOrder command) {
-
-        Item item = itemRepository.findById(command.getItemId())
-                .orElseThrow(NoResultException::new);
-
-        item.isSamePrice(command.getPrice());
-        item.hasEnoughStock(command.getQuantity());
-    }
-
-    public void decreaseStock(ItemCommand.DecreaseStock command) {
-        Item item = itemRepository.findById(command.getItemId())
-                .orElseThrow(NoResultException::new);
-
-        item.decreaseStock(command.getQuantity());
     }
 
     public List<Item> findByIds(List<Long> itemIds) {
