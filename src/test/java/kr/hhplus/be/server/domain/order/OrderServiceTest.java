@@ -1,8 +1,5 @@
 package kr.hhplus.be.server.domain.order;
 
-import kr.hhplus.be.server.domain.item.ItemRepository;
-import kr.hhplus.be.server.domain.order.command.OrderCommand;
-import kr.hhplus.be.server.domain.order.command.OrderInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,7 +9,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -20,41 +16,11 @@ public class OrderServiceTest {
 
     private OrderRepository orderRepository;
     private OrderService orderService;
-    private ItemRepository itemRepository;
 
     @BeforeEach
     void setUp() {
         orderRepository = mock(OrderRepository.class);
-        itemRepository = mock(ItemRepository.class);
-        orderService = new OrderService(orderRepository, itemRepository);
-    }
-
-    @Test
-    void testCreateOrder_success() {
-        // given
-        OrderCommand.OrderItemCreate item1 = mock(OrderCommand.OrderItemCreate.class);
-        OrderCommand.OrderItemCreate item2 = mock(OrderCommand.OrderItemCreate.class);
-        List<OrderCommand.OrderItemCreate> commandItems = List.of(item1, item2);
-        OrderCommand.Create command = mock(OrderCommand.Create.class);
-        when(command.getOrderItems()).thenReturn(commandItems);
-
-        OrderItem orderItemEntity1 = mock(OrderItem.class);
-        OrderItem orderItemEntity2 = mock(OrderItem.class);
-        when(item1.toEntity()).thenReturn(orderItemEntity1);
-        when(item2.toEntity()).thenReturn(orderItemEntity2);
-
-        List<OrderItem> itemEntities = List.of(orderItemEntity1, orderItemEntity2);
-        Order orderEntity = mock(Order.class);
-        when(command.toEntity(itemEntities)).thenReturn(orderEntity);
-        when(orderRepository.save(any(Order.class))).thenReturn(orderEntity);
-
-        // when
-        OrderInfo.Create result = orderService.createOrder(command);
-
-        // then
-        verify(orderRepository).save(orderEntity);
-        verify(orderEntity).registerOrderItems(any(OrderItems.class));
-        assertNotNull(result);
+        orderService = new OrderService(orderRepository);
     }
 
     @Test
