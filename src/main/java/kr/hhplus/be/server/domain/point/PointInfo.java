@@ -15,7 +15,7 @@ public class PointInfo {
         }
 
         private Point(kr.hhplus.be.server.domain.point.Point point) {
-            this.userId = point.getUserId();
+            this.userId = point.getId();
             this.amount = point.getAmount();
         }
 
