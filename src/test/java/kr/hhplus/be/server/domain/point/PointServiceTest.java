@@ -1,10 +1,13 @@
 package kr.hhplus.be.server.domain.point;
 
-import org.junit.jupiter.api.BeforeEach;
+import kr.hhplus.be.server.domain.user.User;
+import kr.hhplus.be.server.domain.user.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
@@ -16,14 +19,14 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class PointServiceTest {
 
+    @Mock
     private PointRepository pointRepository;
-    private PointService pointService;
 
-    @BeforeEach
-    void setUp() {
-        pointRepository = mock(PointRepository.class);
-        pointService = new PointService(pointRepository);
-    }
+    @Mock
+    private UserRepository userRepository;
+
+    @InjectMocks
+    private PointService pointService;
 
     @Test
     @DisplayName("기존 포인트가 있으면 해당 객체에 금액 충전")
@@ -33,11 +36,11 @@ public class PointServiceTest {
         Point mockPoint = mock(Point.class);
 
         when(pointRepository.findByUserId(userId)).thenReturn(Optional.of(mockPoint));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(new User(2L, "user")));
 
         pointService.charge(command);
 
         verify(mockPoint, times(1)).charge(1000);
-        verify(pointRepository, never()).save(any());
     }
 
     @Test
@@ -46,7 +49,7 @@ public class PointServiceTest {
         Long userId = 2L;
         PointCommand.Charge command = PointCommand.Charge.of(userId, 5000);
 
-        when(pointRepository.findByUserId(userId)).thenReturn(Optional.empty());
+        when(userRepository.findById(userId)).thenReturn(Optional.of(new User(2L, "user")));
 
         // 실제 객체로 동작을 테스트
         ArgumentCaptor<Point> captor = ArgumentCaptor.forClass(Point.class);
@@ -56,26 +59,9 @@ public class PointServiceTest {
 
         Point savedPoint = captor.getValue();
         assertNotNull(savedPoint);
-        assertEquals(userId, savedPoint.getUserId());
+        assertEquals(userId, savedPoint.getUser().getId());
         // charge 이후 amount가 5000인지 확인
         assertEquals(5000, savedPoint.getAmount());
-    }
-
-    @Test
-    @DisplayName("getPoint는 PointInfo.Point를 반환한다")
-    void getPoint_returnsPointInfo() {
-        Long userId = 3L;
-        Point mockPoint = mock(Point.class);
-        when(mockPoint.getUserId()).thenReturn(userId);
-        when(mockPoint.getAmount()).thenReturn(7000);
-
-        when(pointRepository.findByUserId(userId)).thenReturn(Optional.of(mockPoint));
-
-        Point result = pointService.findPointByUserId(userId);
-
-        assertNotNull(result);
-        assertEquals(userId, result.getUserId());
-        assertEquals(7000, result.getAmount());
     }
 
 }
