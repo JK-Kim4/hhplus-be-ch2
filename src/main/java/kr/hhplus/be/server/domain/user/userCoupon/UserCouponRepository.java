@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.userCoupon;
+package kr.hhplus.be.server.domain.user.userCoupon;
 
 import org.springframework.stereotype.Repository;
 
