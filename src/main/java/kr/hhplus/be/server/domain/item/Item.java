@@ -1,5 +1,7 @@
 package kr.hhplus.be.server.domain.item;
 
+import jakarta.persistence.*;
+import kr.hhplus.be.server.interfaces.exception.InvalidPriceException;
 import kr.hhplus.be.server.interfaces.exception.InvalidStockException;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -8,76 +10,103 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@Entity
 @Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Item {
 
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "item_id")
     private Long id;
+
+    @Column(name = "name")
     private String name;
-    private ItemPrice price;
-    private ItemStock stock;
+
+    @Embedded
+    private Price price;
+
+    @Embedded
+    private Stock  stock;
+
+    @Column
     private LocalDateTime createdAt;
+
+    @Column
     private LocalDateTime updatedAt;
 
     public Item(String name) {
         this.name = name;
-        this.price = ItemPrice.createOrDefault(null);
-        this.stock = ItemStock.createOrDefault(null);
+        this.price = Price.createOrDefault();
+        this.stock = Stock.createOrDefault();
     }
 
     public Item(String name, Integer price) {
         this.name = name;
-        this.price = ItemPrice.createOrDefault(price);
-        this.stock = ItemStock.createOrDefault(null);
+        this.price = Price.createOrDefault(price);
+        this.stock = Stock.createOrDefault();
     }
 
     public Item(String name, Integer price, Integer stock) {
         this.name = name;
-        this.price = ItemPrice.createOrDefault(price);
-        this.stock = ItemStock.createOrDefault(stock);
+        this.price = Price.createOrDefault(price);
+        this.stock = Stock.createOrDefault(stock);
     }
 
     public Item(Long id, String name, Integer price, Integer stock) {
         this.id = id;
         this.name = name;
-        this.price = ItemPrice.createOrDefault(price);
-        this.stock = ItemStock.createOrDefault(stock);
+        this.price = Price.createOrDefault(price);
+        this.stock = Stock.createOrDefault(stock);
+    }
+
+    public void setPrice(Integer price) {
+        this.price = Price.createOrDefault(price);
+    }
+
+    public void setStock(Integer stock) {
+        this.stock = Stock.createOrDefault(stock);
     }
 
     public Integer price(){
-        return this.price.price();
+        return this.price.getPrice();
     }
 
     public Integer stock(){
-        return this.stock.stock();
+        return this.stock.getStock();
     }
 
     public boolean hasEnoughStock(Integer quantity) {
-        if(quantity >= ItemStock.MAXIMUM_STOCK_QUANTITY){
+        if(quantity >= Stock.MAXIMUM_STOCK_QUANTITY){
             throw new InvalidStockException(InvalidStockException.OVER_MAXIMUM_STOCK_QUANTITY);
         }
-        return this.stock.stock() >= quantity;
+
+        if(quantity > this.stock()){
+            throw new InvalidStockException(InvalidStockException.INSUFFICIENT_STOCK_QUANTITY);
+        }
+
+        return true;
     }
 
     public boolean isSamePrice(Integer price){
-        if(!this.getPrice().equals(price)){
-            throw new IllegalArgumentException("가격이 일치하지않습니다. 확인후 다시 시도해주세요.");
+        if(!this.price().equals(price)){
+            throw new InvalidPriceException(
+                    String.format(InvalidPriceException.ITEM_PRICE_MISMATCH, this.id));
         }
 
         return true;
     }
 
     public void updatePrice(Integer updatePrice) {
-        this.price = ItemPrice.update(updatePrice);
+        price.updatePrice(updatePrice);
         this.updatedAt = LocalDateTime.now();
     }
 
     public void decreaseStock(Integer amount) {
-        this.stock = this.stock.decrease(amount);
+        this.stock.decrease(amount);
         this.updatedAt = LocalDateTime.now();
     }
 
     public void increaseStock(Integer amount) {
-        this.stock = this.stock.increase(amount);
+        this.stock.increase(amount);
         this.updatedAt = LocalDateTime.now();
     }
 

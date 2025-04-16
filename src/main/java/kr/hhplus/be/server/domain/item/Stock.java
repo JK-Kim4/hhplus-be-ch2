@@ -1,15 +1,28 @@
 package kr.hhplus.be.server.domain.item;
 
+import jakarta.persistence.Embeddable;
 import kr.hhplus.be.server.interfaces.exception.InvalidStockException;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public record ItemStock(Integer stock) {
+@Embeddable @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Stock implements Serializable {
 
     public static final Integer MAXIMUM_STOCK_QUANTITY = 100_000;
     public static final Integer MINIMUM_STOCK_QUANTITY = 0;
 
-    public static ItemStock createOrDefault(Integer stock) {
+    private Integer stock;
+
+    public Stock(Integer stock) {
+        this.stock = stock;
+    }
+
+    public static Stock createOrDefault(Integer stock){
         stock = Objects.requireNonNullElse(stock, MINIMUM_STOCK_QUANTITY);
 
         if (stock < MINIMUM_STOCK_QUANTITY) {
@@ -20,20 +33,27 @@ public record ItemStock(Integer stock) {
             throw new InvalidStockException(InvalidStockException.OVER_MAXIMUM_STOCK_QUANTITY);
         }
 
-        return new ItemStock(stock);
+        return new Stock(stock);
     }
 
-    public ItemStock increase(Integer amount) {
+    public static Stock createOrDefault(){
+        return new Stock(MINIMUM_STOCK_QUANTITY);
+    }
 
+
+    public void increase(Integer amount) {
         if(amount <= 0){
             throw new InvalidStockException(InvalidStockException.INVALID_INCREASE_QUANTITY);
         }
 
-        return ItemStock.createOrDefault(this.stock + amount);
+        if(amount + stock > MAXIMUM_STOCK_QUANTITY){
+            throw new InvalidStockException(InvalidStockException.OVER_MAXIMUM_STOCK_QUANTITY);
+        }
+
+        this.stock += amount;
     }
 
-    public ItemStock decrease(Integer amount) {
-
+    public void decrease(Integer amount) {
         if(amount <= 0){
             throw new InvalidStockException(InvalidStockException.INVALID_DECREASE_QUANTITY);
         }
@@ -42,8 +62,7 @@ public record ItemStock(Integer stock) {
             throw new InvalidStockException(InvalidStockException.INSUFFICIENT_STOCK_QUANTITY);
         }
 
-        return ItemStock.createOrDefault(this.stock - amount);
+        this.stock -= amount;
     }
-
 
 }
