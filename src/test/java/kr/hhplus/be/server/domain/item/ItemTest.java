@@ -29,8 +29,8 @@ public class ItemTest {
             //then
             assertAll("기본 상품은 100원의 판매가격, 0개의 재고량을 가진다",
                     () -> assertNotNull(item),
-                    () -> assertEquals(ItemPrice.MINIMUM_ITEM_PRICE, item.price()),
-                    () -> assertEquals(ItemStock.MINIMUM_STOCK_QUANTITY, item.stock())
+                    () -> assertEquals(Price.MINIMUM_ITEM_PRICE, item.price()),
+                    () -> assertEquals(Stock.MINIMUM_STOCK_QUANTITY, item.stock())
             );;
         }
 
@@ -42,7 +42,7 @@ public class ItemTest {
             //then
             assertAll("전달받은 판매가격과 0개의 재고량을 가진다.",
                     () -> assertEquals(price, item.price()),
-                    () -> assertEquals(ItemStock.MINIMUM_STOCK_QUANTITY, item.stock())
+                    () -> assertEquals(Stock.MINIMUM_STOCK_QUANTITY, item.stock())
             );
         }
 
@@ -185,9 +185,10 @@ public class ItemTest {
 
         @DisplayName("상품의 재고가 충분한지 검증한다.")
         @ParameterizedTest
-        @ValueSource(ints = {501, 600, 700, 99_999})
+        @ValueSource(ints = {501, 600, 700, 999999})
         void has_enough_stock_test_false(Integer quantity){
-            assertFalse(item.hasEnoughStock(quantity));
+            assertThrows(InvalidStockException.class, ()
+                    -> item.hasEnoughStock(quantity));
         }
 
         @DisplayName("상품의 재고가 충분한지 검증한다.")
