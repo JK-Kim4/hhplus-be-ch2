@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.domain.payment;
 
+import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderStatus;
-import kr.hhplus.be.server.domain.order.OrderUser;
 import kr.hhplus.be.server.domain.user.User;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -11,79 +11,88 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@Entity
 @Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Payment {
 
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "payment_id")
     private Long id;
-    private OrderUser orderUser;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Order order;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @Column(name = "pamynet_price")
     private Integer paymentPrice;
-    private PaymentStatus paymentStatus;
+
+    @Column
     private LocalDateTime paymentRequestDateTime;
+
+    @Column
     private LocalDateTime paymentResponseDateTime;
+
+    @Column
     private LocalDateTime createdAt;
+
+    @Column
     private LocalDateTime updatedAt;
 
     public Payment(Order order, User user){
+        validation(order, user);
 
-        if(!user.getId().equals(order.getUserId())){
-            throw new IllegalArgumentException("주문자 정보가 일치하지않습니다.");
-        }
-
-        this.orderUser = new OrderUser(order, user);
+        this.order = order;
+        this.user = user;
         this.paymentPrice = order.getFinalPaymentPrice();
-        this.paymentStatus = PaymentStatus.PAYMENT_PENDING;
-        this.orderUser.updateOrderStatus(OrderStatus.PAYMENT_WAITING);
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
-    public Order getOrder() {
-        return this.orderUser.getOrder();
+    public boolean isPayable(User user){
+        authentication(user);
+        return user.point() >= paymentPrice;
     }
 
-    public void logRequestDateTime(LocalDateTime requestDateTime) {
-        this.paymentRequestDateTime = requestDateTime;
+    public void pay(User user){
+        authentication(user);
+        this.paymentRequestDateTime = LocalDateTime.now();
+        this.order.deductOrderItemStock();
+        this.user.deductPoint(paymentPrice);
+        this.order.updateOrderStatus(OrderStatus.PAYMENT_COMPLETED);
+        this.paymentResponseDateTime = LocalDateTime.now();
     }
 
-    public void logResponseDateTime(LocalDateTime responseDateTime) {
-        this.paymentResponseDateTime = responseDateTime;
+    public void authentication(User user){
+        if(!user.equals(this.user)){
+            throw new IllegalArgumentException("사용자 정보가 일치하지않습니다.");
+        }
     }
 
-    public void updatePaymentStatus(PaymentStatus paymentStatus) {
-        this.paymentStatus = paymentStatus;
-    }
-
-    public boolean isPayable(){
-        if(this.paymentStatus != PaymentStatus.PAYMENT_PENDING){
-            throw new IllegalArgumentException("진행할 수 없는 결제입니다.");
+    private void validation(Order order, User user) {
+        if(Objects.isNull(order) || Objects.isNull(user)) {
+            throw new IllegalArgumentException("필수 파라미터가 누락되었습니다.");
         }
 
-        return orderUser.hasEnoughPoint();
+        if(!order.getUser().equals(user)){
+            throw new IllegalArgumentException("결제 요청 사용자와 주문자 정보가 일치하지않습니다.");
+        }
     }
-
-    public void pay(){
-        this.orderUser.deductOrderItemStock();
-        this.logRequestDateTime(LocalDateTime.now());
-        this.orderUser.deductPrice(paymentPrice);
-        this.paymentStatus = PaymentStatus.PAYMENT_COMPLETED;
-        this.logResponseDateTime(LocalDateTime.now());
-        this.orderUser.updateOrderStatus(OrderStatus.PAYMENT_COMPLETED);
-    }
-
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Payment payment = (Payment) o;
         return Objects.equals(id, payment.id)
-                && Objects.equals(orderUser, payment.orderUser)
-                && Objects.equals(paymentPrice, payment.paymentPrice)
-                && paymentStatus == payment.paymentStatus;
+                && Objects.equals(paymentPrice, payment.paymentPrice);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, orderUser, paymentPrice, paymentStatus);
+        return Objects.hash(id, paymentPrice);
     }
 
     @Override
@@ -91,7 +100,6 @@ public class Payment {
         return "Payment{" +
                 "id=" + id +
                 ", paymentPrice=" + paymentPrice +
-                ", paymentStatus=" + paymentStatus +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';
