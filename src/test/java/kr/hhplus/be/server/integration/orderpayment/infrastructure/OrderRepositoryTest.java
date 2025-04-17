@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.integration.order.infrastructure;
+package kr.hhplus.be.server.integration.orderpayment.infrastructure;
 
 import kr.hhplus.be.server.domain.item.Item;
 import kr.hhplus.be.server.domain.item.ItemRepository;
@@ -75,7 +75,6 @@ public class OrderRepositoryTest {
 
         //then
         assertEquals(order, save);
-        //assertEquals(savedOrder.getOrderItems(), savedOrderItems); 오 이거 꽤 자주 나오는 테스트 트랩 중 하나예요. 👇 이 오류는 실제로 값이 달라서가 아니라, 컬렉션 타입이 달라서 발생하는 거예요.
         assertThat(save.getOrderItems())
                 .containsExactlyInAnyOrderElementsOf(savedOrderItems);
     }
