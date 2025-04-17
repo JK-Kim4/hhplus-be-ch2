@@ -4,6 +4,8 @@ import kr.hhplus.be.server.application.orderPayment.criteria.OrderItemCriteria;
 import kr.hhplus.be.server.application.orderPayment.criteria.OrderPaymentCriteria;
 import kr.hhplus.be.server.application.orderPayment.result.OrderResult;
 import kr.hhplus.be.server.application.orderPayment.result.PaymentResult;
+import kr.hhplus.be.server.domain.couponv2.CouponV2Service;
+import kr.hhplus.be.server.domain.couponv2.UserCouponV2;
 import kr.hhplus.be.server.domain.item.Item;
 import kr.hhplus.be.server.domain.item.ItemService;
 import kr.hhplus.be.server.domain.order.Order;
@@ -15,13 +17,11 @@ import kr.hhplus.be.server.domain.payment.PaymentCommand;
 import kr.hhplus.be.server.domain.payment.PaymentService;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.UserService;
-import kr.hhplus.be.server.domain.user.userCoupon.UserCoupon;
 import kr.hhplus.be.server.domain.user.userCoupon.UserCouponService;
 import kr.hhplus.be.server.interfaces.adaptor.RestTemplateAdaptor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
@@ -33,6 +33,7 @@ public class OrderFacade {
     private final PaymentService paymentService;
     private final ItemService itemService;
     private final UserCouponService userCouponService;
+    private final CouponV2Service couponV2Service;
     private final UserService userService;
     private final RestTemplateAdaptor restTemplateAdaptor;
 
@@ -41,12 +42,14 @@ public class OrderFacade {
             PaymentService paymentService,
             ItemService itemService,
             UserCouponService userCouponService,
+            CouponV2Service couponV2Service,
             UserService userService,
             RestTemplateAdaptor restTemplateAdaptor) {
         this.orderService = orderService;
         this.paymentService = paymentService;
         this.itemService = itemService;
         this.userCouponService = userCouponService;
+        this.couponV2Service = couponV2Service;
         this.userService = userService;
         this.restTemplateAdaptor = restTemplateAdaptor;
     }
@@ -76,9 +79,10 @@ public class OrderFacade {
 
         //쿠폰 적용
         if(criteria.getUserCouponId() != null){
-            UserCoupon userCoupon = userCouponService.findUserCouponById(criteria.getUserCouponId());
-            userCoupon.isUsable(LocalDateTime.now(), user.getId());
-            order.applyCoupon(userCoupon);
+            UserCouponV2 userCouponV2 = couponV2Service.findUserCouponById(criteria.getUserCouponId());
+
+            Integer resultPrice = userCouponV2.applyCoupon(order);
+            order.updateDiscountResult(resultPrice);
         }
 
         //DB 저장

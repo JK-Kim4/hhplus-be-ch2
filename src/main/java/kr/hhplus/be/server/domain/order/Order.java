@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class Order {
     private OrderItems orderItems;
 
     @Column(name = "total_price")
-    private Integer totalPrice;
+    protected Integer totalPrice;
 
     @Column(name = "final_payment_price")
     private Integer finalPaymentPrice;
@@ -45,15 +46,7 @@ public class Order {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public Order(User user, Long userCouponId, List<OrderItem> orderItems) {
-        this.user = user;
-        this.userCouponId = userCouponId;
-        this.orderItems = new OrderItems(orderItems);
-        this.orderStatus = OrderStatus.ORDER_CREATED;
-    }
-
-    public Order(long orderId, User user){
-        this.id = orderId;
+    public Order(User user){
         this.user = user;
         this.orderStatus = OrderStatus.ORDER_CREATED;
     }
@@ -64,8 +57,10 @@ public class Order {
         this.orderStatus = OrderStatus.ORDER_CREATED;
     }
 
-    public Order(User user){
+    public Order(User user, Long userCouponId, List<OrderItem> orderItems) {
         this.user = user;
+        this.userCouponId = userCouponId;
+        this.orderItems = new OrderItems(orderItems);
         this.orderStatus = OrderStatus.ORDER_CREATED;
     }
 
@@ -94,7 +89,7 @@ public class Order {
     }
 
     public void applyCoupon(UserCoupon userCoupon) {
-        userCoupon.isUsable(LocalDateTime.now(), user.getId());
+        userCoupon.isUsable(LocalDate.now(), user.getId());
         this.userCouponId = userCoupon.getId();
         this.finalPaymentPrice = userCoupon.discount(this.totalPrice);
         userCoupon.updateUsedFlag(true);
@@ -108,4 +103,8 @@ public class Order {
         orderItems.deductStock();
     }
 
+    public void updateDiscountResult(Integer resultPrice) {
+        deductOrderItemStock();
+        this.finalPaymentPrice = resultPrice;
+    }
 }

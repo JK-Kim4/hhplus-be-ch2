@@ -16,7 +16,7 @@ public class Item {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "item_id")
-    private Long id;
+    protected Long id;
 
     @Column(name = "name")
     private String name;
@@ -46,13 +46,6 @@ public class Item {
     }
 
     public Item(String name, Integer price, Integer stock) {
-        this.name = name;
-        this.price = Price.createOrDefault(price);
-        this.stock = Stock.createOrDefault(stock);
-    }
-
-    public Item(Long id, String name, Integer price, Integer stock) {
-        this.id = id;
         this.name = name;
         this.price = Price.createOrDefault(price);
         this.stock = Stock.createOrDefault(stock);
