@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.user;
 
+import kr.hhplus.be.server.domain.FakeUser;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -8,8 +9,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -20,34 +22,38 @@ public class UserServiceTest {
     @InjectMocks
     UserService userService;
 
+    String name = "tester";
+    User user = new FakeUser(1L, name);
 
     @Test
-    void create_user_test(){
-        String username = "test";
-        UserCommand.Create command = new UserCommand.Create(username);
+    void 동일한_이름의_사용자_등록요청시_IllegalArgumentException를_반환한다(){
+        //given
+        UserCommand.Create command = new UserCommand.Create(name);
+        when(userRepository.findByName(name))
+                .thenReturn(Optional.of(user));
 
-        when(userRepository.findByName(username)).thenReturn(Optional.empty());
-        when(userRepository.save(new User(command.getName())))
-                .thenReturn(new User(command.getName()));
+        //when
+        IllegalArgumentException illegalArgumentException =
+                assertThrows(IllegalArgumentException.class, () -> userService.save(command));
 
-        User create = userService.save(command);
-
-        assertNotNull(create);
-        assertEquals("test", create.getName());
+        //then
+        assertEquals("이미 존재하는 회원입니다." ,illegalArgumentException.getMessage());
     }
 
     @Test
-    void 사용자_이름은_중복으로_등록할수없다(){
-        String username = "test";
-        UserCommand.Create command = new UserCommand.Create(username);
-        User user = new User(username);
-
-        when(userRepository.findByName(username))
+    void 사용자는_포인트를_충전할수있다(){
+        //given
+        User user = mock(User.class);
+        UserCommand.Charge command =
+                new UserCommand.Charge(10L, 5_000);
+        when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(user));
 
-        IllegalArgumentException illegalArgumentException =
-                assertThrows(IllegalArgumentException.class, () -> userService.save(command));
-        assertEquals(illegalArgumentException.getMessage(), "이미 존재하는 회원입니다.");
+        //when
+        userService.charge(command);
+
+        //then
+        verify(user, times(1)).chargePoint(command.getAmount());
     }
 
 
