@@ -1,23 +1,24 @@
 package kr.hhplus.be.server.integration.coupon;
 
 import kr.hhplus.be.server.application.coupon.CouponFacade;
-import kr.hhplus.be.server.domain.coupon.*;
+import kr.hhplus.be.server.domain.couponv2.CouponType;
+import kr.hhplus.be.server.domain.couponv2.CouponV2;
+import kr.hhplus.be.server.domain.couponv2.CouponV2Repository;
+import kr.hhplus.be.server.domain.couponv2.FlatDiscountCouponV2;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.UserRepository;
 import kr.hhplus.be.server.domain.user.userCoupon.UserCouponCriteria;
 import kr.hhplus.be.server.domain.user.userCoupon.UserCouponInfo;
-import kr.hhplus.be.server.domain.user.userCoupon.UserCouponRepository;
-import kr.hhplus.be.server.domain.user.userCoupon.UserCoupons;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @Testcontainers
@@ -27,45 +28,41 @@ public class CouponFacadeTest {
     CouponFacade couponFacade;
 
     @Autowired
-    CouponRepository couponRepository;
+    CouponV2Repository couponV2Repository;
 
     @Autowired
     UserRepository userRepository;
 
-    @Autowired
-    UserCouponRepository userCouponRepository;
-
-    Coupon coupon;
-    User user;
+    Long couponId;
+    Long userId;
 
     @BeforeEach
     void setUp() {
-        coupon = new FlatDiscountCoupon(CouponTemplate
-                .builder()
-                .expireDateTime(LocalDateTime.now().plusDays(10))
-                .remainingQuantity(100)
-                .name("test")
-                .couponType(CouponType.FLAT)
-                .build());
-        user = new User("tester");
-        couponRepository.save(coupon);
-        userRepository.save(user);
+        CouponV2 coupon = new CouponV2("test", CouponType.FLAT, 10,
+                LocalDate.of(2025, 12, 31), LocalDate.of(2025,1,1));
+        new FlatDiscountCouponV2(coupon, 50_000);
+        couponV2Repository.save(coupon);
+        couponId = coupon.getId();
 
+        User user = new User("Tester");
+        userRepository.save(user);
+        userId = user.getId();
     }
 
+
     @Test
-    @Transactional
-    void 사용가능한_쿠폰을_발급한다(){
+    void 사용자쿠폰을_발급한다(){
         //given
-        UserCouponCriteria.Issue criteria = new UserCouponCriteria.Issue(coupon.getId(), user.getId());
+        UserCouponCriteria.Issue criteria = new UserCouponCriteria.Issue(couponId, userId);
 
         //when
         UserCouponInfo.Issue issue = couponFacade.issue(criteria);
-        userCouponRepository.findById(issue.getUserCouponId()).get();
-        User user = userRepository.findById(issue.getUserId()).get();
-        UserCoupons userCoupons = user.getUserCoupons();
+        CouponV2 couponV2 = couponV2Repository.findById(couponId).get();
 
         //then
-        assertTrue(userCoupons.isAlreadyIssuedCoupon(coupon));
+        assertNotNull(issue);
+        assertEquals(couponId, issue.getCouponId());
+        assertEquals(userId, issue.getUserId());
+        assertEquals(9, couponV2.getQuantity());
     }
 }
