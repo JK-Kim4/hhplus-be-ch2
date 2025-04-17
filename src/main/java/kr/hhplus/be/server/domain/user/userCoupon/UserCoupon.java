@@ -1,12 +1,13 @@
 package kr.hhplus.be.server.domain.user.userCoupon;
 
 import jakarta.persistence.*;
-import kr.hhplus.be.server.domain.coupon.Coupon;
+import kr.hhplus.be.server.domain.couponv2.CouponV2;
 import kr.hhplus.be.server.domain.user.User;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -22,7 +23,7 @@ public class UserCoupon {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coupoon_id")
-    protected Coupon coupon;
+    protected CouponV2 coupon;
 
     @Column(name = "is_used")
     protected boolean isUsed;
@@ -31,7 +32,7 @@ public class UserCoupon {
     protected LocalDateTime issueDateTime;
 
 
-    public UserCoupon(User user, Coupon coupon) {
+    public UserCoupon(User user, CouponV2 coupon) {
         createValidation(user, coupon);
 
         this.user = user;
@@ -44,27 +45,21 @@ public class UserCoupon {
         this.user = user;
     }
 
-    public void createValidation(User user, Coupon coupon) {
+    public void createValidation(User user, CouponV2 coupon) {
 
         if(user == null || coupon == null) {
             throw new IllegalArgumentException("파라미터가 누락되었습니다.");
         }
 
-        if(!coupon.isBeforeExpiredDate(LocalDateTime.now())) {
+        if(!coupon.isBeforeExpiredDate(LocalDate.now())) {
             throw new IllegalArgumentException("만료된 쿠폰입니다.");
         }
 
         if(!coupon.hasEnoughQuantity()){
             throw new IllegalArgumentException("재고가 소진되었습니다.");
         }
-
-        if(user.isAlreadyIssuedCoupon(coupon)){
-            throw new IllegalArgumentException("이미 발급된 쿠폰입니다.");
-        }
-
     }
-
-    public void isUsable(LocalDateTime targetDateTime, Long userId) {
+    public void isUsable(LocalDate targetDateTime, Long userId) {
 
         if(!coupon.isBeforeExpiredDate(targetDateTime)){
             throw new IllegalArgumentException("만료된 쿠폰입니다.");
@@ -84,7 +79,7 @@ public class UserCoupon {
     }
 
     public Integer discount(Integer price) {
-        return coupon.discount(price);
+        return coupon.calculateDiscount(price);
     }
 
     public void updateUsedFlag(boolean value) {

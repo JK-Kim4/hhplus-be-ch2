@@ -1,9 +1,7 @@
 package kr.hhplus.be.server.domain.user.userCoupon;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.OneToMany;
-import kr.hhplus.be.server.domain.coupon.Coupon;
+import kr.hhplus.be.server.domain.couponv2.CouponV2;
+import kr.hhplus.be.server.domain.couponv2.UserCouponV2;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,23 +10,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Embeddable @Getter
+@Getter
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class UserCoupons {
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserCoupon> userCoupons = new ArrayList<>();
+    private List<UserCouponV2> userCoupons = new ArrayList<>();
 
-    public UserCoupons(List<UserCoupon> userCoupons) {
+    public UserCoupons(List<UserCouponV2> userCoupons) {
         this.userCoupons = userCoupons;
     }
 
-    public void addUserCoupon(UserCoupon userCoupon) {
+    public void addUserCoupon(UserCouponV2 userCoupon) {
         userCoupons.add(userCoupon);
     }
 
-    public boolean isAlreadyIssuedCoupon(Coupon coupon) {
-        for (UserCoupon userCoupon : userCoupons) {
+    public boolean isAlreadyIssuedCoupon(CouponV2 coupon) {
+        for (UserCouponV2 userCoupon : userCoupons) {
             if (userCoupon.getCoupon().equals(coupon)) {
                 return true;
             }

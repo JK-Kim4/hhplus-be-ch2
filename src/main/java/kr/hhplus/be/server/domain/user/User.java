@@ -1,10 +1,7 @@
 package kr.hhplus.be.server.domain.user;
 
 import jakarta.persistence.*;
-import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.user.point.Point;
-import kr.hhplus.be.server.domain.user.userCoupon.UserCoupon;
-import kr.hhplus.be.server.domain.user.userCoupon.UserCoupons;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,10 +22,6 @@ public class User {
 
     @OneToOne(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     protected Point point;
-
-    @Transient
-    private UserCoupons userCoupons;
-
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -37,16 +30,8 @@ public class User {
         this.point = new Point(this);
     }
 
-    public boolean isAlreadyIssuedCoupon(Coupon coupon) {
-        return userCoupons.isAlreadyIssuedCoupon(coupon);
-    }
-
     public Integer point(){
         return point.getPointAmount();
-    }
-
-    public void addUserCoupon(UserCoupon userCoupon) {
-        this.userCoupons.addUserCoupon(userCoupon);
     }
 
     public void chargePoint(Integer amount) {
