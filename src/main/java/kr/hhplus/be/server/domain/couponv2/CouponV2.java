@@ -38,12 +38,27 @@ public class CouponV2 {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    public static CouponV2 createFlatCoupon(String name, Integer quantity, LocalDate expireDate, Integer discountAmount){
+        return new CouponV2(name, CouponType.FLAT, quantity, expireDate, discountAmount);
+    }
+
     public CouponV2(String name, CouponType couponType, Integer quantity, LocalDate expireDate) {
 
         createValidation(name, couponType, quantity, expireDate, LocalDate.now());
 
         this.name = name;
         this.couponType = couponType;
+        this.quantity = quantity;
+        this.expireDate = expireDate;
+    }
+
+    private CouponV2 (String name, CouponType couponType, Integer quantity, LocalDate expireDate, Integer discountAmount) {
+
+        createValidation(name, couponType, quantity, expireDate, LocalDate.now());
+
+        this.name = name;
+        this.couponType = CouponType.FLAT;
+        this.flatDiscountCoupon = new FlatDiscountCouponV2(this, discountAmount);
         this.quantity = quantity;
         this.expireDate = expireDate;
     }
