@@ -33,8 +33,8 @@ public class UserResult {
         private Long userId;
         private Integer amount;
 
-        public static Point from(kr.hhplus.be.server.domain.point.Point point) {
-            return new Point(point.getUser().getId(), point.getAmount());
+        public static Point from(kr.hhplus.be.server.domain.user.point.Point point) {
+            return new Point(point.getUser().getId(), point.getPointAmount());
         }
 
         private Point(Long userId, Integer amount) {

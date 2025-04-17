@@ -26,9 +26,19 @@ public class UserService {
         }
     }
 
+    @Transactional
+    public User charge(UserCommand.Charge command){
+        User user = userRepository.findById(command.getUserId())
+                .orElseThrow(NoResultException::new);
+        user.chargePoint(command.getAmount());
+        return userRepository.save(user);
+    }
+
     @Transactional(readOnly = true)
     public User findById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(NoResultException::new);
     }
+
+
 }

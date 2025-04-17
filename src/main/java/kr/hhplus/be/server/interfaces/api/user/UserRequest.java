@@ -12,7 +12,7 @@ public class UserRequest {
         private Integer chargePoint;
 
         public UserCriteria.Charge toCriteria(Long userId) {
-            return UserCriteria.Charge.of(userId, chargePoint);
+            return new UserCriteria.Charge(userId, chargePoint);
         }
 
         public Charge(Integer chargePoint) {

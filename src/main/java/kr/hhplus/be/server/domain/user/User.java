@@ -2,7 +2,7 @@ package kr.hhplus.be.server.domain.user;
 
 import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.coupon.Coupon;
-import kr.hhplus.be.server.domain.point.Point;
+import kr.hhplus.be.server.domain.user.point.Point;
 import kr.hhplus.be.server.domain.user.userCoupon.UserCoupon;
 import kr.hhplus.be.server.domain.user.userCoupon.UserCoupons;
 import lombok.AccessLevel;
@@ -18,30 +18,23 @@ public class User {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private Long id;
+    protected Long id;
 
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     protected Point point;
 
-    @Embedded
+    @Transient
     private UserCoupons userCoupons;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public User(String name) {
-
         this.name = name;
-        userCoupons = new UserCoupons();
-    }
-
-    public User(Long id, String name){
-        this.id = id;
-        this.name = name;
-        userCoupons = new UserCoupons();
+        this.point = new Point(this);
     }
 
     public boolean isAlreadyIssuedCoupon(Coupon coupon) {
@@ -49,7 +42,7 @@ public class User {
     }
 
     public Integer point(){
-        return point.getAmount();
+        return point.getPointAmount();
     }
 
     public void addUserCoupon(UserCoupon userCoupon) {
