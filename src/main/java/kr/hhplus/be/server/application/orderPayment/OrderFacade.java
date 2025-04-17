@@ -57,10 +57,13 @@ public class OrderFacade {
 
     @Transactional
     public void orderPayment(OrderPaymentCriteria criteria){
+        OrderResult.Create order = createOrder(criteria);
+
+        PaymentResult.Create payment = createPayment(
+                OrderPaymentCriteria.PaymentCreate.of(order.getOrderId(), criteria.getUserId()));
+
         processPayment(
-                new OrderPaymentCriteria.PaymentProcess(
-                        createPayment(new OrderPaymentCriteria.PaymentCreate(
-                                createOrder(criteria).getOrderId())).getPaymentId()));
+                OrderPaymentCriteria.PaymentProcess.of(order.getOrderId(), criteria.getUserId(), payment.getPaymentId()));
     }
 
     @Transactional
@@ -70,12 +73,7 @@ public class OrderFacade {
 
         //주문 객체 생성(User)
         User user = userService.findById(criteria.getUserId());
-        Order order = new Order(user);
-
-        //주문 상품 객체 생성(OrderItem)
-        List<OrderItem> orderItems = createOrderItems(order, criteria.toOrderItemCreateCommand());
-        order.addOrderItems(orderItems);
-        order.calculateTotalPrice();
+        Order order = new Order(user, createOrderItems(criteria.toOrderItemCreateCommand()));
 
         //쿠폰 적용
         if(criteria.getUserCouponId() != null){
@@ -93,37 +91,32 @@ public class OrderFacade {
     @Transactional
     public PaymentResult.Create createPayment(OrderPaymentCriteria.PaymentCreate criteria) {
         Order order = orderService.findById(criteria.getOrderId());
-        User user = order.getUser();
-
+        User user = userService.findById(criteria.getUserId());
         Payment payment = new Payment(order, user);
-        order.registerPayment(payment);
-
         paymentService.save(PaymentCommand.Create.of(payment));
-
+        order.registerPayment(payment);
         return PaymentResult.Create.from(payment);
     }
 
     @Transactional
     public PaymentResult.Process processPayment(OrderPaymentCriteria.PaymentProcess criteria) {
         Payment payment = paymentService.findById(criteria.getPaymentId());
-
-        payment.pay();
-
+        User user = userService.findById(criteria.getUserId());
+        payment.isPayable(user);
+        payment.pay(user);
         restTemplateAdaptor.post("test", payment, HashMap.class );
-
         return PaymentResult.Process.from(payment);
     }
 
 
     /*PRIVATE*/
-    private List<OrderItem>  createOrderItems(Order order, List< OrderCommand.OrderItemCreate> orderItemCommands) {
+    private List<OrderItem>  createOrderItems(List< OrderCommand.OrderItemCreate> orderItemCommands) {
         if(orderItemCommands.isEmpty()){
             throw new IllegalArgumentException("주문 상품이 존재하지않습니다.");
         }
 
         return orderItemCommands.stream()
                 .map(command -> new OrderItem(
-                        order,
                         itemService.findItemById(command.getItemId()),
                         command.getPrice(),
                         command.getQuantity()))

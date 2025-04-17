@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.orderStatistics;
 
+import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.order.OrderItem;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -11,12 +12,21 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Entity
 @Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderStatistics {
 
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "oder_statistics_id")
     private Long id;
+
+    @Column(name = "item_id")
     private Long itemId;
+
+    @Column(name = "order_count")
     private Integer orderCount;
+
+    @Column
     private LocalDate statisticDate;
 
     public OrderStatistics(Long itemId, Integer orderCount, LocalDate statisticDate) {

@@ -40,7 +40,8 @@ public class OrderItems {
     }
 
     public void setOrder(Order order) {
-        orderItems.stream().forEach(orderItem -> orderItem.setOrder(order));
+        orderItems.stream()
+                .forEach(orderItem -> orderItem.setOrder(order));
     }
 
     public Integer size(){

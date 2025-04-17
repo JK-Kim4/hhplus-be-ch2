@@ -19,7 +19,11 @@ public class OrderItem {
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "item_id")
     private Item item;
+
+    @Column
     private Integer price;
+
+    @Column
     private Integer quantity;
 
     public OrderItem(Order order, Item item, Integer orderedPrice, Integer quantity) {

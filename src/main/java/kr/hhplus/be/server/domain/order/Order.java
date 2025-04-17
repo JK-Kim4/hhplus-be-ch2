@@ -51,16 +51,20 @@ public class Order {
         this.orderStatus = OrderStatus.ORDER_CREATED;
     }
 
-    public Order(User user, List<OrderItem> orderItems){
+    public Order(User user, List<OrderItem> orderItemList){
         this.user = user;
-        this.orderItems = new OrderItems(orderItems);
+        this.orderItems = new OrderItems(orderItemList);
+        orderItems.setOrder(this);
+        calculateTotalPrice();
         this.orderStatus = OrderStatus.ORDER_CREATED;
     }
 
-    public Order(User user, Long userCouponId, List<OrderItem> orderItems) {
+    public Order(User user, Long userCouponId, List<OrderItem> orderItemList) {
         this.user = user;
         this.userCouponId = userCouponId;
-        this.orderItems = new OrderItems(orderItems);
+        this.orderItems = new OrderItems(orderItemList);
+        orderItems.setOrder(this);
+        calculateTotalPrice();
         this.orderStatus = OrderStatus.ORDER_CREATED;
     }
 
@@ -86,6 +90,7 @@ public class Order {
 
     public void registerPayment(Payment payment) {
         this.payment = payment;
+        this.orderStatus = OrderStatus.PAYMENT_WAITING;
     }
 
     public void applyCoupon(UserCoupon userCoupon) {
