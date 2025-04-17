@@ -1,7 +1,6 @@
-package kr.hhplus.be.server.domain.point.pointHistory;
+package kr.hhplus.be.server.domain.user.point.pointHistory;
 
 import jakarta.persistence.*;
-import kr.hhplus.be.server.domain.user.User;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,25 +22,16 @@ public class PointHistory {
     @Enumerated(EnumType.STRING)
     private PointHistoryType pointHistoryType;
 
-    @Column(name = "point")
-    private Integer point;
+    @Column(name = "amount")
+    private Integer amount;
 
     @Column
     private LocalDateTime createdAt;
 
-    public PointHistory(Long userId, Integer point, PointHistoryType pointHistoryType) {
+    public PointHistory(Long userId, Integer amount, PointHistoryType pointHistoryType) {
 
         this.userId = userId;
-        this.point = point;
-        this.pointHistoryType = pointHistoryType;
-        this.createdAt = LocalDateTime.now();
-
-    }
-
-    public PointHistory(User user, PointHistoryType pointHistoryType) {
-
-        this.userId = user.getId();
-        this.point = user.getPoint().getAmount();
+        this.amount = amount;
         this.pointHistoryType = pointHistoryType;
         this.createdAt = LocalDateTime.now();
 
@@ -54,18 +44,18 @@ public class PointHistory {
         return Objects.equals(id, that.id) &&
                 Objects.equals(userId, that.userId) &&
                     pointHistoryType == that.pointHistoryType &&
-                        Objects.equals(point, that.point);
+                        Objects.equals(amount, that.amount);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userId, pointHistoryType, point);
+        return Objects.hash(id, userId, pointHistoryType, amount);
     }
 
     @Override
     public String toString() {
         return "PointHistory{" +
-                "point=" + point +
+                "point=" + amount +
                 ", pointHistoryType=" + pointHistoryType +
                 ", userId=" + userId +
                 ", id=" + id +

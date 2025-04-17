@@ -1,6 +1,7 @@
-package kr.hhplus.be.server.domain.point;
+package kr.hhplus.be.server.domain.user.point;
 
 import jakarta.persistence.*;
+import kr.hhplus.be.server.domain.user.point.pointHistory.PointHistory;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.interfaces.exception.InvalidAmountException;
 import lombok.AccessLevel;
@@ -23,28 +24,24 @@ public class Point {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "amount", nullable = false)
-    private Integer amount;
+    @Column(name = "pointAmount", nullable = false)
+    private Integer pointAmount;
 
     @Transient
     private PointHistories pointHistories;
 
-    private Point(User user, Integer amount) {
+    public Point(User user){
+
+        if(user == null) {
+            throw new IllegalArgumentException("사용자 정보가 존재하지않습니다.");
+        }
+
         this.user = user;
-        this.amount = amount;
+        this.pointAmount = 0;
     }
 
     public User user(){
         return user;
-    }
-
-    public static Point create(User user) {
-
-        if(user == null) {
-            throw new IllegalArgumentException("사용자 정보를 전달해주세요.");
-        }
-
-        return new Point(user, 0);
     }
 
     public void charge(Integer chargeAmount) {
@@ -52,30 +49,34 @@ public class Point {
             throw new InvalidAmountException(InvalidAmountException.INSUFFICIENT_CHARGE_AMOUNT);
         }
 
-        if(this.amount + chargeAmount > MAXIMUM_BALANCE) {
+        if(this.pointAmount + chargeAmount > MAXIMUM_BALANCE) {
             throw new InvalidAmountException(InvalidAmountException.MAXIMUM_BALANCE_EXCEEDED);
         }
 
-        this.amount += chargeAmount;
+        this.pointAmount += chargeAmount;
     }
 
     public void deduct(Integer deductAmount) {
-        if(this.amount < deductAmount){
+        if(this.pointAmount < deductAmount){
             throw new InvalidAmountException(InvalidAmountException.INSUFFICIENT_BALANCE);
         }
+        this.pointAmount -= deductAmount;
+    }
 
-        this.amount -= deductAmount;
+    //TODO. 포인트 사용 내역 저장
+    public void registerHistory(PointHistory pointHistory) {
+        this.pointHistories.addPointHistory(pointHistory);
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Point point = (Point) o;
-        return Objects.equals(id, point.id) && Objects.equals(user, point.user) && Objects.equals(amount, point.amount);
+        return Objects.equals(id, point.id) && Objects.equals(user, point.user) && Objects.equals(pointAmount, point.pointAmount);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, user, amount);
+        return Objects.hash(id, user, pointAmount);
     }
 }

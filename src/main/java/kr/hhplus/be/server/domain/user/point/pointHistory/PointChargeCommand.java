@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.point.pointHistory;
+package kr.hhplus.be.server.domain.user.point.pointHistory;
 
 public class PointChargeCommand {
 
