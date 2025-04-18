@@ -21,7 +21,7 @@ public class UserRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        User user = new User("test");
+        User user = User.createWithName("test");
         userRepository.save(user);
         userId = user.getId();
         username = user.getName();
@@ -30,7 +30,7 @@ public class UserRepositoryTest {
     @Test
     void save_user_test(){
         //give
-        User user = new User("save user");
+        User user = User.createWithName("save user");
 
         //when
         userRepository.save(user);

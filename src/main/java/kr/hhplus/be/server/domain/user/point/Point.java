@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.domain.user.point;
 
 import jakarta.persistence.*;
-import kr.hhplus.be.server.domain.user.point.pointHistory.PointHistory;
 import kr.hhplus.be.server.domain.user.User;
+import kr.hhplus.be.server.domain.user.point.pointHistory.PointHistory;
 import kr.hhplus.be.server.interfaces.exception.InvalidAmountException;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -30,9 +30,18 @@ public class Point {
     @Transient
     private PointHistories pointHistories;
 
-    public Point(User user){
+    public static Point createWithUser(User user){
+        //Point 객체 생성을 위한 필수 파라미터 검증
+        if(Objects.isNull(user)){
+            throw new IllegalArgumentException("사용자 정보가 존재하지 않습니다.");
+        }
 
-        if(user == null) {
+        return new Point(user);
+    }
+
+    private Point(User user){
+
+        if(Objects.isNull(user)) {
             throw new IllegalArgumentException("사용자 정보가 존재하지않습니다.");
         }
 

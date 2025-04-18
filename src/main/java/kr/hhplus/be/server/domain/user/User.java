@@ -25,9 +25,18 @@ public class User {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public User(String name) {
+    public static User createWithName(String name) {
+        if(Objects.isNull(name)) {
+            throw new IllegalArgumentException("사용자 이름을 입력해주세요.");
+        }
+
+        return new User(name);
+    }
+
+    /*Fake 객체 상속을 위해 protected*/
+    protected User(String name) {
         this.name = name;
-        this.point = new Point(this);
+        this.point = Point.createWithUser(this);
     }
 
     public Integer point(){

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public class UserTest {
 
     String name = "user";
-    User user = new User(name);
+    User user = User.createWithName(name);
 
     @Test
     void 사용자를_생성한다(){
@@ -35,7 +35,7 @@ public class UserTest {
         //given
         Integer defaultPoint = 5_000;
         Integer deductPoint = 1_000;
-        user = new User(name);
+        user = User.createWithName(name);
         user.chargePoint(defaultPoint);
 
         //when

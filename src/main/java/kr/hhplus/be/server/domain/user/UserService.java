@@ -22,7 +22,7 @@ public class UserService {
         if(user.isPresent()){
             throw new IllegalArgumentException("이미 존재하는 회원입니다.");
         }else{
-            return userRepository.save(new User(command.getName()));
+            return userRepository.save(User.createWithName(command.getName()));
         }
     }
 

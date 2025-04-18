@@ -33,7 +33,7 @@ public class UserServiceTest {
     @BeforeEach
     void setUp() {
         userRepository.deleteAll();
-        User save = userRepository.save(new User(name));
+        User save = userRepository.save(User.createWithName(name));
         userId = save.getId();
     }
 

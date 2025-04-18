@@ -23,7 +23,7 @@ public class PointTest {
 
         @Test
         void 잔고가_0원인_기본포인트를_생성한다(){
-            Point point = new Point(user);
+            Point point = Point.createWithUser(user);
 
             assertEquals(0, point.getPointAmount());
         }
@@ -32,7 +32,8 @@ public class PointTest {
         void 전달_사용자가_null인경우_IllegalArgumentException를_빈환한다(){
             //when
             IllegalArgumentException illegalArgumentException =
-                    assertThrows(IllegalArgumentException.class, () -> new Point(null));
+                    assertThrows(IllegalArgumentException.class,
+                            () -> Point.createWithUser(user));
 
             //then
             assertEquals("사용자 정보가 존재하지않습니다.", illegalArgumentException.getMessage());
@@ -43,7 +44,7 @@ public class PointTest {
     @DisplayName("포인트 충전 테스트")
     class point_charge_test {
 
-        private Point point = new Point(new FakeUser(1L, "tester"));
+        private Point point = Point.createWithUser(new FakeUser(1L, "tester"));
 
         @Test
         void 포인트를_충전한다(){
@@ -84,7 +85,7 @@ public class PointTest {
     @DisplayName("포인트 차감 테스트")
     class point_deduct_test {
 
-        private Point point = new Point(new FakeUser(1L, "tester"));
+        private Point point = Point.createWithUser(new FakeUser(1L, "tester"));
 
         @Test
         void 포인트를_차감한다(){
