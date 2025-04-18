@@ -3,14 +3,14 @@ package kr.hhplus.be.server.domain.order;
 import kr.hhplus.be.server.domain.item.Item;
 import kr.hhplus.be.server.domain.payment.Payment;
 import kr.hhplus.be.server.domain.user.User;
-import kr.hhplus.be.server.domain.user.userCoupon.UserCoupon;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class OrderTest {
 
@@ -53,26 +53,6 @@ public class OrderTest {
         assertEquals(OrderStatus.ORDER_CREATED, order.getOrderStatus());
         assertEquals(orderItem1.calculatePrice() + orderItem2.calculatePrice(), order.getTotalPrice(),
                 order.getTotalPrice());
-    }
-
-    @Test
-    void testApplyCoupon_success() {
-        User user = mock(User.class);
-        when(user.getId()).thenReturn(1L);
-        Order order = new Order(user, null, itemList);
-        order.calculateTotalPrice(); // assuming total = 0 now
-
-        UserCoupon coupon = mock(UserCoupon.class);
-        when(coupon.isCouponOwner(1L)).thenReturn(true);
-        when(coupon.getId()).thenReturn(99L);
-        when(coupon.discount(anyInt())).thenReturn(1500);
-
-        order.calculateTotalPrice(); // to set totalPrice
-        order.applyCoupon(coupon);
-
-        assertEquals(99L, order.getUserCouponId());
-        assertEquals(1500, order.getFinalPaymentPrice());
-        verify(coupon).updateUsedFlag(true);
     }
 
     @Test

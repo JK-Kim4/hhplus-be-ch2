@@ -7,7 +7,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -35,22 +37,42 @@ public class UserCoupon {
     @Column(name = "apply_date_time")
     protected LocalDateTime applyDateTime;
 
-    public Integer applyCoupon(Order order) {
-        //할인 금액 계산
-        Integer resultPrice = coupon.calculateDiscount(order.getTotalPrice());
+    public static UserCoupon create(User user, Coupon coupon) {
+        if(Objects.isNull(user) || Objects.isNull(coupon)) {
+            throw new IllegalArgumentException("필수 파라미터가 누락되었습니다.");
+        }
 
-        //적용 주문 정보 입력
-        this.appliedOrder = order;
-        this.applyDateTime = LocalDateTime.now();
-
-        return resultPrice;
+        return new UserCoupon(user, coupon);
     }
 
-    public UserCoupon(User user, Coupon coupon) {
-
+    private UserCoupon(User user, Coupon coupon) {
         this.user = user;
         this.coupon = coupon;
         this.issueDateTime = LocalDateTime.now();
+    }
+
+    public void updateUsedCouponInformation(Order order) {
+        this.appliedOrder = order;
+        this.applyDateTime = LocalDateTime.now();
+    }
+
+    public boolean isCouponOwner(Long userId) {
+        return userId.equals(this.user.getId());
+    }
+
+    public Integer discount(Integer price) {
+        return coupon.calculateDiscount(price);
+    }
+
+    public void isUsable(LocalDate targetDateTime, Long userId) {
+
+        if(!coupon.isBeforeExpiredDate(targetDateTime)){
+            throw new IllegalArgumentException("만료된 쿠폰입니다.");
+        }
+
+        if(!isCouponOwner(userId)){
+            throw new IllegalArgumentException("사용할 수 없는 쿠폰입니다.");
+        }
 
     }
 }

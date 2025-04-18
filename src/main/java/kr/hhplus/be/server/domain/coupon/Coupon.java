@@ -42,20 +42,8 @@ public class Coupon {
         return new Coupon(name, CouponType.FLAT, quantity, expireDate, discountAmount);
     }
 
-    public Coupon(String name, CouponType couponType, Integer quantity, LocalDate expireDate) {
-
-        createValidation(name, couponType, quantity, expireDate, LocalDate.now());
-
-        this.name = name;
-        this.couponType = couponType;
-        this.quantity = quantity;
-        this.expireDate = expireDate;
-    }
-
     private Coupon(String name, CouponType couponType, Integer quantity, LocalDate expireDate, Integer discountAmount) {
-
         createValidation(name, couponType, quantity, expireDate, LocalDate.now());
-
         this.name = name;
         this.couponType = CouponType.FLAT;
         this.flatDiscountCoupon = new FlatDiscountCoupon(this, discountAmount);
@@ -63,10 +51,9 @@ public class Coupon {
         this.expireDate = expireDate;
     }
 
+    /*for Test*/
     public Coupon(String name, CouponType couponType, Integer quantity, LocalDate expireDate, LocalDate nowDate) {
-
         createValidation(name, couponType, quantity, expireDate, nowDate);
-
         this.name = name;
         this.couponType = couponType;
         this.quantity = quantity;
@@ -82,14 +69,10 @@ public class Coupon {
     }
 
     public void decreaseQuantity() {
-
-        if(!hasEnoughQuantity()){
-            throw new IllegalArgumentException("쿠폰 수량이 부족합니다.");
-        }
-
         quantity--;
     }
 
+    //TODO. 쿠폰 형태가 추가될 경우 if 분기 추가 외 해결방법 없는지
     public Integer calculateDiscount(Integer totalPrice) {
 
         if(CouponType.FLAT.equals(couponType)){
@@ -104,13 +87,13 @@ public class Coupon {
         return max(0, totalPrice - flatDiscountCoupon.getDiscountAmount());
     }
 
-    public UserCoupon issueUserCoupon(User user, LocalDate issuedDate) {
+    public UserCoupon issue(User user, LocalDate issuedDate) {
         validation(issuedDate);
         decreaseQuantity();
-        return new UserCoupon(user, this);
+        return UserCoupon.create(user, this);
     }
 
-    public void validation(LocalDate issuedDate){
+    private void validation(LocalDate issuedDate){
 
         if(!hasEnoughQuantity()){
             throw new IllegalArgumentException("쿠폰 수량이 부족합니다.");

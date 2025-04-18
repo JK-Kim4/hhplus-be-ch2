@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.user.userCoupon;
+package kr.hhplus.be.server.domain.coupon;
 
 import jakarta.persistence.NoResultException;
 import org.springframework.stereotype.Service;

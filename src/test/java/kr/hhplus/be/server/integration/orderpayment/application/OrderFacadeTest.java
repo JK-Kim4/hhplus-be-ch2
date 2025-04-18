@@ -84,7 +84,7 @@ public class OrderFacadeTest {
                     5_000);
             couponRepository.save(coupon);
 
-            UserCoupon userCoupon = new UserCoupon(user, coupon);
+            UserCoupon userCoupon = UserCoupon.create(user, coupon);
             userCouponRepository.save(userCoupon);
             userCouponId = userCoupon.getId();
 

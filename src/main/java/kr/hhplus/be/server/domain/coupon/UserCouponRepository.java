@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.coupon;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserCouponRepository {
@@ -10,5 +11,7 @@ public interface UserCouponRepository {
     boolean isAlreadyIssuedCoupon(Long userId, Long couponId);
 
     Optional<UserCoupon> findById(Long userCouponId);
+
+    List<UserCoupon> findByUserId(Long userId);
 
 }

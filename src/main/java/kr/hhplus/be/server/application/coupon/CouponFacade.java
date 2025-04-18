@@ -5,9 +5,9 @@ import kr.hhplus.be.server.domain.coupon.CouponService;
 import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.UserService;
-import kr.hhplus.be.server.domain.user.userCoupon.UserCouponCriteria;
-import kr.hhplus.be.server.domain.user.userCoupon.UserCouponInfo;
-import kr.hhplus.be.server.domain.user.userCoupon.UserCouponService;
+import kr.hhplus.be.server.domain.coupon.UserCouponCriteria;
+import kr.hhplus.be.server.domain.coupon.UserCouponInfo;
+import kr.hhplus.be.server.domain.coupon.UserCouponService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +39,7 @@ public class CouponFacade {
             throw new IllegalArgumentException("이미 발급된 쿠폰입니다.");
         }
 
-        UserCoupon userCoupon = coupon.issueUserCoupon(user, LocalDate.now());
+        UserCoupon userCoupon = coupon.issue(user, LocalDate.now());
 
         couponService.saveUserCoupon(userCoupon);
 
@@ -52,7 +52,7 @@ public class CouponFacade {
 
     @Transactional(readOnly = true)
     public UserCouponInfo.UserCouponList findByUserId(Long userId) {
-        List<kr.hhplus.be.server.domain.user.userCoupon.UserCoupon> couponList = userCouponService.findByUserId(userId);
+        List<UserCoupon> couponList = userCouponService.findByUserId(userId);
         return UserCouponInfo.UserCouponList.of(couponList);
     }
 
