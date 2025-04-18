@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.order;
 
+import kr.hhplus.be.server.domain.FakeUser;
 import kr.hhplus.be.server.domain.item.Item;
 import kr.hhplus.be.server.domain.payment.Payment;
 import kr.hhplus.be.server.domain.user.User;
@@ -32,7 +33,7 @@ public class OrderTest {
     @Test
     void testOrderCreation() {
         User user = mock(User.class);
-        Order order = new Order(user, null, itemList);
+        Order order = new Order(user, itemList);
 
         assertEquals(2, order.getOrderItems().size());
         assertEquals(OrderStatus.ORDER_CREATED, order.getOrderStatus());
@@ -57,7 +58,7 @@ public class OrderTest {
 
     @Test
     void testRegisterPayment() {
-        Order order = new Order(null, itemList);
+        Order order = new Order(new FakeUser(2L, "tesr"), itemList);
         Payment payment = mock(Payment.class);
 
         order.registerPayment(payment);
@@ -67,21 +68,11 @@ public class OrderTest {
 
     @Test
     void testUpdateOrderStatus() {
-        Order order = new Order(null, itemList);
+        Order order = new Order(new FakeUser(1L, "test"), itemList);
 
         order.updateOrderStatus(OrderStatus.PAYMENT_WAITING);
 
         assertEquals(OrderStatus.PAYMENT_WAITING, order.getOrderStatus());
-    }
-
-    @Test
-    void testConstructorWithUser() {
-        User user = mock(User.class);
-        when(user.getId()).thenReturn(123L);
-
-        Order order = new Order(user);
-
-        assertEquals(123L, order.orderUserId());
     }
 
 

@@ -65,7 +65,7 @@ public class OrderFacade {
     @Transactional
     public OrderResult.Create createOrder(OrderPaymentCriteria criteria) {
         //주문 상품 주문 가능 여부 검사
-        orderItemsValidation(criteria.getOrderItems());
+        itemsValidation(criteria.getOrderItems());
 
         //주문 객체 생성(User)
         User user = userService.findById(criteria.getUserId());
@@ -117,7 +117,7 @@ public class OrderFacade {
                 .toList();
         }
 
-    private void orderItemsValidation(List<OrderItemCriteria> orderItems) {
+    private void itemsValidation(List<OrderItemCriteria> orderItems) {
         for (OrderItemCriteria orderItem : orderItems) {
             Item item = itemService.findItemById(orderItem.getItemId());
             item.hasEnoughStock(orderItem.getQuantity());
