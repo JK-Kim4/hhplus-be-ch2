@@ -17,7 +17,6 @@ import kr.hhplus.be.server.domain.payment.PaymentCommand;
 import kr.hhplus.be.server.domain.payment.PaymentService;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.UserService;
-import kr.hhplus.be.server.domain.user.userCoupon.UserCouponService;
 import kr.hhplus.be.server.interfaces.adaptor.RestTemplateAdaptor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +31,6 @@ public class OrderFacade {
     private final OrderService orderService;
     private final PaymentService paymentService;
     private final ItemService itemService;
-    private final UserCouponService userCouponService;
     private final CouponService couponService;
     private final UserService userService;
     private final RestTemplateAdaptor restTemplateAdaptor;
@@ -41,14 +39,12 @@ public class OrderFacade {
             OrderService orderService,
             PaymentService paymentService,
             ItemService itemService,
-            UserCouponService userCouponService,
             CouponService couponService,
             UserService userService,
             RestTemplateAdaptor restTemplateAdaptor) {
         this.orderService = orderService;
         this.paymentService = paymentService;
         this.itemService = itemService;
-        this.userCouponService = userCouponService;
         this.couponService = couponService;
         this.userService = userService;
         this.restTemplateAdaptor = restTemplateAdaptor;
@@ -78,9 +74,7 @@ public class OrderFacade {
         //쿠폰 적용
         if(criteria.getUserCouponId() != null){
             UserCoupon userCoupon = couponService.findUserCouponById(criteria.getUserCouponId());
-
-            Integer resultPrice = userCoupon.applyCoupon(order);
-            order.updateDiscountResult(resultPrice);
+            order.applyCoupon(userCoupon);
         }
 
         //DB 저장

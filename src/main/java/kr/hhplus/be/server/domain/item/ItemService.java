@@ -17,7 +17,10 @@ public class ItemService {
     }
 
     public Item save(ItemCommand.Create command){
-        Item item = new Item(command.getName(), command.getPrice(), command.getStock());
+        Item item = Item.createWithPriceAndStock(
+                command.getName(),
+                command.getPrice(),
+                command.getStock());
         return itemRepository.save(item);
     }
 

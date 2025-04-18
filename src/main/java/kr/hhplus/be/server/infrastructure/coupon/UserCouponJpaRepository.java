@@ -5,9 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserCouponJpaRepository extends JpaRepository<UserCoupon, Long> {
+
     Optional<UserCoupon> findByUserIdAndCouponId(Long userId, Long couponId);
 
     @Query( "select count(uc) > 0 from UserCoupon uc " +
@@ -16,4 +18,7 @@ public interface UserCouponJpaRepository extends JpaRepository<UserCoupon, Long>
     boolean isAlreadyIssuedCoupon(
             @Param("userId") Long userId,
             @Param("couponId")Long couponId);
+
+    @Query("select uc from UserCoupon uc where uc.user.id = :userId")
+    List<UserCoupon> findByUserId(@Param("userId") Long userId);
 }

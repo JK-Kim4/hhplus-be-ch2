@@ -37,10 +37,6 @@ public class Price implements Serializable {
         return new Price(price);
     }
 
-    public static Price createOrDefault() {
-        return new Price(MINIMUM_ITEM_PRICE);
-    }
-
     public void updatePrice(Integer price) {
         if(price < MINIMUM_ITEM_PRICE) {
             throw new InvalidPriceException(InvalidPriceException.INSUFFICIENT_MINIMUM_PRICE);

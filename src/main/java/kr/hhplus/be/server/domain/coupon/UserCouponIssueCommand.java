@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.user.userCoupon;
+package kr.hhplus.be.server.domain.coupon;
 
 public class UserCouponIssueCommand {
 

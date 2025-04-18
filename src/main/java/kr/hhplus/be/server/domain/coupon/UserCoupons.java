@@ -1,7 +1,5 @@
-package kr.hhplus.be.server.domain.user.userCoupon;
+package kr.hhplus.be.server.domain.coupon;
 
-import kr.hhplus.be.server.domain.coupon.Coupon;
-import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

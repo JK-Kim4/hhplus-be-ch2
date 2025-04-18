@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.interfaces.api.coupon;
 
-import kr.hhplus.be.server.domain.user.userCoupon.UserCouponInfo;
+import kr.hhplus.be.server.domain.coupon.UserCouponInfo;
 
 public record CouponIssueResponse(
         Long userCouponId,

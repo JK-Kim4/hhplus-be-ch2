@@ -1,9 +1,9 @@
 package kr.hhplus.be.server.domain.order;
 
 import jakarta.persistence.*;
+import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.domain.payment.Payment;
 import kr.hhplus.be.server.domain.user.User;
-import kr.hhplus.be.server.domain.user.userCoupon.UserCoupon;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -97,7 +97,7 @@ public class Order {
         userCoupon.isUsable(LocalDate.now(), user.getId());
         this.userCouponId = userCoupon.getId();
         this.finalPaymentPrice = userCoupon.discount(this.totalPrice);
-        userCoupon.updateUsedFlag(true);
+        userCoupon.updateUsedCouponInformation(this);
     }
 
     public void addOrderItems(List<OrderItem> orderItems) {

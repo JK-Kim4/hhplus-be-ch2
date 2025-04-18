@@ -34,4 +34,9 @@ public class ItemRepositoryImpl implements ItemRepository {
     public List<Item> findByIds(List<Long> itemIds) {
         return itemJpaRepository.findAllById(itemIds);
     }
+
+    @Override
+    public void deleteAll() {
+        itemJpaRepository.deleteAll();
+    }
 }
