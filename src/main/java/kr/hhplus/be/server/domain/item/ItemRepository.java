@@ -10,4 +10,7 @@ public interface ItemRepository {
     Optional<Item> findById(Long id);
 
     List<Item> findByIds(List<Long> itemIds);
+
+    void deleteAll();
+
 }

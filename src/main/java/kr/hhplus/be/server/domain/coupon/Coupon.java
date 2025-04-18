@@ -69,6 +69,9 @@ public class Coupon {
     }
 
     public void decreaseQuantity() {
+        if(!hasEnoughQuantity()){
+            throw new IllegalArgumentException("쿠폰 재고가 소진되어 발급할 수 없습니다.");
+        }
         quantity--;
     }
 

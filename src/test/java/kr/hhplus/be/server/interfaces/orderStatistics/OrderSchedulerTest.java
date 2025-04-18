@@ -1,6 +1,5 @@
 package kr.hhplus.be.server.interfaces.orderStatistics;
 
-import kr.hhplus.be.server.domain.FakeItem;
 import kr.hhplus.be.server.domain.item.Item;
 import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.order.OrderStatus;
@@ -43,9 +42,12 @@ public class OrderSchedulerTest {
         Order order1 = new Order(null, null);
         Order order2 = new Order(null, null);
         Order order3 = new Order(null, null);
-        Item car = new FakeItem(1L,"car", 1000, 50);
-        Item desk = new FakeItem(2L,"desk", 5000, 50);
-        Item food = new FakeItem(3L,"food", 3000, 50);
+        Item car = Item.createWithPriceAndStock("car", 1000, 50);
+        Item desk = Item.createWithPriceAndStock("desk", 5000, 50);
+        Item food = Item.createWithPriceAndStock("food", 3000, 50);
+        when(car.getId()).thenReturn(1L);
+        when(desk.getId()).thenReturn(2L);
+        when(food.getId()).thenReturn(3L);
         LocalDate targetDate = LocalDate.now().minusDays(1);
         List<Order> mockOrders = List.of(order1,order2,order3);
 

@@ -33,19 +33,44 @@ public class Item {
     @Column
     private LocalDateTime updatedAt;
 
-    public Item(String name) {
-        this.name = name;
-        this.price = Price.createOrDefault();
-        this.stock = Stock.createOrDefault();
+    public static Item createWithPrice(String name, Integer price) {
+        validateName(name);
+        validatePrice(price);
+        return new Item(name, price);
     }
 
-    public Item(String name, Integer price) {
+    public static Item createWithPriceAndStock(String name, Integer price, Integer stock) {
+        validateName(name);
+        validatePrice(price);
+        validateStock(stock);
+        return new Item(name, price, stock);
+    }
+
+    private static void validateName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("상품명은 필수입니다.");
+        }
+    }
+
+    private static void validatePrice(Integer price) {
+        if (price == null || price < 0) {
+            throw new IllegalArgumentException("가격은 0 이상이어야 합니다.");
+        }
+    }
+
+    private static void validateStock(Integer stock) {
+        if (stock == null || stock < 0) {
+            throw new IllegalArgumentException("재고는 0 이상이어야 합니다.");
+        }
+    }
+
+    protected Item(String name, Integer price) {
         this.name = name;
         this.price = Price.createOrDefault(price);
         this.stock = Stock.createOrDefault();
     }
 
-    public Item(String name, Integer price, Integer stock) {
+    protected Item(String name, Integer price, Integer stock) {
         this.name = name;
         this.price = Price.createOrDefault(price);
         this.stock = Stock.createOrDefault(stock);

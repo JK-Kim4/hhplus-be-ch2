@@ -70,9 +70,9 @@ public class OrderFacadeTest {
             user = User.createWithName("Tester");
             userRepository.save(user);
 
-            item1 = new Item("car", 50_000, 10);
-            item2 = new Item("truck", 10_000, 50);
-            item3 = new Item("food", 3_000, 5);
+            item1 = Item.createWithPriceAndStock("car", 50_000, 10);
+            item2 = Item.createWithPriceAndStock("truck", 10_000, 50);
+            item3 = Item.createWithPriceAndStock("food", 3_000, 5);
             itemRepository.save(item1);
             itemRepository.save(item2);
             itemRepository.save(item3);
@@ -179,9 +179,9 @@ public class OrderFacadeTest {
             user.chargePoint(999_999);
             userRepository.save(user);
 
-            item1 = new Item("car", 50_000, 10);
-            item2 = new Item("truck", 10_000, 50);
-            item3 = new Item("food", 3_000, 5);
+            item1 = Item.createWithPriceAndStock("car", 50_000, 10);
+            item2 = Item.createWithPriceAndStock("truck", 10_000, 50);
+            item3 = Item.createWithPriceAndStock("food", 3_000, 5);
             itemRepository.save(item1);
             itemRepository.save(item2);
             itemRepository.save(item3);
