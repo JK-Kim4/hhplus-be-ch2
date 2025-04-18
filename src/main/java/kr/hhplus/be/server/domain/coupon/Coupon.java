@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.couponv2;
+package kr.hhplus.be.server.domain.coupon;
 
 import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.user.User;
@@ -14,7 +14,7 @@ import static java.lang.Math.max;
 
 @Entity @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CouponV2 {
+public class Coupon {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "coupon_id")
@@ -30,7 +30,7 @@ public class CouponV2 {
     private CouponType couponType;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    protected FlatDiscountCouponV2 flatDiscountCoupon;
+    protected FlatDiscountCoupon flatDiscountCoupon;
 
     @Column
     private LocalDate expireDate;
@@ -38,11 +38,11 @@ public class CouponV2 {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public static CouponV2 createFlatCoupon(String name, Integer quantity, LocalDate expireDate, Integer discountAmount){
-        return new CouponV2(name, CouponType.FLAT, quantity, expireDate, discountAmount);
+    public static Coupon createFlatCoupon(String name, Integer quantity, LocalDate expireDate, Integer discountAmount){
+        return new Coupon(name, CouponType.FLAT, quantity, expireDate, discountAmount);
     }
 
-    public CouponV2(String name, CouponType couponType, Integer quantity, LocalDate expireDate) {
+    public Coupon(String name, CouponType couponType, Integer quantity, LocalDate expireDate) {
 
         createValidation(name, couponType, quantity, expireDate, LocalDate.now());
 
@@ -52,18 +52,18 @@ public class CouponV2 {
         this.expireDate = expireDate;
     }
 
-    private CouponV2 (String name, CouponType couponType, Integer quantity, LocalDate expireDate, Integer discountAmount) {
+    private Coupon(String name, CouponType couponType, Integer quantity, LocalDate expireDate, Integer discountAmount) {
 
         createValidation(name, couponType, quantity, expireDate, LocalDate.now());
 
         this.name = name;
         this.couponType = CouponType.FLAT;
-        this.flatDiscountCoupon = new FlatDiscountCouponV2(this, discountAmount);
+        this.flatDiscountCoupon = new FlatDiscountCoupon(this, discountAmount);
         this.quantity = quantity;
         this.expireDate = expireDate;
     }
 
-    public CouponV2(String name, CouponType couponType, Integer quantity, LocalDate expireDate, LocalDate nowDate) {
+    public Coupon(String name, CouponType couponType, Integer quantity, LocalDate expireDate, LocalDate nowDate) {
 
         createValidation(name, couponType, quantity, expireDate, nowDate);
 
@@ -104,10 +104,10 @@ public class CouponV2 {
         return max(0, totalPrice - flatDiscountCoupon.getDiscountAmount());
     }
 
-    public UserCouponV2 issueUserCoupon(User user, LocalDate issuedDate) {
+    public UserCoupon issueUserCoupon(User user, LocalDate issuedDate) {
         validation(issuedDate);
         decreaseQuantity();
-        return new UserCouponV2(user, this);
+        return new UserCoupon(user, this);
     }
 
     public void validation(LocalDate issuedDate){

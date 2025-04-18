@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.couponv2;
+package kr.hhplus.be.server.domain.coupon;
 
 import kr.hhplus.be.server.domain.FakeOrder;
 import kr.hhplus.be.server.domain.FakeUser;
@@ -10,13 +10,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 
 @ExtendWith(MockitoExtension.class)
-public class UserCouponV2Test {
+public class UserCouponTest {
 
     User user = new FakeUser(1L, "tester");
     Order order = new FakeOrder(20_000);
-    CouponV2 coupon = new CouponV2("test", CouponType.FLAT,10,
+    Coupon coupon = new Coupon("test", CouponType.FLAT,10,
             LocalDate.of(2025, 12, 31), LocalDate.of(2025,1,1));
-    FlatDiscountCouponV2 flatCoupon = new FlatDiscountCouponV2(coupon, 50_000);
+    FlatDiscountCoupon flatCoupon = new FlatDiscountCoupon(coupon, 50_000);
 
 
 

@@ -33,10 +33,10 @@ public class PointTest {
             //when
             IllegalArgumentException illegalArgumentException =
                     assertThrows(IllegalArgumentException.class,
-                            () -> Point.createWithUser(user));
+                            () -> Point.createWithUser(null));
 
             //then
-            assertEquals("사용자 정보가 존재하지않습니다.", illegalArgumentException.getMessage());
+            assertEquals("사용자 정보가 존재하지 않습니다.", illegalArgumentException.getMessage());
         }
     }
 

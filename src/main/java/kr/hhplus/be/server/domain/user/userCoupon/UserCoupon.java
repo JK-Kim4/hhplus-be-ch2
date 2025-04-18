@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.domain.user.userCoupon;
 
 import jakarta.persistence.*;
-import kr.hhplus.be.server.domain.couponv2.CouponV2;
+import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.user.User;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -23,7 +23,7 @@ public class UserCoupon {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coupoon_id")
-    protected CouponV2 coupon;
+    protected Coupon coupon;
 
     @Column(name = "is_used")
     protected boolean isUsed;
@@ -32,7 +32,7 @@ public class UserCoupon {
     protected LocalDateTime issueDateTime;
 
 
-    public UserCoupon(User user, CouponV2 coupon) {
+    public UserCoupon(User user, Coupon coupon) {
         createValidation(user, coupon);
 
         this.user = user;
@@ -45,7 +45,7 @@ public class UserCoupon {
         this.user = user;
     }
 
-    public void createValidation(User user, CouponV2 coupon) {
+    public void createValidation(User user, Coupon coupon) {
 
         if(user == null || coupon == null) {
             throw new IllegalArgumentException("파라미터가 누락되었습니다.");

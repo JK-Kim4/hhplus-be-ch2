@@ -1,9 +1,9 @@
 package kr.hhplus.be.server.infrastructure.coupon;
 
-import kr.hhplus.be.server.domain.couponv2.FlatDiscountCouponV2;
+import kr.hhplus.be.server.domain.coupon.FlatDiscountCoupon;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface FlatDiscountCouponJpaRepository extends JpaRepository<FlatDiscountCouponV2, Long> {
+public interface FlatDiscountCouponJpaRepository extends JpaRepository<FlatDiscountCoupon, Long> {
 
-    FlatDiscountCouponV2 findByCouponId(Long id);
+    FlatDiscountCoupon findByCouponId(Long id);
 }

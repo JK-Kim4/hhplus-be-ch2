@@ -5,10 +5,10 @@ import kr.hhplus.be.server.application.orderPayment.criteria.OrderItemCriteria;
 import kr.hhplus.be.server.application.orderPayment.criteria.OrderPaymentCriteria;
 import kr.hhplus.be.server.application.orderPayment.result.OrderResult;
 import kr.hhplus.be.server.application.orderPayment.result.PaymentResult;
-import kr.hhplus.be.server.domain.couponv2.CouponV2;
-import kr.hhplus.be.server.domain.couponv2.CouponV2Repository;
-import kr.hhplus.be.server.domain.couponv2.UserCouponV2;
-import kr.hhplus.be.server.domain.couponv2.UserCouponV2Repository;
+import kr.hhplus.be.server.domain.coupon.Coupon;
+import kr.hhplus.be.server.domain.coupon.CouponRepository;
+import kr.hhplus.be.server.domain.coupon.UserCoupon;
+import kr.hhplus.be.server.domain.coupon.UserCouponRepository;
 import kr.hhplus.be.server.domain.item.Item;
 import kr.hhplus.be.server.domain.item.ItemRepository;
 import kr.hhplus.be.server.domain.order.Order;
@@ -45,8 +45,10 @@ public class OrderFacadeTest {
     @Autowired OrderRepository orderRepository;
     @Autowired UserRepository userRepository;
     @Autowired ItemRepository itemRepository;
-    @Autowired CouponV2Repository couponV2Repository;
-    @Autowired UserCouponV2Repository userCouponRepository;
+    @Autowired
+    CouponRepository couponRepository;
+    @Autowired
+    UserCouponRepository userCouponRepository;
     @Autowired PaymentRepository paymentRepository;
 
     User user;
@@ -55,7 +57,7 @@ public class OrderFacadeTest {
     Item item2;
     Item item3;
 
-    CouponV2 coupon;
+    Coupon coupon;
     Long userCouponId;
     List<OrderItemCriteria> orderItemCriteria;
 
@@ -75,14 +77,14 @@ public class OrderFacadeTest {
             itemRepository.save(item2);
             itemRepository.save(item3);
 
-            coupon = CouponV2.createFlatCoupon(
+            coupon = Coupon.createFlatCoupon(
                     "test",
                     10,
                     LocalDate.of(2025, 12, 31),
                     5_000);
-            couponV2Repository.save(coupon);
+            couponRepository.save(coupon);
 
-            UserCouponV2 userCoupon = new UserCouponV2(user, coupon);
+            UserCoupon userCoupon = new UserCoupon(user, coupon);
             userCouponRepository.save(userCoupon);
             userCouponId = userCoupon.getId();
 
@@ -120,7 +122,7 @@ public class OrderFacadeTest {
 
             //when
             Order savedOrder = orderRepository.findById(result.getOrderId()).get();
-            UserCouponV2 userCoupon = userCouponRepository.findById(userCouponId).get();
+            UserCoupon userCoupon = userCouponRepository.findById(userCouponId).get();
 
             Integer discountResult = coupon.calculateDiscount(savedOrder.getTotalPrice());
 

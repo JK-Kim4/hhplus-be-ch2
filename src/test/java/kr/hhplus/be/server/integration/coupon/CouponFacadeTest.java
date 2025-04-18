@@ -1,10 +1,10 @@
 package kr.hhplus.be.server.integration.coupon;
 
 import kr.hhplus.be.server.application.coupon.CouponFacade;
-import kr.hhplus.be.server.domain.couponv2.CouponType;
-import kr.hhplus.be.server.domain.couponv2.CouponV2;
-import kr.hhplus.be.server.domain.couponv2.CouponV2Repository;
-import kr.hhplus.be.server.domain.couponv2.FlatDiscountCouponV2;
+import kr.hhplus.be.server.domain.coupon.CouponType;
+import kr.hhplus.be.server.domain.coupon.Coupon;
+import kr.hhplus.be.server.domain.coupon.CouponRepository;
+import kr.hhplus.be.server.domain.coupon.FlatDiscountCoupon;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.UserRepository;
 import kr.hhplus.be.server.domain.user.userCoupon.UserCouponCriteria;
@@ -28,7 +28,7 @@ public class CouponFacadeTest {
     CouponFacade couponFacade;
 
     @Autowired
-    CouponV2Repository couponV2Repository;
+    CouponRepository couponRepository;
 
     @Autowired
     UserRepository userRepository;
@@ -38,10 +38,10 @@ public class CouponFacadeTest {
 
     @BeforeEach
     void setUp() {
-        CouponV2 coupon = new CouponV2("test", CouponType.FLAT, 10,
+        Coupon coupon = new Coupon("test", CouponType.FLAT, 10,
                 LocalDate.of(2025, 12, 31), LocalDate.of(2025,1,1));
-        new FlatDiscountCouponV2(coupon, 50_000);
-        couponV2Repository.save(coupon);
+        new FlatDiscountCoupon(coupon, 50_000);
+        couponRepository.save(coupon);
         couponId = coupon.getId();
 
         User user = User.createWithName("Tester");
@@ -57,12 +57,12 @@ public class CouponFacadeTest {
 
         //when
         UserCouponInfo.Issue issue = couponFacade.issue(criteria);
-        CouponV2 couponV2 = couponV2Repository.findById(couponId).get();
+        Coupon coupon = couponRepository.findById(couponId).get();
 
         //then
         assertNotNull(issue);
         assertEquals(couponId, issue.getCouponId());
         assertEquals(userId, issue.getUserId());
-        assertEquals(9, couponV2.getQuantity());
+        assertEquals(9, coupon.getQuantity());
     }
 }

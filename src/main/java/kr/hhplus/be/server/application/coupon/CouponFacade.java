@@ -1,11 +1,10 @@
 package kr.hhplus.be.server.application.coupon;
 
-import kr.hhplus.be.server.domain.couponv2.CouponV2;
-import kr.hhplus.be.server.domain.couponv2.CouponV2Service;
-import kr.hhplus.be.server.domain.couponv2.UserCouponV2;
+import kr.hhplus.be.server.domain.coupon.Coupon;
+import kr.hhplus.be.server.domain.coupon.CouponService;
+import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.UserService;
-import kr.hhplus.be.server.domain.user.userCoupon.UserCoupon;
 import kr.hhplus.be.server.domain.user.userCoupon.UserCouponCriteria;
 import kr.hhplus.be.server.domain.user.userCoupon.UserCouponInfo;
 import kr.hhplus.be.server.domain.user.userCoupon.UserCouponService;
@@ -20,40 +19,40 @@ import java.util.List;
 public class CouponFacade {
 
     private final UserCouponService userCouponService;
-    private final CouponV2Service couponV2Service;
+    private final CouponService couponService;
     private final UserService userService;
 
     public CouponFacade(
             UserCouponService userCouponService,
-            CouponV2Service couponV2Service,
+            CouponService couponService,
             UserService userService) {
         this.userCouponService = userCouponService;
-        this.couponV2Service = couponV2Service;
+        this.couponService = couponService;
         this.userService = userService;
     }
 
     public UserCouponInfo.Issue issue(UserCouponCriteria.Issue criteria) {
-        CouponV2 couponV2 = couponV2Service.findById(criteria.getCouponId());
+        Coupon coupon = couponService.findById(criteria.getCouponId());
         User user = userService.findById(criteria.getUserId());
 
-        if(couponV2Service.isAlreadyIssuedCoupon(user.getId(), couponV2.getId())){
+        if(couponService.isAlreadyIssuedCoupon(user.getId(), coupon.getId())){
             throw new IllegalArgumentException("이미 발급된 쿠폰입니다.");
         }
 
-        UserCouponV2 userCouponV2 = couponV2.issueUserCoupon(user, LocalDate.now());
+        UserCoupon userCoupon = coupon.issueUserCoupon(user, LocalDate.now());
 
-        couponV2Service.saveUserCoupon(userCouponV2);
+        couponService.saveUserCoupon(userCoupon);
 
         return UserCouponInfo.Issue.of(
-                userCouponV2.getId(),
-                userCouponV2.getCoupon().getId(),
-                userCouponV2.getUser().getId(),
-                userCouponV2.getIssueDateTime());
+                userCoupon.getId(),
+                userCoupon.getCoupon().getId(),
+                userCoupon.getUser().getId(),
+                userCoupon.getIssueDateTime());
     }
 
     @Transactional(readOnly = true)
     public UserCouponInfo.UserCouponList findByUserId(Long userId) {
-        List<UserCoupon> couponList = userCouponService.findByUserId(userId);
+        List<kr.hhplus.be.server.domain.user.userCoupon.UserCoupon> couponList = userCouponService.findByUserId(userId);
         return UserCouponInfo.UserCouponList.of(couponList);
     }
 

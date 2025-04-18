@@ -4,8 +4,8 @@ import kr.hhplus.be.server.application.orderPayment.criteria.OrderItemCriteria;
 import kr.hhplus.be.server.application.orderPayment.criteria.OrderPaymentCriteria;
 import kr.hhplus.be.server.application.orderPayment.result.OrderResult;
 import kr.hhplus.be.server.application.orderPayment.result.PaymentResult;
-import kr.hhplus.be.server.domain.couponv2.CouponV2Service;
-import kr.hhplus.be.server.domain.couponv2.UserCouponV2;
+import kr.hhplus.be.server.domain.coupon.CouponService;
+import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.domain.item.Item;
 import kr.hhplus.be.server.domain.item.ItemService;
 import kr.hhplus.be.server.domain.order.Order;
@@ -33,7 +33,7 @@ public class OrderFacade {
     private final PaymentService paymentService;
     private final ItemService itemService;
     private final UserCouponService userCouponService;
-    private final CouponV2Service couponV2Service;
+    private final CouponService couponService;
     private final UserService userService;
     private final RestTemplateAdaptor restTemplateAdaptor;
 
@@ -42,14 +42,14 @@ public class OrderFacade {
             PaymentService paymentService,
             ItemService itemService,
             UserCouponService userCouponService,
-            CouponV2Service couponV2Service,
+            CouponService couponService,
             UserService userService,
             RestTemplateAdaptor restTemplateAdaptor) {
         this.orderService = orderService;
         this.paymentService = paymentService;
         this.itemService = itemService;
         this.userCouponService = userCouponService;
-        this.couponV2Service = couponV2Service;
+        this.couponService = couponService;
         this.userService = userService;
         this.restTemplateAdaptor = restTemplateAdaptor;
     }
@@ -77,9 +77,9 @@ public class OrderFacade {
 
         //쿠폰 적용
         if(criteria.getUserCouponId() != null){
-            UserCouponV2 userCouponV2 = couponV2Service.findUserCouponById(criteria.getUserCouponId());
+            UserCoupon userCoupon = couponService.findUserCouponById(criteria.getUserCouponId());
 
-            Integer resultPrice = userCouponV2.applyCoupon(order);
+            Integer resultPrice = userCoupon.applyCoupon(order);
             order.updateDiscountResult(resultPrice);
         }
 

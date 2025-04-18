@@ -10,8 +10,8 @@ public class UserResult {
         private Long userId;
         private String name;
 
-        public static User from(UserInfo.User userV2Info) {
-            return new User(userV2Info.getUserId(), userV2Info.getName());
+        public static User from(UserInfo.User userInfo) {
+            return new User(userInfo.getUserId(), userInfo.getName());
         }
 
         private User(Long userId, String name) {

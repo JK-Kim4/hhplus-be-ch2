@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.couponv2;
+package kr.hhplus.be.server.domain.coupon;
 
 import kr.hhplus.be.server.domain.FakeUser;
 import kr.hhplus.be.server.domain.user.User;
@@ -10,33 +10,33 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class CouponV2Test {
+public class CouponTest {
 
     @Nested
     @DisplayName("쿠폰 생성 테스트")
-    class couponv2_create_test {
+    class coupon_create_test {
         @Test
         void 쿠폰이름이_없을경우_쿠폰이름이_없을경우_IllegalArgumentException를_반환한다(){
             assertThrows(IllegalArgumentException.class,
-                    () -> new CouponV2(null, CouponType.FLAT, 10, LocalDate.now().plusDays(10)));
+                    () -> new Coupon(null, CouponType.FLAT, 10, LocalDate.now().plusDays(10)));
 
             assertThrows(IllegalArgumentException.class,
-                    () -> new CouponV2("",CouponType.FLAT, 10, LocalDate.now().plusDays(10)));
+                    () -> new Coupon("",CouponType.FLAT, 10, LocalDate.now().plusDays(10)));
 
             assertThrows(IllegalArgumentException.class,
-                    () -> new CouponV2(" ",CouponType.FLAT, 10, LocalDate.now().plusDays(10)));
+                    () -> new Coupon(" ",CouponType.FLAT, 10, LocalDate.now().plusDays(10)));
         }
 
         @Test
         void 쿠폰수량이_없을경우_쿠폰이름이_없을경우_IllegalArgumentException를_반환한다(){
             assertThrows(IllegalArgumentException.class,
-                    () -> new CouponV2("test",CouponType.FLAT, null, LocalDate.now().plusDays(10)));
+                    () -> new Coupon("test",CouponType.FLAT, null, LocalDate.now().plusDays(10)));
         }
 
         @Test
         void 쿠폰만료일이_없을경우_쿠폰이름이_없을경우_IllegalArgumentException를_반환한다(){
             assertThrows(IllegalArgumentException.class,
-                    () -> new CouponV2("test",CouponType.FLAT, 10, null));
+                    () -> new Coupon("test",CouponType.FLAT, 10, null));
         }
 
         @Test
@@ -44,13 +44,13 @@ public class CouponV2Test {
 
 
             assertThrows(IllegalArgumentException.class,
-                    () -> new CouponV2("test",CouponType.FLAT, 0, LocalDate.now().plusDays(10)));
+                    () -> new Coupon("test",CouponType.FLAT, 0, LocalDate.now().plusDays(10)));
         }
 
         @Test
         void 쿠폰만료일이_지났을경우_IllegalArgumentException를_반환한다(){
             assertThrows(IllegalArgumentException.class,
-                    () -> new CouponV2("test",CouponType.FLAT, 10, LocalDate.now().minusDays(10)));
+                    () -> new Coupon("test",CouponType.FLAT, 10, LocalDate.now().minusDays(10)));
         }
     }
 
@@ -59,23 +59,23 @@ public class CouponV2Test {
     class user_coupon_issue_test {
         User user = new FakeUser(1L, "tester");
 
-        CouponV2 coupon = new CouponV2("test", CouponType.FLAT, 10,
+        Coupon coupon = new Coupon("test", CouponType.FLAT, 10,
                 LocalDate.of(2025, 12, 31), LocalDate.of(2025,1,1));
 
-        FlatDiscountCouponV2 flatCoupon = new FlatDiscountCouponV2(coupon, 50_000);
+        FlatDiscountCoupon flatCoupon = new FlatDiscountCoupon(coupon, 50_000);
 
         @Test
         void 사용자쿠폰을_발급한다(){
-            UserCouponV2 userCoupon = coupon.issueUserCoupon(user, LocalDate.of(2025, 1, 1));
+            UserCoupon userCoupon = coupon.issueUserCoupon(user, LocalDate.of(2025, 1, 1));
 
             assertEquals(coupon, userCoupon.getCoupon());
         }
 
         @Test
         void 사용자쿠폰이_발급되면_재고가_차감된다(){
-            CouponV2 coupon = new CouponV2("test", CouponType.FLAT, 10,
+            Coupon coupon = new Coupon("test", CouponType.FLAT, 10,
                     LocalDate.of(2025, 12, 31), LocalDate.of(2025,1,1));
-            FlatDiscountCouponV2 flatCoupon = new FlatDiscountCouponV2(coupon, 50_000);
+            FlatDiscountCoupon flatCoupon = new FlatDiscountCoupon(coupon, 50_000);
 
             coupon.issueUserCoupon(user, LocalDate.of(2025, 1, 1));
 
@@ -88,10 +88,10 @@ public class CouponV2Test {
     class apply_discount_test {
         User user = new FakeUser(1L, "tester");
 
-        CouponV2 coupon = new CouponV2("test", CouponType.FLAT, 10,
+        Coupon coupon = new Coupon("test", CouponType.FLAT, 10,
                 LocalDate.of(2025, 12, 31), LocalDate.of(2025,1,1));
 
-        FlatDiscountCouponV2 flatCoupon = new FlatDiscountCouponV2(coupon, 50_000);
+        FlatDiscountCoupon flatCoupon = new FlatDiscountCoupon(coupon, 50_000);
 
         @Test
         void 쿠폰할인금액이_차감된_금액을_계산한다(){
@@ -114,7 +114,7 @@ public class CouponV2Test {
         //given
         LocalDate expireTime = LocalDate.of(2025, 1,1);
         LocalDate nowDateTime = LocalDate.of(2024, 1,1);
-        CouponV2 coupon = new CouponV2("test",CouponType.FLAT, 10, expireTime, nowDateTime);
+        Coupon coupon = new Coupon("test",CouponType.FLAT, 10, expireTime, nowDateTime);
 
         //when
         LocalDate trueDateTime = LocalDate.of(2024, 12,31);
@@ -126,7 +126,7 @@ public class CouponV2Test {
     @Test
     void 쿠폰재고_보유여부를_확인한다(){
         //given
-        CouponV2 coupon = new CouponV2("test",CouponType.FLAT, 1, LocalDate.now().plusDays(10));
+        Coupon coupon = new Coupon("test",CouponType.FLAT, 1, LocalDate.now().plusDays(10));
 
         //when
         coupon.decreaseQuantity();
@@ -138,7 +138,7 @@ public class CouponV2Test {
     @Test
     void 쿠폰_잔여수량은_1개_차감한다(){
         //given
-        CouponV2 coupon = new CouponV2("test",CouponType.FLAT, 10, LocalDate.now().plusDays(10));
+        Coupon coupon = new Coupon("test",CouponType.FLAT, 10, LocalDate.now().plusDays(10));
 
         //when
         coupon.decreaseQuantity();
@@ -150,7 +150,7 @@ public class CouponV2Test {
     @Test
     void 잔여수량이_0개인_쿠폰의경우_차감요청시_IllegalArgumentException를반환한다(){
         //given
-        CouponV2 coupon = new CouponV2("test",CouponType.FLAT, 1, LocalDate.now().plusDays(10));
+        Coupon coupon = new Coupon("test",CouponType.FLAT, 1, LocalDate.now().plusDays(10));
 
         //when
         coupon.decreaseQuantity();

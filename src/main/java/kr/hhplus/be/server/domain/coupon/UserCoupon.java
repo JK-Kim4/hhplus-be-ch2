@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.couponv2;
+package kr.hhplus.be.server.domain.coupon;
 
 import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.order.Order;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserCouponV2 {
+public class UserCoupon {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +23,7 @@ public class UserCouponV2 {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coupoon_id")
-    protected CouponV2 coupon;
+    protected Coupon coupon;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
@@ -46,7 +46,7 @@ public class UserCouponV2 {
         return resultPrice;
     }
 
-    public UserCouponV2(User user, CouponV2 coupon) {
+    public UserCoupon(User user, Coupon coupon) {
 
         this.user = user;
         this.coupon = coupon;

@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.couponv2;
+package kr.hhplus.be.server.domain.coupon;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Entity @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class FlatDiscountCouponV2 {
+public class FlatDiscountCoupon {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "flat_discount_coupon_id")
@@ -15,12 +15,12 @@ public class FlatDiscountCouponV2 {
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "coupon_id")
-    private CouponV2 coupon;
+    private Coupon coupon;
 
     @Column
     private Integer discountAmount;
 
-    public FlatDiscountCouponV2(CouponV2 coupon, Integer discountAmount) {
+    public FlatDiscountCoupon(Coupon coupon, Integer discountAmount) {
         this.coupon = coupon;
         coupon.flatDiscountCoupon = this;
         this.discountAmount = discountAmount;
