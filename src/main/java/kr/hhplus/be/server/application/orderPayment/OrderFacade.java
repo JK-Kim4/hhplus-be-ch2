@@ -86,9 +86,10 @@ public class OrderFacade {
     public PaymentResult.Create createPayment(OrderPaymentCriteria.PaymentCreate criteria) {
         Order order = orderService.findById(criteria.getOrderId());
         User user = userService.findById(criteria.getUserId());
+
         Payment payment = new Payment(order, user);
+
         paymentService.save(PaymentCommand.Create.of(payment));
-        order.registerPayment(payment);
         return PaymentResult.Create.from(payment);
     }
 
@@ -96,8 +97,10 @@ public class OrderFacade {
     public PaymentResult.Process processPayment(OrderPaymentCriteria.PaymentProcess criteria) {
         Payment payment = paymentService.findById(criteria.getPaymentId());
         User user = userService.findById(criteria.getUserId());
+
         payment.isPayable(user);
         payment.pay(user);
+
         restTemplateAdaptor.post("test", payment, HashMap.class );
         return PaymentResult.Process.from(payment);
     }

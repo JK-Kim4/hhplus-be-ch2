@@ -1,7 +1,9 @@
 package kr.hhplus.be.server.domain.user;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class UserTest {
 
@@ -10,12 +12,19 @@ public class UserTest {
 
     @Test
     void 사용자를_생성한다(){
-        Assertions.assertEquals(name, user.getName());
+        assertEquals(name, user.getName());
     }
 
     @Test
     void 생성된_사용자는_0원의_기본포인트를_갖는다(){
-        Assertions.assertEquals(0, user.point());
+        assertEquals(0, user.point());
+    }
+
+    @Test
+    void 사용자는_주문목록을_갖는다(){
+        User user = User.createWithName(name);
+
+        assertNotNull(user.getOrders());
     }
 
     @Test
@@ -27,7 +36,7 @@ public class UserTest {
         user.chargePoint(chargeAmount);
 
         //then
-        Assertions.assertEquals(100, user.point());
+        assertEquals(100, user.point());
     }
 
     @Test
@@ -42,7 +51,7 @@ public class UserTest {
         user.deductPoint(deductPoint);
 
         //then
-        Assertions.assertEquals(4_000, user.point());
+        assertEquals(4_000, user.point());
     }
 
 }

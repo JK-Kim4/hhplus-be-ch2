@@ -50,6 +50,7 @@ public class Payment {
         this.paymentPrice = order.getFinalPaymentPrice();
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+        order.registerPayment(this);
     }
 
     public boolean isPayable(User user){
