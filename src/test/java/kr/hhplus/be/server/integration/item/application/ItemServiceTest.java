@@ -2,6 +2,7 @@ package kr.hhplus.be.server.integration.item.application;
 
 import kr.hhplus.be.server.domain.item.*;
 import kr.hhplus.be.server.interfaces.exception.InvalidPriceException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,20 +32,23 @@ public class ItemServiceTest {
 
     @BeforeEach
     void setUp() {
-        item1 = itemRepository.save(new Item("truck"));
-        item2 = itemRepository.save(new Item("car", 1000, 50));
-        item3 = itemRepository.save(new Item("food", 12000, 50));
+        item1 = itemRepository.save(Item.createWithPrice("item", 5_000));
+        item2 = itemRepository.save(Item.createWithPriceAndStock("car", 1_000, 50));
+        item3 = itemRepository.save(Item.createWithPriceAndStock("food", 12_000, 50));
+    }
 
+    @AfterEach
+    void tearDown() {
+        itemRepository.deleteAll();
     }
 
     @Test
     void 상품을_등록한다(){
-        Item item = new Item("sample");
-        item = itemRepository.save(item);
+        item1 = itemRepository.save(item1);
 
-        Item savedItem = itemService.findItemById(item.getId());
+        Item savedItem = itemService.findItemById(item1.getId());
 
-        assertNotNull(item);
+        assertNotNull(item1);
     }
 
     @Test
