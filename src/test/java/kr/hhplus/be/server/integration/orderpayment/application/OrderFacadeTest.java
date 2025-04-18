@@ -65,7 +65,7 @@ public class OrderFacadeTest {
 
         @BeforeEach
         void setUp() {
-            user = new User("Tester");
+            user = User.createWithName("Tester");
             userRepository.save(user);
 
             item1 = new Item("car", 50_000, 10);
@@ -173,7 +173,7 @@ public class OrderFacadeTest {
 
         @BeforeEach
         void setUp() {
-            user = new User("Tester");
+            user = User.createWithName("Tester");
             user.chargePoint(999_999);
             userRepository.save(user);
 
