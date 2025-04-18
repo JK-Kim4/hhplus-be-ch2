@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.domain.order.orderItem;
 
 import kr.hhplus.be.server.domain.item.Item;
+import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderItem;
 import kr.hhplus.be.server.domain.order.OrderItems;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ public class OrderItemsTest {
         OrderItem item3 = new OrderItem(mock(Item.class), 500, 3);   // 총 1500
 
         List<OrderItem> items = List.of(item1, item2, item3);
-        OrderItems orderItems = new OrderItems(items);
+        OrderItems orderItems = new OrderItems(mock(Order.class), items);
         
         int total = orderItems.calculateTotalPrice();
 

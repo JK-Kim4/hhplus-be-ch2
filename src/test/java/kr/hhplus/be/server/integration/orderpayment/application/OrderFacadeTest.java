@@ -97,8 +97,6 @@ public class OrderFacadeTest {
                     );
         }
 
-
-
         @Test
         void 주문생성_성공시_주문과_주문아이템정보를_저장한다(){
             //given
@@ -161,6 +159,25 @@ public class OrderFacadeTest {
             //when
             assertThrows(InvalidStockException.class,
                     () -> orderFacade.createOrder(criteria));
+        }
+
+        @Test
+        @Transactional
+        void 결제사용자에게_결제완료이전의주문이존재할경우_오류를_반환한다() {
+            //given
+            OrderPaymentCriteria criteria = new OrderPaymentCriteria(user.getId(), null, orderItemCriteria);
+            orderFacade.createOrder(criteria);
+
+            //when
+            orderItemCriteria = Arrays.asList(
+                    OrderItemCriteria.of(item2.getId(), 10_000, 5)
+            );
+            OrderPaymentCriteria criteria2 = new OrderPaymentCriteria(user.getId(), null, orderItemCriteria);
+            IllegalArgumentException illegalArgumentException
+                    = assertThrows(IllegalArgumentException.class, () -> orderFacade.createOrder(criteria2));
+
+            assertEquals("결제가 완료되지 않은 주문이 존재합니다." ,illegalArgumentException.getMessage());
+
         }
     }
 

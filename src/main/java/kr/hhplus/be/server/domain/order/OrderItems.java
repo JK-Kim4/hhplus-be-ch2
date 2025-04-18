@@ -25,8 +25,9 @@ public class OrderItems {
         this.orderItems = List.copyOf(values);
     }
 
-    public OrderItems(List<OrderItem> orderItems) {
+    public OrderItems(Order order, List<OrderItem> orderItems) {
         this.orderItems = orderItems;
+        this.setOrder(order);
     }
 
     public boolean empty(){

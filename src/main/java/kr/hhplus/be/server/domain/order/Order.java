@@ -72,8 +72,7 @@ public class Order {
     public Order(User user, List<OrderItem> orderItemList){
         this.user = user;
         user.addOrder(this);
-        this.orderItems = new OrderItems(orderItemList);
-        orderItems.setOrder(this);
+        this.orderItems = new OrderItems(this, orderItemList);
         calculateTotalPrice();
         this.orderStatus = OrderStatus.ORDER_CREATED;
     }
@@ -111,7 +110,7 @@ public class Order {
     }
 
     public void addOrderItems(List<OrderItem> orderItems) {
-        this.orderItems = new OrderItems(orderItems);
+        this.orderItems = new OrderItems(this, orderItems);
     }
 
     public void deductOrderItemStock() {

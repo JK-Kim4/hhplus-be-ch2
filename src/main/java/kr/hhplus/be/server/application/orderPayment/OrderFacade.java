@@ -69,7 +69,7 @@ public class OrderFacade {
 
         //주문 객체 생성(User)
         User user = userService.findById(criteria.getUserId());
-        Order order = new Order(user, createOrderItems(criteria.toOrderItemCreateCommand()));
+        Order order = Order.createDefault(user, createOrderItems(criteria.toOrderItemCreateCommand()));
 
         //쿠폰 적용
         if(criteria.getUserCouponId() != null){

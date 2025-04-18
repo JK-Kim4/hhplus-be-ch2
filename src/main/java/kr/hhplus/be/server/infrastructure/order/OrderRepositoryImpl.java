@@ -27,6 +27,7 @@ public class OrderRepositoryImpl implements OrderRepository {
     public Order save(Order order) {
         Order save = orderJpaRepository.save(order);
         orderItemJpaRepository.saveAll(order.getOrderItems());
+        orderJpaRepository.flush();
         return save;
     }
 
