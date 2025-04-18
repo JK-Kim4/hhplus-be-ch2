@@ -1,6 +1,8 @@
 package kr.hhplus.be.server.domain.user;
 
 import jakarta.persistence.*;
+import kr.hhplus.be.server.domain.order.Order;
+import kr.hhplus.be.server.domain.order.Orders;
 import kr.hhplus.be.server.domain.user.point.Point;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -22,6 +24,10 @@ public class User {
 
     @OneToOne(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     protected Point point;
+
+    @Embedded
+    protected Orders orders;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -37,6 +43,7 @@ public class User {
     protected User(String name) {
         this.name = name;
         this.point = Point.createWithUser(this);
+        this.orders = kr.hhplus.be.server.domain.order.Orders.createDefault();
     }
 
     public Integer point(){
@@ -49,6 +56,16 @@ public class User {
 
     public void deductPoint(Integer amount) {
         this.point.deduct(amount);
+    }
+
+    public void addOrder(Order order) {
+        this.orders.addOrder(order);
+    }
+
+    public void canCreateOrder(){
+        if(!orders.areAllOrdersPaymentCompleted()){
+            throw new IllegalArgumentException("결제가 완료되지 않은 주문이 존재합니다.");
+        }
     }
 
     @Override

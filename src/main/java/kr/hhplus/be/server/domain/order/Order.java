@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity(name = "Orders")
 @Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -20,14 +21,14 @@ public class Order {
     @Column(name = "order_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id")
     private User user;
 
     @Column(name = "user_coupon_id")
     private Long userCouponId;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn(name = "payment_id")
     private Payment payment;
 
@@ -46,22 +47,31 @@ public class Order {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public Order(User user){
-        this.user = user;
-        this.orderStatus = OrderStatus.ORDER_CREATED;
+    public static Order createDefault(User user, List<OrderItem> orderItemList) {
+        validationUser(user);
+        validationOrderItems(orderItemList);
+
+        return new Order(user, orderItemList);
     }
+
+    private static void validationUser(User user) {
+        if(Objects.isNull(user)) {
+            throw new IllegalArgumentException("사용자 정보가 존재하지않습니다.");
+        }
+
+        user.canCreateOrder();
+    }
+
+    private static void validationOrderItems(List<OrderItem> orderItemList) {
+        if(orderItemList == null || orderItemList.isEmpty()) {
+            throw new IllegalArgumentException("구매하실 상품이 존재하지않습니다.");
+        }
+    }
+
 
     public Order(User user, List<OrderItem> orderItemList){
         this.user = user;
-        this.orderItems = new OrderItems(orderItemList);
-        orderItems.setOrder(this);
-        calculateTotalPrice();
-        this.orderStatus = OrderStatus.ORDER_CREATED;
-    }
-
-    public Order(User user, Long userCouponId, List<OrderItem> orderItemList) {
-        this.user = user;
-        this.userCouponId = userCouponId;
+        user.addOrder(this);
         this.orderItems = new OrderItems(orderItemList);
         orderItems.setOrder(this);
         calculateTotalPrice();
