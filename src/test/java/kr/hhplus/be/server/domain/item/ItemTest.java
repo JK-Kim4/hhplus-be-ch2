@@ -22,34 +22,21 @@ public class ItemTest {
         private Integer stock = 500;
 
         @Test
-        void 상품이름을_전달받아_기본상품객체를_생성한다(){
-            //when
-            Item item = new Item(name);
-
-            //then
-            assertAll("기본 상품은 100원의 판매가격, 0개의 재고량을 가진다",
-                    () -> assertNotNull(item),
-                    () -> assertEquals(ItemPrice.MINIMUM_ITEM_PRICE, item.price()),
-                    () -> assertEquals(ItemStock.MINIMUM_STOCK_QUANTITY, item.stock())
-            );;
-        }
-
-        @Test
         void 상품이름과_가격정보를_전달받아_상품객체를_생성한다(){
             //when
-            Item item = new Item(name, price);
+            Item item = Item.createWithPrice(name, price);
 
             //then
             assertAll("전달받은 판매가격과 0개의 재고량을 가진다.",
                     () -> assertEquals(price, item.price()),
-                    () -> assertEquals(ItemStock.MINIMUM_STOCK_QUANTITY, item.stock())
+                    () -> assertEquals(Stock.MINIMUM_STOCK_QUANTITY, item.stock())
             );
         }
 
         @Test
         void 상품이름_가격_재고정보를_전달받아_상품객체를_생성한다(){
             //when
-            Item item = new Item(name, price, stock);
+            Item item = Item.createWithPriceAndStock(name, price, stock);
 
             //then
             assertAll("전달받은 판매가격과 재고량을 가진다",
@@ -72,7 +59,7 @@ public class ItemTest {
 
         @BeforeEach
         void init() {
-            item = new Item(name, price, stock);
+            item = Item.createWithPriceAndStock(name, price, stock);
         }
 
         @ParameterizedTest
@@ -120,7 +107,7 @@ public class ItemTest {
 
         @BeforeEach
         void init() {
-            item = new Item(name, price, stock);
+            item = Item.createWithPriceAndStock(name, price, stock);
         }
 
         @ParameterizedTest
@@ -185,9 +172,10 @@ public class ItemTest {
 
         @DisplayName("상품의 재고가 충분한지 검증한다.")
         @ParameterizedTest
-        @ValueSource(ints = {501, 600, 700, 99_999})
+        @ValueSource(ints = {501, 600, 700, 999999})
         void has_enough_stock_test_false(Integer quantity){
-            assertFalse(item.hasEnoughStock(quantity));
+            assertThrows(InvalidStockException.class, ()
+                    -> item.hasEnoughStock(quantity));
         }
 
         @DisplayName("상품의 재고가 충분한지 검증한다.")

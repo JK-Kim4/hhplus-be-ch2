@@ -1,15 +1,17 @@
 package kr.hhplus.be.server.domain.order;
 
+import kr.hhplus.be.server.domain.FakeUser;
+import kr.hhplus.be.server.domain.item.Item;
 import kr.hhplus.be.server.domain.payment.Payment;
 import kr.hhplus.be.server.domain.user.User;
-import kr.hhplus.be.server.domain.userCoupon.UserCoupon;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class OrderTest {
 
@@ -31,21 +33,21 @@ public class OrderTest {
     @Test
     void testOrderCreation() {
         User user = mock(User.class);
-        Order order = new Order(user.getId(), null, itemList);
+        Order order = new Order(user, itemList);
 
-        assertEquals(user.getId(), order.getUserId());
         assertEquals(2, order.getOrderItems().size());
         assertEquals(OrderStatus.ORDER_CREATED, order.getOrderStatus());
     }
 
     @Test
     void testCalculateTotalPrice() {
-        OrderItem orderItem1 = OrderItem.of(1L, 1000, 50);
-        OrderItem orderItem2 = OrderItem.of(2L, 2000, 50);
-        OrderItem orderItem3 = OrderItem.of(3L, 3000, 50);
+        User user = mock(User.class);
+        OrderItem orderItem1 = new OrderItem(mock(Item.class),1000, 50);
+        OrderItem orderItem2 = new OrderItem(mock(Item.class),2000, 50);
+        OrderItem orderItem3 = new OrderItem(mock(Item.class), 3000, 50);
         List<OrderItem> orderItemList = List.of(orderItem1, orderItem2, orderItem3);
 
-        Order order = new Order(1L, 2L, orderItemList);
+        Order order = new Order(user, orderItemList);
 
         order.calculateTotalPrice();
 
@@ -55,26 +57,8 @@ public class OrderTest {
     }
 
     @Test
-    void testApplyCoupon_success() {
-        Order order = new Order(1L, null, itemList);
-        order.calculateTotalPrice(); // assuming total = 0 now
-
-        UserCoupon coupon = mock(UserCoupon.class);
-        when(coupon.isCouponOwner(1L)).thenReturn(true);
-        when(coupon.getId()).thenReturn(99L);
-        when(coupon.discount(anyInt())).thenReturn(1500);
-
-        order.calculateTotalPrice(); // to set totalPrice
-        order.applyCoupon(coupon);
-
-        assertEquals(99L, order.getUserCouponId());
-        assertEquals(1500, order.getFinalPaymentPrice());
-        verify(coupon).updateUsedFlag(true);
-    }
-
-    @Test
     void testRegisterPayment() {
-        Order order = new Order(1L, null, itemList);
+        Order order = new Order(new FakeUser(2L, "tesr"), itemList);
         Payment payment = mock(Payment.class);
 
         order.registerPayment(payment);
@@ -84,32 +68,11 @@ public class OrderTest {
 
     @Test
     void testUpdateOrderStatus() {
-        Order order = new Order(1L, null, itemList);
+        Order order = new Order(new FakeUser(1L, "test"), itemList);
 
         order.updateOrderStatus(OrderStatus.PAYMENT_WAITING);
 
         assertEquals(OrderStatus.PAYMENT_WAITING, order.getOrderStatus());
-    }
-
-    @Test
-    void testRegisterOrderItems() {
-        Order order = new Order(1L, null, itemList);
-        OrderItems newOrderItems = mock(OrderItems.class);
-
-        order.registerOrderItems(newOrderItems);
-
-        assertEquals(newOrderItems, order.getOrderItems());
-        verify(newOrderItems).setOrder(order);
-    }
-
-    @Test
-    void testConstructorWithUser() {
-        User user = mock(User.class);
-        when(user.getId()).thenReturn(123L);
-
-        Order order = new Order(user);
-
-        assertEquals(123L, order.getUserId());
     }
 
 

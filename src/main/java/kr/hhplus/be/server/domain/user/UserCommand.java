@@ -14,4 +14,23 @@ public class UserCommand {
             return name;
         }
     }
+
+    public static class Charge {
+
+        private Long userId;
+        private Integer amount;
+
+        public Charge(Long userId, Integer amount) {
+            this.userId = userId;
+            this.amount = amount;
+        }
+
+        public Long getUserId() {
+            return userId;
+        }
+
+        public Integer getAmount() {
+            return amount;
+        }
+    }
 }

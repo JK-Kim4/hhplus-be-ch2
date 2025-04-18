@@ -1,31 +1,56 @@
 package kr.hhplus.be.server.application.coupon;
 
-import kr.hhplus.be.server.domain.userCoupon.UserCoupon;
-import kr.hhplus.be.server.domain.userCoupon.UserCouponCriteria;
-import kr.hhplus.be.server.domain.userCoupon.UserCouponInfo;
-import kr.hhplus.be.server.domain.userCoupon.UserCouponService;
-import org.springframework.stereotype.Service;
+import kr.hhplus.be.server.domain.coupon.Coupon;
+import kr.hhplus.be.server.domain.coupon.CouponService;
+import kr.hhplus.be.server.domain.coupon.UserCoupon;
+import kr.hhplus.be.server.domain.user.User;
+import kr.hhplus.be.server.domain.user.UserService;
+import kr.hhplus.be.server.domain.coupon.UserCouponCriteria;
+import kr.hhplus.be.server.domain.coupon.UserCouponInfo;
+import kr.hhplus.be.server.domain.coupon.UserCouponService;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
-@Service
+@Component
+@Transactional
 public class CouponFacade {
 
     private final UserCouponService userCouponService;
+    private final CouponService couponService;
+    private final UserService userService;
 
-    public CouponFacade(UserCouponService userCouponService) {
+    public CouponFacade(
+            UserCouponService userCouponService,
+            CouponService couponService,
+            UserService userService) {
         this.userCouponService = userCouponService;
+        this.couponService = couponService;
+        this.userService = userService;
     }
 
     public UserCouponInfo.Issue issue(UserCouponCriteria.Issue criteria) {
-        UserCoupon issue = userCouponService.issue(criteria.toCommand());
+        Coupon coupon = couponService.findById(criteria.getCouponId());
+        User user = userService.findById(criteria.getUserId());
+
+        if(couponService.isAlreadyIssuedCoupon(user.getId(), coupon.getId())){
+            throw new IllegalArgumentException("이미 발급된 쿠폰입니다.");
+        }
+
+        UserCoupon userCoupon = coupon.issue(user, LocalDate.now());
+
+        couponService.saveUserCoupon(userCoupon);
+
         return UserCouponInfo.Issue.of(
-                issue.getId(),
-                issue.getCoupon().getId(),
-                issue.getUser().getId(),
-                issue.getIssueDateTime());
+                userCoupon.getId(),
+                userCoupon.getCoupon().getId(),
+                userCoupon.getUser().getId(),
+                userCoupon.getIssueDateTime());
     }
 
+    @Transactional(readOnly = true)
     public UserCouponInfo.UserCouponList findByUserId(Long userId) {
         List<UserCoupon> couponList = userCouponService.findByUserId(userId);
         return UserCouponInfo.UserCouponList.of(couponList);

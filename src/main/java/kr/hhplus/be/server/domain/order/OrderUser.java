@@ -17,7 +17,7 @@ public class OrderUser {
     }
 
     public boolean hasEnoughPoint(){
-        if(user.getPoint().getAmount() < order.getFinalPaymentPrice()){
+        if(user.point() < order.getFinalPaymentPrice()){
             throw new IllegalArgumentException("잔액이 부족합니다.");
         }
 

@@ -1,5 +1,7 @@
 package kr.hhplus.be.server.domain.item;
 
+import lombok.Getter;
+
 import java.util.Objects;
 
 public class ItemCommand {
@@ -111,5 +113,24 @@ public class ItemCommand {
         public Integer getQuantity() {
             return quantity;
         }
+    }
+
+    @Getter
+    public static class Create {
+
+        private String name;
+        private Integer price;
+        private Integer stock;
+
+        protected Create(String name, Integer price, Integer stock) {
+            this.name = name;
+            this.price = price;
+            this.stock = stock;
+        }
+
+        public static Create of(String name, Integer price, Integer stock) {
+            return new Create(name, price, stock);
+        }
+
     }
 }

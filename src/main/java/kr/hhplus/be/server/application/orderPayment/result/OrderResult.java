@@ -22,5 +22,14 @@ public class OrderResult {
             this.totalPrice = totalPrice;
             this.payPrice = payPrice;
         }
+
+        @Override
+        public String toString() {
+            return "Create{" +
+                    "orderId=" + orderId +
+                    ", totalPrice=" + totalPrice +
+                    ", payPrice=" + payPrice +
+                    '}';
+        }
     }
 }

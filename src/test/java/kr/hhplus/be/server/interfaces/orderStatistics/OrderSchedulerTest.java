@@ -39,19 +39,22 @@ public class OrderSchedulerTest {
     @DisplayName("상품 판매 통계 스케줄러 테스트")
     void orderStatistic_shouldCalculateAndSaveStatistics() {
         // given
-        Order order1 = new Order(1L, null, null);
-        Order order2 = new Order(2L, null, null);
-        Order order3 = new Order(3L, null, null);
-        Item car = new Item(1L,"car", 1000, 50);
-        Item desk = new Item(2L,"desk", 5000, 50);
-        Item food = new Item(3L,"food", 3000, 50);
+        Order order1 = new Order(null, null);
+        Order order2 = new Order(null, null);
+        Order order3 = new Order(null, null);
+        Item car = Item.createWithPriceAndStock("car", 1000, 50);
+        Item desk = Item.createWithPriceAndStock("desk", 5000, 50);
+        Item food = Item.createWithPriceAndStock("food", 3000, 50);
+        when(car.getId()).thenReturn(1L);
+        when(desk.getId()).thenReturn(2L);
+        when(food.getId()).thenReturn(3L);
         LocalDate targetDate = LocalDate.now().minusDays(1);
         List<Order> mockOrders = List.of(order1,order2,order3);
 
         List<OrderItem> mockOrderItems = List.of(
-                new OrderItem(car.getId(), 1000, 20),
-                new OrderItem(desk.getId(), 5000, 20),
-                new OrderItem(food.getId(), 3000, 20)
+                new OrderItem(car, 1000, 20),
+                new OrderItem(desk, 5000, 20),
+                new OrderItem(food, 3000, 20)
         );
 
         List<OrderStatistics> mockStatistics = OrderStatistics.calculateOrderStatistics(mockOrderItems, targetDate);

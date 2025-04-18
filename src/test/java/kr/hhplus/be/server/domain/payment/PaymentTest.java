@@ -2,138 +2,76 @@ package kr.hhplus.be.server.domain.payment;
 
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderStatus;
-import kr.hhplus.be.server.domain.order.OrderUser;
-import kr.hhplus.be.server.domain.point.Point;
 import kr.hhplus.be.server.domain.user.User;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class PaymentTest {
 
+    //TODO
     @Test
-    void 결제_객체를_생성합니다(){
+    void 주문과_사용자정보를_받아_결제를_생성한다(){
         User user = mock(User.class);
         Order order = mock(Order.class);
+        when(order.getUser()).thenReturn(user);
 
-        when(user.getId()).thenReturn(1L);
-        when(order.getUserId()).thenReturn(1L);
-        when(order.getId()).thenReturn(2L);
-
-        Payment payment = new Payment(order, user);
-
-
-        assertEquals(1L, payment.getOrderUser().getUser().getId());
-        assertEquals(2L, payment.getOrderUser().getOrder().getId());
+        new Payment(order, user);
     }
 
     @Test
-    void 결제를_생성하는_주문에대한_사용자정보가_일치하지않으면_오류를_발생한다(){
+    void 주문사용자정보와_파라미터사용자정보가_일치하지않을경우_결제생성에_실패한다(){
         User user = mock(User.class);
         Order order = mock(Order.class);
-
-        when(user.getId()).thenReturn(1L);
-        when(order.getUserId()).thenReturn(2L);
+        when(order.getUser()).thenReturn(mock(User.class));
 
         assertThrows(IllegalArgumentException.class,
                 () -> new Payment(order, user));
     }
 
     @Test
-    void 결제_요청시점_응답시점을_기록한다(){
-        LocalDateTime requestTime = LocalDateTime.of(2024,1,1,1,1);
-        LocalDateTime responseTime = LocalDateTime.of(2025,2,2,2,2);
+    void 사용자_잔고가_결제금액보다_많을경우_결제가_가능하다(){
         User user = mock(User.class);
         Order order = mock(Order.class);
+        when(order.getUser()).thenReturn(user);
+        when(order.getFinalPaymentPrice()).thenReturn(10_000);
+        when(user.point()).thenReturn(50_000);
 
         Payment payment = new Payment(order, user);
-        payment.logRequestDateTime(requestTime);
-        payment.logResponseDateTime(responseTime);
 
-        assertEquals(requestTime, payment.getPaymentRequestDateTime());
-        assertEquals(responseTime, payment.getPaymentResponseDateTime());
+        assertTrue(payment.isPayable(user));
     }
 
     @Test
-    void 사용자잔고가_주문금액보다_부족할경우_오류가발생한다(){
+    void 결제사용자정보와_파라미터사용자정보가_일치하지않을경우_결제가능여부를_확인할수없다(){
         User user = mock(User.class);
         Order order = mock(Order.class);
-        Point userPoint = mock(Point.class);
-
-        when(user.getPoint()).thenReturn(userPoint);
-        when(userPoint.getAmount()).thenReturn(5000);
-        when(order.getFinalPaymentPrice()).thenReturn(6000);
+        when(order.getUser()).thenReturn(user);
 
         Payment payment = new Payment(order, user);
 
         assertThrows(IllegalArgumentException.class,
-                () -> payment.isPayable());
+                () -> payment.isPayable(mock(User.class)));
     }
 
     @Test
-    void 잔액이_충분할경우_주문을_진행할수있다(){
+    void 결제처리가_완료되면_상품재고와_사용자잔고가_차감된다(){
         User user = mock(User.class);
         Order order = mock(Order.class);
-        Point userPoint = mock(Point.class);
-
-        when(user.getPoint()).thenReturn(userPoint);
-        when(userPoint.getAmount()).thenReturn(7000);
-        when(order.getFinalPaymentPrice()).thenReturn(6000);
+        when(order.getUser()).thenReturn(user);
 
         Payment payment = new Payment(order, user);
 
-        assertTrue(payment.isPayable());
+        payment.pay(user);
+
+        verify(order, times(1)).deductOrderItemStock();
+        verify(user, times(1)).deductPoint(any());
+        verify(order, times(1)).updateOrderStatus(OrderStatus.PAYMENT_COMPLETED);
     }
-
-    @Test
-    void pay_ShouldCompletePaymentSuccessfully() {
-        // given
-        User user = mock(User.class);
-        Order order = mock(Order.class);
-
-        when(user.getId()).thenReturn(1L);
-        when(order.getUserId()).thenReturn(1L);
-        when(order.getFinalPaymentPrice()).thenReturn(1000);
-        Payment payment = new Payment(order, user);
-
-        OrderUser orderUser = mock(OrderUser.class);
-        payment = spy(payment);
-
-        // mocking 내부 OrderUser 호출들
-        doReturn(orderUser).when(payment).getOrder();
-        doNothing().when(orderUser).deductOrderItemStock();
-        doNothing().when(orderUser).deductPrice(anyInt());
-        doNothing().when(orderUser).updateOrderStatus(any(OrderStatus.class));
-        doReturn(true).when(orderUser).hasEnoughPoint();
-        payment.updatePaymentStatus(PaymentStatus.PAYMENT_PENDING);
-
-        // when
-        boolean payable = payment.isPayable();
-        assertTrue(payable);
-
-        payment.pay();
-
-        // then
-        assertEquals(PaymentStatus.PAYMENT_COMPLETED, payment.getPaymentStatus());
-        assertNotNull(payment.getPaymentRequestDateTime());
-        assertNotNull(payment.getPaymentResponseDateTime());
-    }
-
-    @Test
-    void pay_ShouldThrowException_WhenNotPayable() {
-        // given
-        User user = mock(User.class);
-        Order order = mock(Order.class);
-        Payment payment = new Payment(order, user);
-        payment.updatePaymentStatus(PaymentStatus.PAYMENT_COMPLETED); // 이미 완료 상태로 설정
-
-        // when & then
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, payment::isPayable);
-        assertEquals("진행할 수 없는 결제입니다.", ex.getMessage());
-    }
-
 
 }

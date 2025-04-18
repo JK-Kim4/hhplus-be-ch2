@@ -1,6 +1,9 @@
 package kr.hhplus.be.server.domain.user;
 
-import kr.hhplus.be.server.domain.point.Point;
+import jakarta.persistence.*;
+import kr.hhplus.be.server.domain.order.Order;
+import kr.hhplus.be.server.domain.order.Orders;
+import kr.hhplus.be.server.domain.user.point.Point;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,28 +11,44 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@Entity(name = "user")
 @Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
 
-    private Long id;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    protected Long id;
+
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     protected Point point;
+
+    @Embedded
+    protected Orders orders;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public User(String name) {
-        this.name = name;
+    public static User createWithName(String name) {
+        if(Objects.isNull(name)) {
+            throw new IllegalArgumentException("사용자 이름을 입력해주세요.");
+        }
+
+        return new User(name);
     }
 
-    public User(Long id, String name){
-        this.id = id;
+    /*Fake 객체 상속을 위해 protected*/
+    protected User(String name) {
         this.name = name;
+        this.point = Point.createWithUser(this);
+        this.orders = kr.hhplus.be.server.domain.order.Orders.createDefault();
     }
 
     public Integer point(){
-        return point.getAmount();
+        return point.getPointAmount();
     }
-
 
     public void chargePoint(Integer amount) {
         this.point.charge(amount);
@@ -37,6 +56,16 @@ public class User {
 
     public void deductPoint(Integer amount) {
         this.point.deduct(amount);
+    }
+
+    public void addOrder(Order order) {
+        this.orders.addOrder(order);
+    }
+
+    public void canCreateOrder(){
+        if(!orders.areAllOrdersPaymentCompleted()){
+            throw new IllegalArgumentException("결제가 완료되지 않은 주문이 존재합니다.");
+        }
     }
 
     @Override

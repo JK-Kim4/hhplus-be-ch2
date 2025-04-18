@@ -1,5 +1,7 @@
 package kr.hhplus.be.server.application.user;
 
+import kr.hhplus.be.server.domain.user.UserCommand;
+
 public class UserCriteria {
 
 
@@ -8,11 +10,11 @@ public class UserCriteria {
         private Long userId;
         private Integer chargeAmount;
 
-        public static Charge of(Long userId, Integer chargeAmount) {
-            return new Charge(userId, chargeAmount);
+        public UserCommand.Charge toCommand() {
+            return new UserCommand.Charge(userId, chargeAmount);
         }
 
-        private Charge(Long userId, Integer chargeAmount) {
+        public Charge(Long userId, Integer chargeAmount) {
             this.userId = userId;
             this.chargeAmount = chargeAmount;
         }

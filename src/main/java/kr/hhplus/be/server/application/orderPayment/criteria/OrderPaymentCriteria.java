@@ -27,27 +27,34 @@ public class OrderPaymentCriteria {
     public static class PaymentCreate {
 
         private Long orderId;
+        private Long userId;
 
-        public static PaymentCreate of(Long orderId) {
-            return new PaymentCreate(orderId);
+        public static PaymentCreate of(Long orderId, Long userId) {
+            return new PaymentCreate(orderId, userId);
         }
 
-        public PaymentCreate(Long orderId) {
+        public PaymentCreate(Long orderId, Long userId) {
             this.orderId = orderId;
+            this.userId = userId;
         }
+
     }
 
     @Getter
     public static class PaymentProcess {
 
+        private Long orderId;
+        private Long userId;
         private Long paymentId;
 
-        public static PaymentProcess of(Long paymentId) {
-            return new PaymentProcess(paymentId);
+        public static PaymentProcess of(Long orderId, Long userId, Long paymentId) {
+            return new PaymentProcess(orderId, userId, paymentId);
         }
 
-        public PaymentProcess(Long paymentId) {
+        public PaymentProcess(Long orderId, Long userId, Long paymentId) {
             this.paymentId = paymentId;
+            this.userId = userId;
+            this.orderId = orderId;
         }
 
     }

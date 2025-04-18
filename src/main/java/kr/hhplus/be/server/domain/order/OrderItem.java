@@ -1,23 +1,30 @@
 package kr.hhplus.be.server.domain.order;
 
+import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.item.Item;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Entity
 @Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderItem {
 
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Order order;
-    private Long itemId;
-    private Item item;
-    private Integer price;
-    private Integer quantity;
 
-    public static OrderItem of(Long itemId, Integer price, Integer quantity) {
-        return new OrderItem(itemId, price, quantity);
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Order order;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "item_id")
+    private Item item;
+
+    @Column
+    private Integer price;
+
+    @Column
+    private Integer quantity;
 
     public OrderItem(Order order, Item item, Integer orderedPrice, Integer quantity) {
         if(order == null) {
@@ -28,19 +35,13 @@ public class OrderItem {
             throw new IllegalArgumentException("올바르지 않은 상품 정보입니다.");
         }
 
-        if (!item.getPrice().equals(orderedPrice)) {
+        if (!item.price().equals(orderedPrice)) {
             throw new IllegalArgumentException("가격 정보가 일치하지 않습니다.");
         }
 
         this.order = order;
         this.item = item;
         this.price = orderedPrice;
-        this.quantity = quantity;
-    }
-
-    public OrderItem(Long itemId, Integer price, Integer quantity) {
-        this.itemId = itemId;
-        this.price = price;
         this.quantity = quantity;
     }
 
@@ -52,6 +53,10 @@ public class OrderItem {
 
     protected void setOrder(Order order){
         this.order = order;
+    }
+
+    public Long getItemId() {
+        return item.getId();
     }
 
     public void deductItemQuantity() {
