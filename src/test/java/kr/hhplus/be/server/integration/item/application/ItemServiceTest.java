@@ -46,9 +46,10 @@ public class ItemServiceTest {
     void 상품을_등록한다(){
         item1 = itemRepository.save(item1);
 
-        Item savedItem = itemService.findItemById(item1.getId());
+        Long savedItemId = itemService.findItemById(item1.getId()).getId();
+        Item savedItem = itemService.findItemById(savedItemId);
 
-        assertNotNull(item1);
+        assertEquals(item1, savedItem);
     }
 
     @Test
