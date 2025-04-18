@@ -44,7 +44,7 @@ public class CouponFacadeTest {
         couponV2Repository.save(coupon);
         couponId = coupon.getId();
 
-        User user = new User("Tester");
+        User user = User.createWithName("Tester");
         userRepository.save(user);
         userId = user.getId();
     }

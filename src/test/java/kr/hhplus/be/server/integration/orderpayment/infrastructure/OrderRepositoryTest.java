@@ -44,8 +44,8 @@ public class OrderRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        user1 = new User("user1");
-        user2 = new User("user2");
+        user1 = User.createWithName("user1");
+        user2 = User.createWithName("user2");
 
         car = new Item("car", 2000, 50);
         truck = new Item("truck", 1000, 50);
