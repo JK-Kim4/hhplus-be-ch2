@@ -6,6 +6,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 @Entity
 @Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderItem {
@@ -26,29 +28,30 @@ public class OrderItem {
     @Column
     private Integer quantity;
 
-    public OrderItem(Order order, Item item, Integer orderedPrice, Integer quantity) {
-        if(order == null) {
-            throw new IllegalArgumentException("주문 정보를 생성해주세요");
-        }
-
-        if (item == null) {
-            throw new IllegalArgumentException("올바르지 않은 상품 정보입니다.");
-        }
-
-        if (!item.price().equals(orderedPrice)) {
-            throw new IllegalArgumentException("가격 정보가 일치하지 않습니다.");
-        }
-
-        this.order = order;
-        this.item = item;
-        this.price = orderedPrice;
-        this.quantity = quantity;
+    public static OrderItem createWithItemAndPriceAndQuantity(Item item, Integer price, Integer quantity) {
+        return new OrderItem(item, price, quantity);
     }
 
     public OrderItem(Item item, Integer price, Integer quantity) {
+        validateItem(item, price, quantity);
+
         this.item = item;
         this.price = price;
         this.quantity = quantity;
+    }
+
+    private static void validateItem(Item item, Integer price, Integer quantity) {
+        if(Objects.isNull(item)) {
+            throw new IllegalArgumentException("상품이 존재하지않습니다.");
+        }
+
+        if(!item.isSamePrice(price)) {
+            throw new IllegalArgumentException("주문 상품의 가격이 일치하지않습니다.");
+        }
+
+        if(item.hasEnoughStock(quantity)){
+            throw new IllegalArgumentException("상품 재고가 부족합니다.");
+        }
     }
 
     protected void setOrder(Order order){

@@ -1,17 +1,14 @@
 package kr.hhplus.be.server.application.orderPayment;
 
-import kr.hhplus.be.server.application.orderPayment.criteria.OrderItemCriteria;
 import kr.hhplus.be.server.application.orderPayment.criteria.OrderPaymentCriteria;
 import kr.hhplus.be.server.application.orderPayment.result.OrderResult;
 import kr.hhplus.be.server.application.orderPayment.result.PaymentResult;
 import kr.hhplus.be.server.domain.coupon.CouponService;
 import kr.hhplus.be.server.domain.coupon.UserCoupon;
-import kr.hhplus.be.server.domain.item.Item;
 import kr.hhplus.be.server.domain.item.ItemService;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderItem;
 import kr.hhplus.be.server.domain.order.OrderService;
-import kr.hhplus.be.server.domain.order.command.OrderCommand;
 import kr.hhplus.be.server.domain.payment.Payment;
 import kr.hhplus.be.server.domain.payment.PaymentCommand;
 import kr.hhplus.be.server.domain.payment.PaymentService;
@@ -64,18 +61,15 @@ public class OrderFacade {
 
     @Transactional
     public OrderResult.Create createOrder(OrderPaymentCriteria criteria) {
-        //주문 상품 주문 가능 여부 검사
-        itemsValidation(criteria.getOrderItems());
-
-        //주문 객체 생성(User)
+        //주문 생성
         User user = userService.findById(criteria.getUserId());
-        Order order = Order.createDefault(user, createOrderItems(criteria.toOrderItemCreateCommand()));
+        List<OrderItem> orderItems = itemService.getOrderItems(criteria.toOrderItemCreateCommand());
+        Order order = Order.createWithItems(user, orderItems);
 
         //쿠폰 적용
-        if(criteria.getUserCouponId() != null){
-            UserCoupon userCoupon = couponService.findUserCouponById(criteria.getUserCouponId());
-            order.applyCoupon(userCoupon);
-        }
+        UserCoupon userCoupon = couponService.findUserCouponById(criteria.getUserCouponId());
+        order.applyCoupon(userCoupon);
+
 
         //DB 저장
         orderService.save(order);
@@ -88,6 +82,7 @@ public class OrderFacade {
         User user = userService.findById(criteria.getUserId());
 
         Payment payment = new Payment(order, user);
+        order.registerPayment(payment);
 
         paymentService.save(PaymentCommand.Create.of(payment));
         return PaymentResult.Create.from(payment);
@@ -103,28 +98,5 @@ public class OrderFacade {
 
         restTemplateAdaptor.post("test", payment, HashMap.class );
         return PaymentResult.Process.from(payment);
-    }
-
-
-    /*PRIVATE*/
-    private List<OrderItem>  createOrderItems(List< OrderCommand.OrderItemCreate> orderItemCommands) {
-        if(orderItemCommands.isEmpty()){
-            throw new IllegalArgumentException("주문 상품이 존재하지않습니다.");
-        }
-
-        return orderItemCommands.stream()
-                .map(command -> new OrderItem(
-                        itemService.findItemById(command.getItemId()),
-                        command.getPrice(),
-                        command.getQuantity()))
-                .toList();
-        }
-
-    private void itemsValidation(List<OrderItemCriteria> orderItems) {
-        for (OrderItemCriteria orderItem : orderItems) {
-            Item item = itemService.findItemById(orderItem.getItemId());
-            item.hasEnoughStock(orderItem.getQuantity());
-            item.isSamePrice(orderItem.getPrice());
-        }
     }
 }

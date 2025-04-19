@@ -19,7 +19,7 @@ public class Payment {
     @Column(name = "payment_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
 
@@ -50,7 +50,6 @@ public class Payment {
         this.paymentPrice = order.getFinalPaymentPrice();
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
-        order.registerPayment(this);
     }
 
     public boolean isPayable(User user){

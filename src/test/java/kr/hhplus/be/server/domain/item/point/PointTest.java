@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.point;
+package kr.hhplus.be.server.domain.item.point;
 
 import kr.hhplus.be.server.domain.FakeUser;
 import kr.hhplus.be.server.domain.user.User;

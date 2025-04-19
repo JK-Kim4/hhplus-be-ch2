@@ -47,8 +47,8 @@ public class OrderRepositoryTest {
         user1 = User.createWithName("user1");
         user2 = User.createWithName("user2");
 
-        car = Item.createWithPriceAndStock("car", 2000, 50);
-        truck = Item.createWithPriceAndStock("truck", 1000, 50);
+        car = Item.createWithNameAndPriceAndStock("car", 2000, 50);
+        truck = Item.createWithNameAndPriceAndStock("truck", 1000, 50);
 
         userRepository.save(user1);
         userRepository.save(user2);

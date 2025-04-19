@@ -43,11 +43,11 @@ public class Stock implements Serializable {
 
     public void increase(Integer amount) {
         if(amount <= 0){
-            throw new InvalidStockException(InvalidStockException.INVALID_INCREASE_QUANTITY);
+            throw new IllegalArgumentException("유효하지 않은 재고 추가 요청입니다.");
         }
 
         if(amount + stock > MAXIMUM_STOCK_QUANTITY){
-            throw new InvalidStockException(InvalidStockException.OVER_MAXIMUM_STOCK_QUANTITY);
+            throw new IllegalArgumentException("상품 재고는 100,000개를 초과할 수 없습니다.");
         }
 
         this.stock += amount;
@@ -55,11 +55,11 @@ public class Stock implements Serializable {
 
     public void decrease(Integer amount) {
         if(amount <= 0){
-            throw new InvalidStockException(InvalidStockException.INVALID_DECREASE_QUANTITY);
+            throw new IllegalArgumentException("유효하지 않은 재고 차감 요청입니다.");
         }
 
         if(amount > this.stock){
-            throw new InvalidStockException(InvalidStockException.INSUFFICIENT_STOCK_QUANTITY);
+            throw new IllegalArgumentException("주문 가능한 상품 재고가 부족합니다.");
         }
 
         this.stock -= amount;

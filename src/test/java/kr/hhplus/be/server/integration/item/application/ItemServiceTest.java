@@ -32,9 +32,9 @@ public class ItemServiceTest {
 
     @BeforeEach
     void setUp() {
-        item1 = itemRepository.save(Item.createWithPrice("item", 5_000));
-        item2 = itemRepository.save(Item.createWithPriceAndStock("car", 1_000, 50));
-        item3 = itemRepository.save(Item.createWithPriceAndStock("food", 12_000, 50));
+        item1 = itemRepository.save(Item.createWithNameAndPrice("item", 5_000));
+        item2 = itemRepository.save(Item.createWithNameAndPriceAndStock("car", 1_000, 50));
+        item3 = itemRepository.save(Item.createWithNameAndPriceAndStock("food", 12_000, 50));
     }
 
     @AfterEach

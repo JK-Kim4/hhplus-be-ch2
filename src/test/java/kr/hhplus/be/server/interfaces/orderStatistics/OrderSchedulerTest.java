@@ -42,9 +42,9 @@ public class OrderSchedulerTest {
         Order order1 = new Order(null, null);
         Order order2 = new Order(null, null);
         Order order3 = new Order(null, null);
-        Item car = Item.createWithPriceAndStock("car", 1000, 50);
-        Item desk = Item.createWithPriceAndStock("desk", 5000, 50);
-        Item food = Item.createWithPriceAndStock("food", 3000, 50);
+        Item car = Item.createWithNameAndPriceAndStock("car", 1000, 50);
+        Item desk = Item.createWithNameAndPriceAndStock("desk", 5000, 50);
+        Item food = Item.createWithNameAndPriceAndStock("food", 3000, 50);
         when(car.getId()).thenReturn(1L);
         when(desk.getId()).thenReturn(2L);
         when(food.getId()).thenReturn(3L);

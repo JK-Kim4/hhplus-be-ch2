@@ -56,21 +56,21 @@ public class UserCoupon {
         this.applyDateTime = LocalDateTime.now();
     }
 
-    public boolean isCouponOwner(Long userId) {
-        return userId.equals(this.user.getId());
+    public boolean isCouponOwner(User user) {
+        return this.user.equals(user);
     }
 
     public Integer discount(Integer price) {
         return coupon.calculateDiscount(price);
     }
 
-    public void isUsable(LocalDate targetDateTime, Long userId) {
+    public void isUsable(LocalDate targetDate, User user) {
 
-        if(!coupon.isBeforeExpiredDate(targetDateTime)){
+        if(!coupon.isBeforeExpiredDate(targetDate)){
             throw new IllegalArgumentException("만료된 쿠폰입니다.");
         }
 
-        if(!isCouponOwner(userId)){
+        if(!isCouponOwner(user)){
             throw new IllegalArgumentException("사용할 수 없는 쿠폰입니다.");
         }
 

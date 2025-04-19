@@ -1,79 +1,105 @@
 package kr.hhplus.be.server.domain.order;
 
-import kr.hhplus.be.server.domain.FakeUser;
+import kr.hhplus.be.server.domain.coupon.Coupon;
+import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.domain.item.Item;
 import kr.hhplus.be.server.domain.payment.Payment;
 import kr.hhplus.be.server.domain.user.User;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OrderTest {
 
-    private OrderItem orderItem1;
-    private OrderItem orderItem2;
-    private OrderItems orderItems;
-    private List<OrderItem> itemList;
-
-    @BeforeEach
-    void setUp() {
-        orderItem1 = mock(OrderItem.class);
-        orderItem2 = mock(OrderItem.class);
-        itemList = List.of(orderItem1, orderItem2);
-
-        orderItems = mock(OrderItems.class);
-        when(orderItems.calculateTotalPrice()).thenReturn(2000);
-    }
-
     @Test
-    void testOrderCreation() {
-        User user = mock(User.class);
-        Order order = new Order(user, itemList);
+    void 주문생성시_ORDER_CREATE상태의_주문이_생성된다(){
+        //when
+        Order order = createOrderFixture();
 
-        assertEquals(2, order.getOrderItems().size());
+        //then
+        assertNotNull(order);
         assertEquals(OrderStatus.ORDER_CREATED, order.getOrderStatus());
     }
 
     @Test
-    void testCalculateTotalPrice() {
-        User user = mock(User.class);
-        OrderItem orderItem1 = new OrderItem(mock(Item.class),1000, 50);
-        OrderItem orderItem2 = new OrderItem(mock(Item.class),2000, 50);
-        OrderItem orderItem3 = new OrderItem(mock(Item.class), 3000, 50);
-        List<OrderItem> orderItemList = List.of(orderItem1, orderItem2, orderItem3);
+    void 주문상품의_총금액을_계산한다(){
+        //given
+        Order order = createOrderFixture();
 
-        Order order = new Order(user, orderItemList);
-
+        //when
         order.calculateTotalPrice();
 
-        assertEquals(OrderStatus.ORDER_CREATED, order.getOrderStatus());
-        assertEquals(orderItem1.calculatePrice() + orderItem2.calculatePrice(), order.getTotalPrice(),
-                order.getTotalPrice());
+        //then
+        assertEquals(100_000, order.getTotalPrice());
     }
 
     @Test
-    void testRegisterPayment() {
-        Order order = new Order(new FakeUser(2L, "tesr"), itemList);
-        Payment payment = mock(Payment.class);
+    void 주문의_상태정보를_변경한다(){
+        //given
+        Order order = createOrderFixture();
 
-        order.registerPayment(payment);
-
-        assertEquals(payment, order.getPayment());
-    }
-
-    @Test
-    void testUpdateOrderStatus() {
-        Order order = new Order(new FakeUser(1L, "test"), itemList);
-
+        //when
         order.updateOrderStatus(OrderStatus.PAYMENT_WAITING);
 
+        //then
+        assertEquals(OrderStatus.PAYMENT_WAITING, order.getOrderStatus());
+    }
+
+    @Test
+    void 사용가능한_사용자쿠폰정보를_전달받아_applyCoupon을_호출하면_할일된_가격이_적용되고_사용자쿠폰정보가_갱신된다(){
+        //given
+        Order order = createOrderFixture();
+        Coupon coupon =  Coupon.createFlatCoupon(
+                "test flat coupon",
+                9999,
+                LocalDate.now().plusYears(999),
+                5_000
+        );
+        UserCoupon userCoupon = UserCoupon.create(order.getUser(), coupon);
+
+        //when
+        order.applyCoupon(userCoupon);
+
+        //then
+        assertEquals(100_000, order.getTotalPrice());
+        assertEquals(95_000, order.getFinalPaymentPrice());
+    }
+
+    @Test
+    void 결제정보를_전달받아_registerPayment를_호출하면_주문상태를_PAYMENT_WAITING_변경하고_결제정보를_갱신한다(){
+        //given
+        Order order = createOrderFixture();
+        Payment payment = new Payment(order, order.getUser());
+
+        //when
+        assertNull(order.getPayment());
+        order.registerPayment(payment);
+
+        //then
+        assertNotNull(order.getPayment());
+        assertEquals(payment, order.getPayment());
         assertEquals(OrderStatus.PAYMENT_WAITING, order.getOrderStatus());
     }
 
 
+    public Order createOrderFixture(){
+        User user = User.createWithName("test");
+        List<OrderItem> orderItems = Arrays.asList(
+                createOrderItemFixture("car", 3_000, 10),
+                createOrderItemFixture("book", 2_000, 10),
+                createOrderItemFixture("food", 5_000, 10)
+        );
+
+        //when
+        return new Order(user, orderItems);
+    }
+
+    public OrderItem createOrderItemFixture(String name, Integer price, Integer quantity) {
+        Item item  = Item.createWithNameAndPriceAndStock(name, price, 9999);
+        return OrderItem.createWithItemAndPriceAndQuantity(item, price, quantity);
+    }
 }

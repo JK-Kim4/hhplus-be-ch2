@@ -41,6 +41,6 @@ public class CouponService {
     @Transactional(readOnly = true)
     public UserCoupon findUserCouponById(Long userCouponId) {
         return userCouponRepository.findById(userCouponId)
-                .orElseThrow(NoResultException::new);
+                .orElse(null);
     }
 }

@@ -39,11 +39,11 @@ public class Price implements Serializable {
 
     public void updatePrice(Integer price) {
         if(price < MINIMUM_ITEM_PRICE) {
-            throw new InvalidPriceException(InvalidPriceException.INSUFFICIENT_MINIMUM_PRICE);
+            throw new IllegalArgumentException("최소 판매가능 가격은 100원입니다.");
         }
 
         if(price > MAXIMUM_ITEM_PRICE) {
-            throw new InvalidPriceException(InvalidPriceException.OVER_MAXIMUM_PRICE);
+            throw new IllegalArgumentException("최대 판매 가능 금액은 100,000,000원입니다.");
         }
 
         this.price = price;

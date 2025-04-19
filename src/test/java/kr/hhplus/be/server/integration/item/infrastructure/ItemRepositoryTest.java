@@ -28,9 +28,9 @@ public class ItemRepositoryTest {
     @BeforeEach
     void setUp() {
 
-        item1 = Item.createWithPriceAndStock("car", 5000, 10);
-        item2 = Item.createWithPriceAndStock("truck", 1000, 5);
-        item3 = Item.createWithPriceAndStock("food", 2000, 3);
+        item1 = Item.createWithNameAndPriceAndStock("car", 5000, 10);
+        item2 = Item.createWithNameAndPriceAndStock("truck", 1000, 5);
+        item3 = Item.createWithNameAndPriceAndStock("food", 2000, 3);
 
         itemRepository.save(item1);
         itemRepository.save(item2);

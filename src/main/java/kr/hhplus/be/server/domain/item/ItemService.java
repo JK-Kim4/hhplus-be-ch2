@@ -1,6 +1,8 @@
 package kr.hhplus.be.server.domain.item;
 
 import jakarta.persistence.NoResultException;
+import kr.hhplus.be.server.domain.order.OrderItem;
+import kr.hhplus.be.server.domain.order.command.OrderCommand;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +19,7 @@ public class ItemService {
     }
 
     public Item save(ItemCommand.Create command){
-        Item item = Item.createWithPriceAndStock(
+        Item item = Item.createWithNameAndPriceAndStock(
                 command.getName(),
                 command.getPrice(),
                 command.getStock());
@@ -40,5 +42,19 @@ public class ItemService {
 
     public List<Item> findByIds(List<Long> itemIds) {
         return itemRepository.findByIds(itemIds);
+    }
+
+    public List<OrderItem> getOrderItems(List<OrderCommand.OrderItemCreate> orderItemCreateCommand) {
+        if(orderItemCreateCommand.isEmpty()){
+            throw new IllegalArgumentException("주문 상품이 존재하지않습니다.");
+        }
+
+        return orderItemCreateCommand.stream()
+                .map(command -> new OrderItem(
+                        itemRepository.findById(command.getItemId())
+                                .orElseThrow(NoResultException::new),
+                        command.getPrice(),
+                        command.getQuantity()))
+                .toList();
     }
 }

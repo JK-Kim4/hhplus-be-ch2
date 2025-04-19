@@ -1,13 +1,10 @@
 package kr.hhplus.be.server.domain.item;
 
 import jakarta.persistence.*;
-import kr.hhplus.be.server.interfaces.exception.InvalidPriceException;
-import kr.hhplus.be.server.interfaces.exception.InvalidStockException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -27,23 +24,57 @@ public class Item {
     @Embedded
     private Stock  stock;
 
-    @Column
-    private LocalDateTime createdAt;
-
-    @Column
-    private LocalDateTime updatedAt;
-
-    public static Item createWithPrice(String name, Integer price) {
+    public static Item createWithNameAndPrice(String name, Integer price) {
         validateName(name);
         validatePrice(price);
         return new Item(name, price);
     }
 
-    public static Item createWithPriceAndStock(String name, Integer price, Integer stock) {
+    public static Item createWithNameAndPriceAndStock(String name, Integer price, Integer stock) {
         validateName(name);
         validatePrice(price);
         validateStock(stock);
         return new Item(name, price, stock);
+    }
+
+    protected Item(String name, Integer price) {
+        this.name = name;
+        this.price = Price.createOrDefault(price);
+        this.stock = Stock.createOrDefault();
+    }
+
+    protected Item(String name, Integer price, Integer stock) {
+        this.name = name;
+        this.price = Price.createOrDefault(price);
+        this.stock = Stock.createOrDefault(stock);
+    }
+
+    public boolean hasEnoughStock(Integer quantity) {
+        return quantity > this.stock();
+    }
+
+    public boolean isSamePrice(Integer price){
+        return price.equals(this.price());
+    }
+
+    public void updatePrice(Integer updatePrice) {
+        price.updatePrice(updatePrice);
+    }
+
+    public void decreaseStock(Integer amount) {
+        this.stock.decrease(amount);
+    }
+
+    public void increaseStock(Integer amount) {
+        this.stock.increase(amount);
+    }
+
+    public Integer price(){
+        return this.price.getPrice();
+    }
+
+    public Integer stock(){
+        return this.stock.getStock();
     }
 
     private static void validateName(String name) {
@@ -62,70 +93,6 @@ public class Item {
         if (stock == null || stock < 0) {
             throw new IllegalArgumentException("재고는 0 이상이어야 합니다.");
         }
-    }
-
-    protected Item(String name, Integer price) {
-        this.name = name;
-        this.price = Price.createOrDefault(price);
-        this.stock = Stock.createOrDefault();
-    }
-
-    protected Item(String name, Integer price, Integer stock) {
-        this.name = name;
-        this.price = Price.createOrDefault(price);
-        this.stock = Stock.createOrDefault(stock);
-    }
-
-    public void setPrice(Integer price) {
-        this.price = Price.createOrDefault(price);
-    }
-
-    public void setStock(Integer stock) {
-        this.stock = Stock.createOrDefault(stock);
-    }
-
-    public Integer price(){
-        return this.price.getPrice();
-    }
-
-    public Integer stock(){
-        return this.stock.getStock();
-    }
-
-    public boolean hasEnoughStock(Integer quantity) {
-        if(quantity >= Stock.MAXIMUM_STOCK_QUANTITY){
-            throw new InvalidStockException(InvalidStockException.OVER_MAXIMUM_STOCK_QUANTITY);
-        }
-
-        if(quantity > this.stock()){
-            throw new InvalidStockException(InvalidStockException.INSUFFICIENT_STOCK_QUANTITY);
-        }
-
-        return true;
-    }
-
-    public boolean isSamePrice(Integer price){
-        if(!this.price().equals(price)){
-            throw new InvalidPriceException(
-                    String.format(InvalidPriceException.ITEM_PRICE_MISMATCH, this.id));
-        }
-
-        return true;
-    }
-
-    public void updatePrice(Integer updatePrice) {
-        price.updatePrice(updatePrice);
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    public void decreaseStock(Integer amount) {
-        this.stock.decrease(amount);
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    public void increaseStock(Integer amount) {
-        this.stock.increase(amount);
-        this.updatedAt = LocalDateTime.now();
     }
 
     @Override
@@ -150,8 +117,6 @@ public class Item {
                 ", name='" + name + '\'' +
                 ", price=" + price +
                 ", stock=" + stock +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
                 '}';
     }
 }
