@@ -21,7 +21,7 @@ public class Point {
     private Long id;
 
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User user;
 
     @Column(name = "pointAmount", nullable = false)
