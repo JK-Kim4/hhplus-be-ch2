@@ -60,8 +60,8 @@ public class OrderRepositoryTest {
     @Transactional
     void 주문과_주문상품을_저장한다(){
         //given
-        OrderItem orderItem1 = new OrderItem(car, 2000, 30);
-        OrderItem orderItem2 = new OrderItem(truck, 1000, 10);
+        OrderItem orderItem1 = OrderItem.createWithItemAndPriceAndQuantity(car, 2000, 30);
+        OrderItem orderItem2 = OrderItem.createWithItemAndPriceAndQuantity(truck, 1000, 10);
         List<OrderItem> orderItems = Arrays.asList(orderItem1, orderItem2);
         Order order = new Order(user1, orderItems);
         Order save = orderRepository.save(order);

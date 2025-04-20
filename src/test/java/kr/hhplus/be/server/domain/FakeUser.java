@@ -18,5 +18,4 @@ public class FakeUser extends User {
     protected void setPoint(Point point) {
         this.point = point;
     }
-
 }

@@ -52,9 +52,9 @@ public class OrderSchedulerTest {
         List<Order> mockOrders = List.of(order1,order2,order3);
 
         List<OrderItem> mockOrderItems = List.of(
-                new OrderItem(car, 1000, 20),
-                new OrderItem(desk, 5000, 20),
-                new OrderItem(food, 3000, 20)
+                OrderItem.createWithItemAndPriceAndQuantity(car, 1000, 20),
+                OrderItem.createWithItemAndPriceAndQuantity(desk, 5000, 20),
+                OrderItem.createWithItemAndPriceAndQuantity(food, 3000, 20)
         );
 
         List<OrderStatistics> mockStatistics = OrderStatistics.calculateOrderStatistics(mockOrderItems, targetDate);

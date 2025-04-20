@@ -204,9 +204,9 @@ public class OrderFacadeTest {
             itemRepository.save(item3);
 
             List<OrderItem> orderItemList = Arrays.asList(
-                    new OrderItem(item1, item1.price(), 10),
-                    new OrderItem(item2, item2.price(), 3),
-                    new OrderItem(item3, item3.price(), 5)
+                    OrderItem.createWithItemAndPriceAndQuantity(item1, item1.price(), 10),
+                    OrderItem.createWithItemAndPriceAndQuantity(item2, item2.price(), 3),
+                    OrderItem.createWithItemAndPriceAndQuantity(item3, item3.price(), 5)
             );
 
             orderId1 = orderRepository.save(new Order(user, orderItemList)).getId();

@@ -44,7 +44,7 @@ public class OrderCommand {
         private Integer quantity;
 
         public OrderItem toEntity(Item item){
-            return new OrderItem(item, price, quantity);
+            return OrderItem.createWithItemAndPriceAndQuantity(item, price, quantity);
         }
 
 

@@ -1,77 +1,87 @@
 package kr.hhplus.be.server.domain.payment;
 
+import kr.hhplus.be.server.domain.item.Item;
 import kr.hhplus.be.server.domain.order.Order;
+import kr.hhplus.be.server.domain.order.OrderItem;
 import kr.hhplus.be.server.domain.order.OrderStatus;
+import kr.hhplus.be.server.domain.order.OrderTestFixture;
 import kr.hhplus.be.server.domain.user.User;
+import kr.hhplus.be.server.domain.user.UserTestFixture;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
+import java.util.Arrays;
+import java.util.List;
 
-@ExtendWith(MockitoExtension.class)
+import static org.junit.jupiter.api.Assertions.*;
+
 public class PaymentTest {
 
-    //TODO
     @Test
-    void 주문과_사용자정보를_받아_결제를_생성한다(){
-        User user = mock(User.class);
-        Order order = mock(Order.class);
-        when(order.getUser()).thenReturn(user);
+    void 전달받은_사용자정보가_결제사용자와_일치하지않을경우_isPayable은_IllegalArgumentException(){
+        //given
+        Payment payment = PaymentTestFixture.createTestPayment();
+        User user = UserTestFixture.createTestUser();
 
-        new Payment(order, user);
+        //when//then
+        assertThrows(IllegalArgumentException.class,() -> payment.isPayable(user));
     }
 
     @Test
-    void 주문사용자정보와_파라미터사용자정보가_일치하지않을경우_결제생성에_실패한다(){
-        User user = mock(User.class);
-        Order order = mock(Order.class);
-        when(order.getUser()).thenReturn(mock(User.class));
+    void 전달받은_사용자의_잔고가_부족할경우_isPayable은_false를_리턴(){
+        //given
+        Payment payment = PaymentTestFixture.createTestPayment();
+        User user = payment.getUser();
 
-        assertThrows(IllegalArgumentException.class,
-                () -> new Payment(order, user));
+        //when
+        user.deductPoint(user.point());
+
+        // then
+        assertFalse(payment.isPayable(user));
     }
 
     @Test
-    void 사용자_잔고가_결제금액보다_많을경우_결제가_가능하다(){
-        User user = mock(User.class);
-        Order order = mock(Order.class);
-        when(order.getUser()).thenReturn(user);
-        when(order.getFinalPaymentPrice()).thenReturn(10_000);
-        when(user.point()).thenReturn(50_000);
+    void 결제에_성공하면_상품재고와_사용자잔액이_차감되고_주문상태가_갱신된다(){
+        //given
+        Item car  = Item.createWithNameAndPriceAndStock("car", 3_000, 10);
+        Item book  = Item.createWithNameAndPriceAndStock("book", 2_000, 10);
+        Item food  = Item.createWithNameAndPriceAndStock("food", 5_000, 10);
 
-        Payment payment = new Payment(order, user);
+        OrderItem carOi = OrderTestFixture.createOrderItemWithItemAndPriceAndQuantity(
+                car,
+                3_000,
+                5);
+        OrderItem bookOi = OrderTestFixture.createOrderItemWithItemAndPriceAndQuantity(
+                book,
+                2_000,
+                5
+        );
+        OrderItem foodOi = OrderTestFixture.createOrderItemWithItemAndPriceAndQuantity(
+                food,
+                5_000,
+                1
+        );
+        List<OrderItem> orderItems = Arrays.asList(carOi, bookOi, foodOi);
+        User user = UserTestFixture.createTestUser();
+        user.chargePoint(100_000);
+        Order order = new Order(user, orderItems);
+        Integer finalPrice = order.getFinalPaymentPrice();
+        Payment payment = PaymentTestFixture.creatTestPaymentWithOrderAndUser(order);
 
-        assertTrue(payment.isPayable(user));
-    }
-
-    @Test
-    void 결제사용자정보와_파라미터사용자정보가_일치하지않을경우_결제가능여부를_확인할수없다(){
-        User user = mock(User.class);
-        Order order = mock(Order.class);
-        when(order.getUser()).thenReturn(user);
-
-        Payment payment = new Payment(order, user);
-
-        assertThrows(IllegalArgumentException.class,
-                () -> payment.isPayable(mock(User.class)));
-    }
-
-    @Test
-    void 결제처리가_완료되면_상품재고와_사용자잔고가_차감된다(){
-        User user = mock(User.class);
-        Order order = mock(Order.class);
-        when(order.getUser()).thenReturn(user);
-
-        Payment payment = new Payment(order, user);
-
+        //when
         payment.pay(user);
 
-        verify(order, times(1)).deductOrderItemStock();
-        verify(user, times(1)).deductPoint(any());
-        verify(order, times(1)).updateOrderStatus(OrderStatus.PAYMENT_COMPLETED);
+        //then
+        assertEquals(100_000 - finalPrice, user.point());
+        assertEquals(OrderStatus.PAYMENT_COMPLETED, order.getOrderStatus());
+        assertEquals(5, car.stock());
+        assertEquals(5, book.stock());
+        assertEquals(9, food.stock());
+
+
     }
+
+
+
+
 
 }

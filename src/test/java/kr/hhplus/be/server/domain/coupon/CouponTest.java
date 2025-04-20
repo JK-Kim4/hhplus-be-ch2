@@ -1,7 +1,6 @@
 package kr.hhplus.be.server.domain.coupon;
 
-import kr.hhplus.be.server.domain.FakeUser;
-import kr.hhplus.be.server.domain.user.User;
+import kr.hhplus.be.server.domain.user.UserTestFixture;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -9,7 +8,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CouponTest {
 
@@ -86,9 +86,9 @@ public class CouponTest {
 
         @Test
         void 쿠폰_잔여수량이_존재할때_쿠폰_발급에_성공할경우_재고가_1개_차감된다() {
-            Coupon coupon = createCouponFixtureWithQuantityAndDiscountPrice(10, 5_000);
+            Coupon coupon = CouponTestFixture.createCouponFixtureWithQuantityAndDiscountPrice(10, 5_000);
 
-            coupon.issue(createTestUser(), LocalDate.now());
+            coupon.issue(UserTestFixture.createTestUser(), LocalDate.now());
 
             assertEquals(9, coupon.getQuantity());
         }
@@ -96,14 +96,14 @@ public class CouponTest {
         @Test
         void 잔여수량이_0개인_쿠폰_발급_요청시_IllegalArgumentException() {
             //given
-            Coupon coupon = createCouponFixtureWithQuantityAndDiscountPrice(1, 5_000);
+            Coupon coupon = CouponTestFixture.createCouponFixtureWithQuantityAndDiscountPrice(1, 5_000);
 
             //when
             coupon.decreaseQuantity();
 
             //then
             assertThrows(IllegalArgumentException.class,
-                    () -> coupon.issue(createTestUser(), LocalDate.now()));
+                    () -> coupon.issue(UserTestFixture.createTestUser(), LocalDate.now()));
         }
     }
 
@@ -112,7 +112,7 @@ public class CouponTest {
 
         @Test
         void 상품의_총가격을_전달받아_할인금액이_차감된_최종금액을_반환한다() {
-            Coupon coupon = createCouponFixtureWithQuantityAndDiscountPrice(10, 50_000);
+            Coupon coupon = CouponTestFixture.createCouponFixtureWithQuantityAndDiscountPrice(10, 50_000);
 
             Integer discountPrice = coupon.calculateDiscount(100_000);
 
@@ -121,24 +121,12 @@ public class CouponTest {
 
         @Test
         void 상품의_총가격이_할인금액보다_적을경우_차감된_최종금액_0원은_반환한다() {
-            Coupon coupon = createCouponFixtureWithQuantityAndDiscountPrice(10, 50_000);
+            Coupon coupon = CouponTestFixture.createCouponFixtureWithQuantityAndDiscountPrice(10, 50_000);
 
             Integer discountPrice = coupon.calculateDiscount(10_000);
 
             assertEquals(0, discountPrice);
         }
 
-    }
-
-    private User createTestUser() {
-        return new FakeUser(1L, "tester");
-    }
-
-    private Coupon createCouponFixtureWithQuantityAndDiscountPrice(Integer quantity, Integer discountPrice) {
-        return Coupon.createFlatCoupon(
-                "잔여수량 10개 정량할인쿠폰",
-                quantity,
-                LocalDate.now().plusDays(10),
-                discountPrice);
     }
 }

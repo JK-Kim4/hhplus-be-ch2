@@ -66,12 +66,6 @@ public class Payment {
         this.paymentResponseDateTime = LocalDateTime.now();
     }
 
-    public void authentication(User user){
-        if(!user.equals(this.user)){
-            throw new IllegalArgumentException("사용자 정보가 일치하지않습니다.");
-        }
-    }
-
     private void validation(Order order, User user) {
         if(Objects.isNull(order) || Objects.isNull(user)) {
             throw new IllegalArgumentException("필수 파라미터가 누락되었습니다.");
@@ -79,6 +73,12 @@ public class Payment {
 
         if(!order.getUser().equals(user)){
             throw new IllegalArgumentException("결제 요청 사용자와 주문자 정보가 일치하지않습니다.");
+        }
+    }
+
+    private void authentication(User user){
+        if(!user.equals(this.user)){
+            throw new IllegalArgumentException("사용자 정보가 일치하지않습니다.");
         }
     }
 

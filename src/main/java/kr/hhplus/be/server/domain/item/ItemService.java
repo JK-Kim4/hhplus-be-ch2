@@ -50,7 +50,7 @@ public class ItemService {
         }
 
         return orderItemCreateCommand.stream()
-                .map(command -> new OrderItem(
+                .map(command -> OrderItem.createWithItemAndPriceAndQuantity(
                         itemRepository.findById(command.getItemId())
                                 .orElseThrow(NoResultException::new),
                         command.getPrice(),

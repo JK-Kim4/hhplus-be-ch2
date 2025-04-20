@@ -32,26 +32,12 @@ public class OrderItem {
         return new OrderItem(item, price, quantity);
     }
 
-    public OrderItem(Item item, Integer price, Integer quantity) {
+    private OrderItem(Item item, Integer price, Integer quantity) {
         validateItem(item, price, quantity);
 
         this.item = item;
         this.price = price;
         this.quantity = quantity;
-    }
-
-    private static void validateItem(Item item, Integer price, Integer quantity) {
-        if(Objects.isNull(item)) {
-            throw new IllegalArgumentException("상품이 존재하지않습니다.");
-        }
-
-        if(!item.isSamePrice(price)) {
-            throw new IllegalArgumentException("주문 상품의 가격이 일치하지않습니다.");
-        }
-
-        if(item.hasEnoughStock(quantity)){
-            throw new IllegalArgumentException("상품 재고가 부족합니다.");
-        }
     }
 
     protected void setOrder(Order order){
@@ -72,5 +58,19 @@ public class OrderItem {
 
     public boolean belongsTo(Order order){
         return this.order.equals(order);
+    }
+
+    private static void validateItem(Item item, Integer price, Integer quantity) {
+        if(Objects.isNull(item)) {
+            throw new IllegalArgumentException("상품이 존재하지않습니다.");
+        }
+
+        if(!item.isSamePrice(price)) {
+            throw new IllegalArgumentException("주문 상품의 가격이 일치하지않습니다.");
+        }
+
+        if(item.hasEnoughStock(quantity)){
+            throw new IllegalArgumentException("상품 재고가 부족합니다.");
+        }
     }
 }
