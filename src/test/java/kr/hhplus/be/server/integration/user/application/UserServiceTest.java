@@ -2,7 +2,6 @@ package kr.hhplus.be.server.integration.user.application;
 
 import jakarta.persistence.NoResultException;
 import kr.hhplus.be.server.domain.user.User;
-import kr.hhplus.be.server.domain.user.UserCommand;
 import kr.hhplus.be.server.domain.user.UserRepository;
 import kr.hhplus.be.server.domain.user.UserService;
 import org.junit.jupiter.api.AfterEach;
@@ -40,30 +39,6 @@ public class UserServiceTest {
     @AfterEach
     void tearDown() {
         userRepository.deleteAll();
-    }
-
-    @Test
-    void 사용자를_저장한다(){
-        //given
-        String name = "save user";
-        UserCommand.Create command = new UserCommand.Create(name);
-
-        //when
-        User user = userService.save(command);
-        User savedUser = userRepository.findById(user.getId()).get();
-
-        //then
-        assertEquals(user, savedUser);
-    }
-
-    @Test
-    void 동일한_이름의_사용자_저장시_오류발생(){
-        //given
-        UserCommand.Create command = new UserCommand.Create(name);
-
-        //when
-        assertThrows(IllegalArgumentException.class,
-                () -> userService.save(command));
     }
 
     @Test

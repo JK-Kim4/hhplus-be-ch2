@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.infrastructure.coupon;
 
-import kr.hhplus.be.server.domain.coupon.UserCoupon;
-import kr.hhplus.be.server.domain.coupon.UserCouponRepository;
+import kr.hhplus.be.server.domain.coupon.userCoupon.UserCoupon;
+import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

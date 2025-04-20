@@ -47,7 +47,6 @@ public class OrderCommand {
             return OrderItem.createWithItemAndPriceAndQuantity(item, price, quantity);
         }
 
-
         public OrderItemCreate(Long itemId, Integer price, Integer quantity) {
             this.itemId = itemId;
             this.price = price;

@@ -4,7 +4,7 @@ import kr.hhplus.be.server.application.orderPayment.criteria.OrderPaymentCriteri
 import kr.hhplus.be.server.application.orderPayment.result.OrderResult;
 import kr.hhplus.be.server.application.orderPayment.result.PaymentResult;
 import kr.hhplus.be.server.domain.coupon.CouponService;
-import kr.hhplus.be.server.domain.coupon.UserCoupon;
+import kr.hhplus.be.server.domain.coupon.userCoupon.UserCoupon;
 import kr.hhplus.be.server.domain.item.ItemService;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderItem;

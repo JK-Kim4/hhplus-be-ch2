@@ -1,17 +1,20 @@
 package kr.hhplus.be.server.domain.user;
 
-import kr.hhplus.be.server.domain.FakeUser;
+import jakarta.persistence.NoResultException;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -22,38 +25,36 @@ public class UserServiceTest {
     @InjectMocks
     UserService userService;
 
-    String name = "tester";
-    User user = new FakeUser(1L, name);
+    @Nested
+    class 사용자_포인트_충전_커멘드를_전달받아_포인트를_충전 {
 
-    @Test
-    void 동일한_이름의_사용자_등록요청시_IllegalArgumentException를_반환한다(){
-        //given
-        UserCommand.Create command = new UserCommand.Create(name);
-        when(userRepository.findByName(name))
-                .thenReturn(Optional.of(user));
+        @Test
+        void 사용자_고유번호에_해당하는_사용자가_존재하지않을경우_NoResultException(){
+            //given
+            when(userRepository.findById(1L)).thenReturn(Optional.empty());
+            UserCommand.Charge command = new UserCommand.Charge(1L, 5000);
 
-        //when
-        IllegalArgumentException illegalArgumentException =
-                assertThrows(IllegalArgumentException.class, () -> userService.save(command));
+            //when//then
+            assertThrows(NoResultException.class, () ->
+                    userService.charge(command));
+        }
 
-        //then
-        assertEquals("이미 존재하는 회원입니다." ,illegalArgumentException.getMessage());
-    }
+        @Test
+        void 사용자_포인트가_충전된다(){
+            //given
+            User user = Mockito.mock(User.class);
+            when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user));
+            UserCommand.Charge command = new UserCommand.Charge(1L, 5000);
 
-    @Test
-    void 사용자는_포인트를_충전할수있다(){
-        //given
-        User user = mock(User.class);
-        UserCommand.Charge command =
-                new UserCommand.Charge(10L, 5_000);
-        when(userRepository.findById(anyLong()))
-                .thenReturn(Optional.of(user));
+            //when
+            userService.charge(command);
+            InOrder inOrder = Mockito.inOrder(user, userRepository);
 
-        //when
-        userService.charge(command);
-
-        //then
-        verify(user, times(1)).chargePoint(command.getAmount());
+            //then
+            inOrder.verify(userRepository).findById(1L);
+            inOrder.verify(user).chargePoint(anyInt());
+            inOrder.verify(userRepository).save(user);
+        }
     }
 
 

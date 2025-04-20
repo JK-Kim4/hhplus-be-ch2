@@ -28,7 +28,8 @@ public class ItemService {
 
     @Transactional(readOnly = true)
     public Item findItemById(Long itemId){
-        return itemRepository.findById(itemId).orElseThrow(NoResultException::new);
+        return itemRepository.findById(itemId)
+                .orElseThrow(NoResultException::new);
     }
 
     @Transactional(readOnly = true)
@@ -40,10 +41,7 @@ public class ItemService {
         return ItemCommand.Item.from(item);
     }
 
-    public List<Item> findByIds(List<Long> itemIds) {
-        return itemRepository.findByIds(itemIds);
-    }
-
+    @Transactional(readOnly = true)
     public List<OrderItem> getOrderItems(List<OrderCommand.OrderItemCreate> orderItemCreateCommand) {
         if(orderItemCreateCommand.isEmpty()){
             throw new IllegalArgumentException("주문 상품이 존재하지않습니다.");

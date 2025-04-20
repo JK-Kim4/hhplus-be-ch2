@@ -24,7 +24,8 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public Order findById(Long orderId) {
-        return orderRepository.findById(orderId).orElseThrow(NoResultException::new);
+        return orderRepository.findById(orderId)
+                .orElseThrow(NoResultException::new);
     }
 
     @Transactional(readOnly = true)
@@ -34,7 +35,9 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public List<OrderItem> findOrderItemsByOrderIds(List<Order> orders) {
-        List<Long> orderIds = orders.stream().map(Order::getId).collect(Collectors.toList());
+        List<Long> orderIds = orders.stream()
+                .map(Order::getId)
+                .collect(Collectors.toList());
         return orderRepository.findOrderItemsByOrderIds(orderIds);
     }
 }

@@ -2,7 +2,7 @@ package kr.hhplus.be.server.interfaces.api.coupon;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import kr.hhplus.be.server.domain.coupon.CouponType;
-import kr.hhplus.be.server.domain.coupon.UserCouponCriteria;
+import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponCriteria;
 
 import java.time.LocalDateTime;
 

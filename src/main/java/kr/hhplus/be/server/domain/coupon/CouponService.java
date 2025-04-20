@@ -1,8 +1,12 @@
 package kr.hhplus.be.server.domain.coupon;
 
 import jakarta.persistence.NoResultException;
+import kr.hhplus.be.server.domain.coupon.userCoupon.UserCoupon;
+import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional
@@ -16,11 +20,6 @@ public class CouponService {
             UserCouponRepository userCouponRepository) {
         this.couponRepository = couponRepository;
         this.userCouponRepository = userCouponRepository;
-    }
-
-    public Coupon saveCoupon(Coupon coupon, Integer discountRate) {
-        new FlatDiscountCoupon(coupon, discountRate);
-        return couponRepository.save(coupon);
     }
 
     public UserCoupon saveUserCoupon(UserCoupon userCoupon) {
@@ -42,5 +41,10 @@ public class CouponService {
     public UserCoupon findUserCouponById(Long userCouponId) {
         return userCouponRepository.findById(userCouponId)
                 .orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserCoupon> findByUserId(Long userId) {
+        return userCouponRepository.findByUserId(userId);
     }
 }
