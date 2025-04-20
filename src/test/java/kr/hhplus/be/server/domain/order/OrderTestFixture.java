@@ -10,10 +10,14 @@ public class OrderTestFixture {
 
     public static Order createTestOrder(){
         User user = User.createWithName("test");
+        Item car = Item.createWithNameAndPriceAndStock("car", 3_000, 50);
+        Item book = Item.createWithNameAndPriceAndStock("book", 2_000, 50);
+        Item food = Item.createWithNameAndPriceAndStock("food", 5_000, 50);
+
         List<OrderItem> orderItems = Arrays.asList(
-                createOrderItemFixture("car", 3_000, 10),
-                createOrderItemFixture("book", 2_000, 10),
-                createOrderItemFixture("food", 5_000, 10)
+                createOrderItemWithItemAndPriceAndQuantity(car, 3_000, 10),
+                createOrderItemWithItemAndPriceAndQuantity(book, 2_000, 10),
+                createOrderItemWithItemAndPriceAndQuantity(food, 5_000, 10)
         );
 
         //when

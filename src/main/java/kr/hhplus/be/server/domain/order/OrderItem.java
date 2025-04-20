@@ -69,7 +69,7 @@ public class OrderItem {
             throw new IllegalArgumentException("주문 상품의 가격이 일치하지않습니다.");
         }
 
-        if(item.hasEnoughStock(quantity)){
+        if(!item.hasEnoughStock(quantity)){
             throw new IllegalArgumentException("상품 재고가 부족합니다.");
         }
     }

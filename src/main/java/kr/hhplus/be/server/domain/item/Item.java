@@ -50,7 +50,7 @@ public class Item {
     }
 
     public boolean hasEnoughStock(Integer quantity) {
-        return quantity > this.stock();
+        return quantity <= this.stock();
     }
 
     public boolean isSamePrice(Integer price){
