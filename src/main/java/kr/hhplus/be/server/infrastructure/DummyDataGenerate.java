@@ -7,8 +7,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 import org.instancio.Instancio;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -20,7 +18,7 @@ import static org.instancio.Select.field;
 public class DummyDataGenerate {
     private final EntityManagerFactory entityManagerFactory;
 
-    @EventListener(ApplicationReadyEvent.class)
+//    @EventListener(ApplicationReadyEvent.class)
     public void batch() {
         SessionFactory sessionFactory = entityManagerFactory.unwrap(SessionFactory.class);
         StatelessSession statelessSession = sessionFactory.openStatelessSession();
