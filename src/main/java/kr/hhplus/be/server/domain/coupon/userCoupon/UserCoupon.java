@@ -21,15 +21,15 @@ public class UserCoupon {
     protected Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     protected User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "coupoon_id")
+    @JoinColumn(name = "coupoon_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     protected Coupon coupon;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "order_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Order appliedOrder;
 
     @Column(name = "issue_date_time")

@@ -15,8 +15,8 @@ public class PaymentService {
     }
 
     //TODO Logging Payment.생성
-    public void save(PaymentCommand.Create command) {
-        paymentRepository.save(command.getPayment());
+    public void save(Payment payment) {
+        paymentRepository.save(payment);
     }
 
     @Transactional(readOnly = true)

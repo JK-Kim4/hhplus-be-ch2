@@ -2,7 +2,6 @@ package kr.hhplus.be.server.domain.payment;
 
 import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.order.Order;
-import kr.hhplus.be.server.domain.order.OrderStatus;
 import kr.hhplus.be.server.domain.user.User;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -52,17 +51,27 @@ public class Payment {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public boolean isPayable(User user){
-        authentication(user);
-        return user.point() >= paymentPrice;
+    public Payment(Order order){
+        validation(order);
+
+        this.order = order;
+        this.user = order.getUser();
+        this.paymentPrice = order.getFinalPaymentPrice();
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+        order.registerPayment(this);
+
     }
 
-    public void pay(User user){
-        authentication(user);
+    public void isPayable(){
+        if(user.point() < paymentPrice){
+            throw new IllegalArgumentException("잔액이 부족합니다.");
+        }
+    }
+
+    public void pay(){
         this.paymentRequestDateTime = LocalDateTime.now();
-        this.order.deductOrderItemStock();
         this.user.deductPoint(paymentPrice);
-        this.order.updateOrderStatus(OrderStatus.PAYMENT_COMPLETED);
         this.paymentResponseDateTime = LocalDateTime.now();
     }
 
@@ -73,6 +82,12 @@ public class Payment {
 
         if(!order.getUser().equals(user)){
             throw new IllegalArgumentException("결제 요청 사용자와 주문자 정보가 일치하지않습니다.");
+        }
+    }
+
+    private void validation(Order order) {
+        if(Objects.isNull(order)) {
+            throw new IllegalArgumentException("주문 정보가 누락되었습니다.");
         }
     }
 

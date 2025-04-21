@@ -19,14 +19,6 @@ public class OrderApiController implements OrderApiSpec{
 
     @Override
     @PostMapping
-    public ResponseEntity<Void> createOrder(
-            @RequestBody OrderRequest.Create request) {
-
-        orderFacade.createOrder(request.toCriteria());
-        return ResponseEntity.ok().build();
-    }
-
-    @Override
     public ResponseEntity<Void> orderPayment(
             @RequestBody OrderRequest.OrderPayment request) {
 

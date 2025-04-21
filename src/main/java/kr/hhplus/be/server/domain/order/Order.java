@@ -1,14 +1,12 @@
 package kr.hhplus.be.server.domain.order;
 
 import jakarta.persistence.*;
-import kr.hhplus.be.server.domain.coupon.userCoupon.UserCoupon;
 import kr.hhplus.be.server.domain.payment.Payment;
 import kr.hhplus.be.server.domain.user.User;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -28,7 +26,7 @@ public class Order {
     @Column(name = "user_coupon_id")
     private Long userCouponId;
 
-    @OneToOne(mappedBy = "payment", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Payment payment;
 
     @Enumerated(EnumType.STRING)
@@ -89,18 +87,13 @@ public class Order {
         this.orderStatus = OrderStatus.PAYMENT_WAITING;
     }
 
-    public void applyCoupon(UserCoupon userCoupon) {
-        if (Objects.isNull(userCoupon)) {
-            return;
-        }
-        userCoupon.isUsable(LocalDate.now(), user);
-        this.userCouponId = userCoupon.getId();
-        this.finalPaymentPrice = userCoupon.discount(this.totalPrice);
-        userCoupon.updateUsedCouponInformation(this);
-    }
-
     public void deductOrderItemStock() {
         orderItems.deductStock();
+    }
+
+    public void applyDiscount(Long userCouponId, Integer finalPaymentPrice) {
+        this.userCouponId = userCouponId;
+        this.finalPaymentPrice = finalPaymentPrice;
     }
 
     private static void validationUser(User user) {

@@ -1,11 +1,7 @@
 package kr.hhplus.be.server.domain.order;
 
-import kr.hhplus.be.server.domain.coupon.Coupon;
-import kr.hhplus.be.server.domain.coupon.userCoupon.UserCoupon;
 import kr.hhplus.be.server.domain.payment.Payment;
 import org.junit.jupiter.api.Test;
-
-import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -43,26 +39,6 @@ public class OrderTest {
 
         //then
         assertEquals(OrderStatus.PAYMENT_WAITING, order.getOrderStatus());
-    }
-
-    @Test
-    void 사용가능한_사용자쿠폰정보를_전달받아_applyCoupon을_호출하면_할일된_가격이_적용되고_사용자쿠폰정보가_갱신된다(){
-        //given
-        Order order = OrderTestFixture.createTestOrder();
-        Coupon coupon =  Coupon.createFlatCoupon(
-                "test flat coupon",
-                9999,
-                LocalDate.now().plusYears(999),
-                5_000
-        );
-        UserCoupon userCoupon = UserCoupon.create(order.getUser(), coupon);
-
-        //when
-        order.applyCoupon(userCoupon);
-
-        //then
-        assertEquals(100_000, order.getTotalPrice());
-        assertEquals(95_000, order.getFinalPaymentPrice());
     }
 
     @Test

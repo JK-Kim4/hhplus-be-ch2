@@ -14,7 +14,7 @@ public class FlatDiscountCoupon {
     private Long id;
 
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "coupon_id")
+    @JoinColumn(name = "coupon_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Coupon coupon;
 
     @Column

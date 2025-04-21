@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.domain.order;
 
 import jakarta.persistence.NoResultException;
+import kr.hhplus.be.server.domain.payment.Payment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,13 @@ public class OrderService {
 
     public void save(Order order) {
         orderRepository.save(order);
+    }
+
+    public void processPayment(Order order, Payment payment) {
+        payment.isPayable();
+        payment.pay();
+        order.deductOrderItemStock();
+        order.updateOrderStatus(OrderStatus.PAYMENT_COMPLETED);
     }
 
     @Transactional(readOnly = true)

@@ -10,6 +10,7 @@ public class OrderTestFixture {
 
     public static Order createTestOrder(){
         User user = User.createWithName("test");
+        user.chargePoint(500_000);
         Item car = Item.createWithNameAndPriceAndStock("car", 3_000, 50);
         Item book = Item.createWithNameAndPriceAndStock("book", 2_000, 50);
         Item food = Item.createWithNameAndPriceAndStock("food", 5_000, 50);
@@ -42,5 +43,11 @@ public class OrderTestFixture {
 
     public static OrderItem createOrderItemWithItemAndPriceAndQuantity(Item item, Integer price, Integer quantity) {
         return OrderItem.createWithItemAndPriceAndQuantity(item, price, quantity);
+    }
+
+    public static class TestOrder{
+        public static Integer TOTAL_PRICE = 100_000;
+        public static Integer DEFAULT_USER_BALANCE = 500_000;
+        public static Integer TOTAL_ORDER_ITEM_SIZE = 3;
     }
 }
