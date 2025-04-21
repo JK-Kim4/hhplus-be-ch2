@@ -18,9 +18,10 @@ public class Point {
     public static final Integer MAXIMUM_BALANCE = 100_000_000;
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "point_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User user;
 
@@ -87,5 +88,18 @@ public class Point {
     @Override
     public int hashCode() {
         return Objects.hash(id, user, pointAmount);
+    }
+
+    @Override
+    public String toString() {
+        return "Point{" +
+                "pointAmount=" + pointAmount +
+                ", user=" + user +
+                ", id=" + id +
+                '}';
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
