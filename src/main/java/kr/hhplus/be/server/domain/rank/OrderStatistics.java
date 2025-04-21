@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.orderStatistics;
+package kr.hhplus.be.server.domain.rank;
 
 import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.order.OrderItem;

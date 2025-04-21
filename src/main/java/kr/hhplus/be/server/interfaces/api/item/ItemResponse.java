@@ -2,7 +2,7 @@ package kr.hhplus.be.server.interfaces.api.item;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import kr.hhplus.be.server.domain.item.ItemCommand;
-import kr.hhplus.be.server.domain.orderStatistics.OrderStatisticsInfo;
+import kr.hhplus.be.server.domain.rank.OrderStatisticsInfo;
 
 import java.util.List;
 

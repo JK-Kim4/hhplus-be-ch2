@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.interfaces.api.item;
 
 import kr.hhplus.be.server.domain.item.ItemService;
-import kr.hhplus.be.server.domain.orderStatistics.OrderStatisticsService;
+import kr.hhplus.be.server.domain.rank.OrderStatisticsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

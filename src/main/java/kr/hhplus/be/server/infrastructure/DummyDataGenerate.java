@@ -1,100 +1,52 @@
 package kr.hhplus.be.server.infrastructure;
 
-import lombok.Getter;
+import jakarta.persistence.EntityManagerFactory;
+import kr.hhplus.be.server.domain.user.User;
+import lombok.RequiredArgsConstructor;
+import org.hibernate.SessionFactory;
+import org.hibernate.StatelessSession;
+import org.hibernate.Transaction;
 import org.instancio.Instancio;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.List;
+import java.time.LocalDateTime;
 
 import static org.instancio.Select.field;
 
 @Component
+@RequiredArgsConstructor
 public class DummyDataGenerate {
-
-    @Autowired
-    JdbcTemplate jdbcTemplate;
+    private final EntityManagerFactory entityManagerFactory;
 
     @EventListener(ApplicationReadyEvent.class)
-    void 사용자_포인트_데이터_등록(){
-        long beforeTime = System.currentTimeMillis(); //코드 실행 전에 시간 받아오기
-        System.out.println("bulkInsertUserSTART");
+    public void batch() {
+        SessionFactory sessionFactory = entityManagerFactory.unwrap(SessionFactory.class);
+        StatelessSession statelessSession = sessionFactory.openStatelessSession();
+        Transaction tx = statelessSession.beginTransaction();
 
-        List<UserSave> users = Instancio.ofList(UserSave.class)
-                .size(15000)
-                .create();
+        try {
+            System.out.println("data insert start");
+            long before = System.currentTimeMillis();
+            for (int i = 1; i < 1_000_000; i++) {
+                LocalDateTime start = LocalDateTime.of(2020, 1, 1, 0, 0);
+                LocalDateTime end = LocalDateTime.of(2025, 12, 31, 23, 59);
+                User user = Instancio.of(User.class)
+                        .set(field(User::getId), (long) i)
+                        .create();
 
-        batchInsertUsers(users);
-
-
-        List<PointSave> points = Instancio.ofList(PointSave.class)
-                .size(10000)
-                .withUnique(field(PointSave::getUserId))
-                .generate(field(PointSave::getUserId), gen -> gen.longs().range(1L, 15000L))
-                .create();
-
-        batchInsertPoints(points);
-
-        long afterTime = System.currentTimeMillis(); // 코드 실행 후에 시간 받아오기
-        long secDiffTime = (afterTime - beforeTime)/1000;
-        System.out.println("bulkInsertUserEND:  "+secDiffTime);
-
-
-    }
-
-
-    public void batchInsertUsers(List<UserSave> users) {
-        String sql = "INSERT INTO user (name) VALUES (?)";
-
-        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement ps, int i) throws SQLException {
-                ps.setString(1, users.get(i).getName());
+                statelessSession.insert(user);
             }
-
-            @Override
-            public int getBatchSize() {
-                return users.size();
-            }
-        });
-    }
-
-    public void batchInsertPoints(List<PointSave> points) {
-        String sql = "INSERT INTO point (user_id, point_amount) VALUES (?, ?)";
-
-        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement ps, int i) throws SQLException {
-                ps.setLong(1, points.get(i).getUserId());
-                ps.setInt(2, points.get(i).getPointAmount());
-            }
-
-            @Override
-            public int getBatchSize() {
-                return points.size();
-            }
-        });
-    }
-
-
-
-    @Getter
-    private class UserSave{
-        private Long id;
-        private String name;
-
-    }
-
-    @Getter
-    private class PointSave{
-        private Long id;
-        private Long userId;
-        private Integer pointAmount;
+            tx.commit();
+            long after = System.currentTimeMillis();
+            long diff = after - before;
+            System.out.println("data insert end: " + diff + "ms");
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        } finally {
+            statelessSession.close();
+        }
     }
 }

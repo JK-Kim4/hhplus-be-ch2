@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.orderStatistics;
+package kr.hhplus.be.server.domain.rank;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

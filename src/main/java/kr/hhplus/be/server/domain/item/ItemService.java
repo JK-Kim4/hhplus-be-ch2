@@ -4,12 +4,10 @@ import jakarta.persistence.NoResultException;
 import kr.hhplus.be.server.domain.order.OrderItem;
 import kr.hhplus.be.server.domain.order.command.OrderCommand;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Transactional
 public class ItemService {
 
     private final ItemRepository itemRepository;
@@ -26,13 +24,11 @@ public class ItemService {
         return itemRepository.save(item);
     }
 
-    @Transactional(readOnly = true)
     public Item findItemById(Long itemId){
         return itemRepository.findById(itemId)
                 .orElseThrow(NoResultException::new);
     }
 
-    @Transactional(readOnly = true)
     public ItemCommand.Item findById(Long itemId){
 
         Item item = itemRepository.findById(itemId)
@@ -41,7 +37,6 @@ public class ItemService {
         return ItemCommand.Item.from(item);
     }
 
-    @Transactional(readOnly = true)
     public List<OrderItem> getOrderItems(List<OrderCommand.OrderItemCreate> orderItemCreateCommand) {
         if(orderItemCreateCommand.isEmpty()){
             throw new IllegalArgumentException("주문 상품이 존재하지않습니다.");

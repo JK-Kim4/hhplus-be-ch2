@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.orderStatistics;
+package kr.hhplus.be.server.domain.rank;
 
 import java.time.LocalDate;
 import java.util.List;

@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.infrastructure.orderStatistics;
 
-import kr.hhplus.be.server.domain.orderStatistics.OrderStatistics;
-import kr.hhplus.be.server.domain.orderStatistics.OrderStatisticsCommand;
-import kr.hhplus.be.server.domain.orderStatistics.OrderStatisticsRepository;
+import kr.hhplus.be.server.domain.rank.OrderStatistics;
+import kr.hhplus.be.server.domain.rank.OrderStatisticsCommand;
+import kr.hhplus.be.server.domain.rank.OrderStatisticsRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;

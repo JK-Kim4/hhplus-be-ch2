@@ -3,7 +3,6 @@ package kr.hhplus.be.server.domain.payment;
 import jakarta.persistence.NoResultException;
 import kr.hhplus.be.server.domain.payment.paymentHistory.PaymentHistory;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PaymentService {
@@ -14,12 +13,11 @@ public class PaymentService {
         this.paymentRepository = paymentRepository;
     }
 
-    //TODO Logging Payment.생성
+
     public void save(Payment payment) {
         paymentRepository.save(payment);
     }
 
-    @Transactional(readOnly = true)
     public Payment findById(Long paymentId) {
         return paymentRepository.findById(paymentId)
                 .orElseThrow(NoResultException::new);

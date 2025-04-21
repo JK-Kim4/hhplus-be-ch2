@@ -5,9 +5,9 @@ import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.order.OrderStatus;
 import kr.hhplus.be.server.domain.order.OrderItem;
 import kr.hhplus.be.server.domain.order.Order;
-import kr.hhplus.be.server.domain.orderStatistics.OrderStatistics;
-import kr.hhplus.be.server.domain.orderStatistics.OrderStatisticsCommand;
-import kr.hhplus.be.server.domain.orderStatistics.OrderStatisticsService;
+import kr.hhplus.be.server.domain.rank.OrderStatistics;
+import kr.hhplus.be.server.domain.rank.OrderStatisticsCommand;
+import kr.hhplus.be.server.domain.rank.OrderStatisticsService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
