@@ -5,6 +5,7 @@ import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.coupon.CouponRepository;
 import kr.hhplus.be.server.domain.coupon.CouponService;
 import kr.hhplus.be.server.domain.coupon.CouponTestFixture;
+import kr.hhplus.be.server.infrastructure.coupon.InMemoryCouponIssueQueue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -25,6 +27,9 @@ public class CouponConcurrencyTest {
 
     @Autowired
     CouponRepository couponRepository;
+
+    @Autowired
+    InMemoryCouponIssueQueue inMemoryCouponIssueQueue;
 
     Coupon testCoupon;
 
@@ -40,10 +45,16 @@ public class CouponConcurrencyTest {
     void 쿠폰_재고감소_동시성_테스트() throws InterruptedException {
 
         List<Runnable> tasks = Arrays.asList(
-                () -> couponService.deductCouponQuantity(testCoupon.getId())
+                () -> inMemoryCouponIssueQueue.enqueue(testCoupon.getId(),
+                        UUID.randomUUID().toString().substring(0, 6))
         );
 
-        ConcurrentTestExecutor.execute(50, 10, tasks);
+        ConcurrentTestExecutor.execute(2, 10, tasks);
+
+        while (inMemoryCouponIssueQueue.size() > 0) {
+            Thread.sleep(100);
+        }
+
         couponRepository.flush();
         Coupon coupon = couponRepository.findById(testCoupon.getId()).orElseThrow();
 

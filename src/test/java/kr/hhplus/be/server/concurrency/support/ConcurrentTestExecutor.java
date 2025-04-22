@@ -15,8 +15,11 @@ public class ConcurrentTestExecutor {
         for(int i = 0; i < counter; i ++){
             for (Runnable task : tasks) {
                 executorService.execute(() ->{
-                    task.run();
-                    latch.countDown();
+                    try {
+                        task.run();
+                    }finally {
+                        latch.countDown();
+                    }
                 });
             }
         }
