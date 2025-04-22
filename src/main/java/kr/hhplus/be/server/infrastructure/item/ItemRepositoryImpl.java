@@ -1,7 +1,5 @@
 package kr.hhplus.be.server.infrastructure.item;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import kr.hhplus.be.server.domain.item.Item;
 import kr.hhplus.be.server.domain.item.ItemRepository;
 import org.springframework.stereotype.Repository;
@@ -11,9 +9,6 @@ import java.util.Optional;
 
 @Repository
 public class ItemRepositoryImpl implements ItemRepository {
-
-    @PersistenceContext
-    private EntityManager em;
 
     private final ItemJpaRepository itemJpaRepository;
     public ItemRepositoryImpl(ItemJpaRepository itemJpaRepository) {
@@ -31,6 +26,11 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
+    public Optional<Item> findByIdWithPessimisticLock(Long id) {
+        return itemJpaRepository.findByIdWithPessimisticLock(id);
+    }
+
+    @Override
     public List<Item> findByIds(List<Long> itemIds) {
         return itemJpaRepository.findAllById(itemIds);
     }
@@ -38,5 +38,10 @@ public class ItemRepositoryImpl implements ItemRepository {
     @Override
     public void deleteAll() {
         itemJpaRepository.deleteAll();
+    }
+
+    @Override
+    public void flush() {
+        itemJpaRepository.flush();
     }
 }

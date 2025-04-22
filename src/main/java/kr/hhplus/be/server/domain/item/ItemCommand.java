@@ -133,4 +133,15 @@ public class ItemCommand {
         }
 
     }
+
+    @Getter
+    public static class Deduction {
+        private Long ItemId;
+        private Integer quantity;
+
+        public Deduction(Long ItemId, Integer quantity) {
+            this.ItemId = ItemId;
+            this.quantity = quantity;
+        }
+    }
 }
