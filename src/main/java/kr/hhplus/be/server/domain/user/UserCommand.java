@@ -33,4 +33,24 @@ public class UserCommand {
             return amount;
         }
     }
+
+    public static class Deduct {
+
+        private Long userId;
+        private Integer amount;
+
+        public Deduct(Long userId, Integer amount) {
+            this.userId = userId;
+            this.amount = amount;
+        }
+
+        public Long getUserId() {
+            return userId;
+        }
+
+        public Integer getAmount() {
+            return amount;
+        }
+
+    }
 }

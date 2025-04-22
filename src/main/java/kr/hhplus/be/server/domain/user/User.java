@@ -22,7 +22,7 @@ public class User {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     protected Point point;
 
     @Embedded
