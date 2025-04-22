@@ -5,9 +5,9 @@
 > **Status**: ✅ Accepted
 
 > #### 상세
-> 사용자 포인트 갱산: (사용자_포인트_갱신_상세.pdf)[]  
-> 상품 재고 차감: (사용자_포인트_갱신_상세.pdf)[]    
-> 선착순 쿠폰 발급: (사용자_포인트_갱신_상세.pdf)[]    
+> 사용자 포인트 갱신: [사용자_포인트_갱신_상세.pdf](https://github.com/JK-Kim4/hhplus-be-ch2/blob/step09/report/detail/%EC%82%AC%EC%9A%A9%EC%9E%90_%ED%8F%AC%EC%9D%B8%ED%8A%B8_%EA%B0%B1%EC%8B%A0_%EC%83%81%EC%84%B8.pdf)  
+> 상품 재고 차감: [사용자_포인트_갱신_상세.pdf](https://github.com/JK-Kim4/hhplus-be-ch2/blob/step09/report/detail/%EC%83%81%ED%92%88_%EC%9E%AC%EA%B3%A0_%EC%B0%A8%EA%B0%90_%EA%B8%B0%EB%8A%A5_%EC%83%81%EC%84%B8.pdf)   
+> 선착순 쿠폰 발급: [사용자_포인트_갱신_상세.pdf](https://github.com/JK-Kim4/hhplus-be-ch2/blob/step09/report/detail/%EC%84%A0%EC%B0%A9%EC%88%9C_%EC%BF%A0%ED%8F%B0_%EA%B8%B0%EB%8A%A5_%EC%83%81%EC%84%B8.pdf)  
 ---
 
 
