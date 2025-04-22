@@ -28,8 +28,6 @@ public class ItemService {
 
     @Transactional
     public Item deductStock(ItemCommand.Deduction command){
-//        Item item = itemRepository.findById(command.getItemId())
-//                .orElseThrow(NoResultException::new);
         Item item = itemRepository.findByIdWithPessimisticLock(command.getItemId())
                         .orElseThrow(NoResultException::new);
         item.decreaseStock(command.getQuantity());

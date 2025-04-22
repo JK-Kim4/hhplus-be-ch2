@@ -18,7 +18,7 @@ public class OrderItems {
     private List<OrderItem> orderItems = new ArrayList<>();
 
     public OrderItems(Order order, List<OrderItem> orderItems) {
-        this.orderItems = orderItems;
+        this.orderItems.addAll(orderItems);
         this.setOrder(order);
     }
 

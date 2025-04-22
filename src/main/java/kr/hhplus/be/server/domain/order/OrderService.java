@@ -2,6 +2,7 @@ package kr.hhplus.be.server.domain.order;
 
 import jakarta.persistence.NoResultException;
 import kr.hhplus.be.server.domain.payment.Payment;
+import kr.hhplus.be.server.domain.user.User;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -42,5 +43,11 @@ public class OrderService {
                 .map(Order::getId)
                 .collect(Collectors.toList());
         return orderRepository.findOrderItemsByOrderIds(orderIds);
+    }
+
+    public Order create(User user, List<OrderItem> orderItems) {
+        user.canCreateOrder();
+        Order order = Order.createWithItems(user, orderItems);
+        return orderRepository.save(order);
     }
 }

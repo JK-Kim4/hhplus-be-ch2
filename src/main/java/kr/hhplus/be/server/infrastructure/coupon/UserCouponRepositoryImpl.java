@@ -21,8 +21,8 @@ public class UserCouponRepositoryImpl implements UserCouponRepository {
     }
 
     @Override
-    public Optional<UserCoupon> findByUserIdAndCouponId(Long userId, Long couponId) {
-        return userCouponJpaRepository.findByUserIdAndCouponId(userId, couponId);
+    public Optional<UserCoupon> findByCouponIdAndUserId(Long userId, Long couponId) {
+        return userCouponJpaRepository.findByCouponIdAndUserId(userId, couponId);
     }
 
     @Override

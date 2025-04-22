@@ -3,7 +3,6 @@ package kr.hhplus.be.server.application.orderPayment;
 import kr.hhplus.be.server.application.orderPayment.criteria.OrderPaymentCriteria;
 import kr.hhplus.be.server.application.orderPayment.result.OrderPaymentResult;
 import kr.hhplus.be.server.domain.coupon.CouponService;
-import kr.hhplus.be.server.domain.coupon.userCoupon.UserCoupon;
 import kr.hhplus.be.server.domain.item.ItemService;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderItem;
@@ -52,19 +51,18 @@ public class OrderFacade {
         //주문 생성
         User user = userService.findById(criteria.getUserId());
         List<OrderItem> orderItems = itemService.getOrderItems(criteria.toOrderItemCreateCommand());
-        Order order = Order.createWithItems(user, orderItems);
+        Order order = orderService.create(user, orderItems);
 
         //쿠폰 적용
-        UserCoupon userCoupon = Optional.ofNullable(criteria.getUserCouponId())
+        Optional.ofNullable(criteria.getUserCouponId())
                 .map(couponService::findUserCouponById)
-                .orElse(null);
-        couponService.applyCouponToOrder(userCoupon, order);
+                .map((uc) -> couponService.applyCouponToOrder(uc, order));
 
         //결제 생성
-        Payment payment = new Payment(order);
+        Payment payment = paymentService.create(order);
 
         //결제 진행
-        orderService.processPayment(order, payment);
+        paymentService.processPayment(payment, order);
 
         //결과 저장
         orderService.save(order);

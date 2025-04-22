@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -60,23 +61,20 @@ public class CouponService {
         coupon.decreaseQuantity();
     }
 
-    public void applyCouponToOrder(UserCoupon userCoupon, Order order) {
+    public UserCoupon applyCouponToOrder(UserCoupon userCoupon, Order order) {
         if (Objects.isNull(userCoupon)) {
-            return;
+            return null;
         }
         userCoupon.isUsable(LocalDate.now(), order.getUser());
         Integer finalPaymentPrice = userCoupon.discount(order.getTotalPrice());
         order.applyDiscount(userCoupon.getId(), finalPaymentPrice);
         userCoupon.updateUsedCouponInformation(order);
+        return userCoupon;
     }
 
     public Coupon findById(Long couponId) {
         return couponRepository.findById(couponId)
                 .orElseThrow(NoResultException::new);
-    }
-
-    public boolean isAlreadyIssuedCoupon(Long couponId, Long userId) {
-        return userCouponRepository.isAlreadyIssuedCoupon(userId, couponId);
     }
 
     public UserCoupon findUserCouponById(Long userCouponId) {
@@ -86,5 +84,9 @@ public class CouponService {
 
     public List<UserCoupon> findByUserId(Long userId) {
         return userCouponRepository.findByUserId(userId);
+    }
+
+    public Optional<UserCoupon> findByCouponIdAndUserId(Long couponId, Long userId) {
+        return userCouponRepository.findByCouponIdAndUserId(userId, couponId);
     }
 }
