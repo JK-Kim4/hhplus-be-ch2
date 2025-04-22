@@ -4,7 +4,10 @@ import jakarta.persistence.NoResultException;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCoupon;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponRepository;
 import kr.hhplus.be.server.domain.order.Order;
+import kr.hhplus.be.server.domain.user.User;
+import kr.hhplus.be.server.domain.user.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,16 +18,40 @@ public class CouponService {
 
     private CouponRepository couponRepository;
     private UserCouponRepository userCouponRepository;
+    private UserRepository userRepository;
 
     public CouponService(
             CouponRepository couponRepository,
-            UserCouponRepository userCouponRepository) {
+            UserCouponRepository userCouponRepository,
+            UserRepository userRepository) {
         this.couponRepository = couponRepository;
         this.userCouponRepository = userCouponRepository;
+        this.userRepository = userRepository;
     }
 
+    @Transactional
     public UserCoupon saveUserCoupon(UserCoupon userCoupon) {
         return userCouponRepository.save(userCoupon);
+    }
+
+    @Transactional
+    public UserCoupon issue(Long couponId, Long userId) {
+        Coupon coupon = couponRepository.findById(couponId)
+                .orElseThrow(NoResultException::new);
+        User user = userRepository.findById(userId)
+                .orElseThrow(NoResultException::new);
+
+        UserCoupon userCoupon = coupon.issue(user, LocalDate.now());
+
+        deductCouponQuantity(couponId); //-> worker
+
+        return userCoupon;
+    }
+
+    @Transactional
+    public void deductCouponQuantity(Long couponId) {
+        Coupon coupon = couponRepository.findByIdWithPessimisticLock(couponId).orElseThrow(NoResultException::new);
+        coupon.decreaseQuantity();
     }
 
     public void applyCouponToOrder(UserCoupon userCoupon, Order order) {
@@ -42,7 +69,7 @@ public class CouponService {
                 .orElseThrow(NoResultException::new);
     }
 
-    public boolean isAlreadyIssuedCoupon(Long userId, Long couponId) {
+    public boolean isAlreadyIssuedCoupon(Long couponId, Long userId) {
         return userCouponRepository.isAlreadyIssuedCoupon(userId, couponId);
     }
 

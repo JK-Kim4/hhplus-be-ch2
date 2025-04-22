@@ -33,4 +33,14 @@ public class CouponRepositoryImpl implements CouponRepository {
     public Optional<FlatDiscountCoupon> findFlatCouponById(Long couponId) {
         return flatDiscountCouponJpaRepository.findById(couponId);
     }
+
+    @Override
+    public void flush() {
+        couponJpaRepository.flush();
+    }
+
+    @Override
+    public Optional<Coupon> findByIdWithPessimisticLock(Long couponId) {
+        return couponJpaRepository.findByIdWithPessimisticLock(couponId);
+    }
 }

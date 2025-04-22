@@ -1,16 +1,13 @@
 package kr.hhplus.be.server.application.coupon;
 
-import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.coupon.CouponService;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCoupon;
-import kr.hhplus.be.server.domain.user.User;
-import kr.hhplus.be.server.domain.user.UserService;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponCriteria;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponInfo;
+import kr.hhplus.be.server.domain.user.UserService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Component
@@ -28,14 +25,11 @@ public class CouponFacade {
     }
 
     public UserCouponInfo.Issue issue(UserCouponCriteria.Issue criteria) {
-        Coupon coupon = couponService.findById(criteria.getCouponId());
-        User user = userService.findById(criteria.getUserId());
-
-        if(couponService.isAlreadyIssuedCoupon(user.getId(), coupon.getId())){
+        if(couponService.isAlreadyIssuedCoupon(criteria.getCouponId(), criteria.getUserId())){
             throw new IllegalArgumentException("이미 발급된 쿠폰입니다.");
         }
 
-        UserCoupon userCoupon = coupon.issue(user, LocalDate.now());
+        UserCoupon userCoupon = couponService.issue(criteria.getCouponId(), criteria.getUserId());
 
         userCoupon = couponService.saveUserCoupon(userCoupon);
 
