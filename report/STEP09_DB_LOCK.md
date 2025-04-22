@@ -34,7 +34,7 @@
 |:---|:---|
 | 문제 상황 | 포인트 충전과 사용 요청이 동시에 발생할 경우 잔액 불일치 |
 | 발생 이슈 | Lost Update |
-| 대응 방안 | Optimistic Lock (`@Version`) 적용 + 재시도 로직 구현 |
+| 대응 방안 | Optimistic Lock (`@Version`) 적용 + 재시도 로직 구현(AOP, STEP10 예정) |
 
 ---
 
