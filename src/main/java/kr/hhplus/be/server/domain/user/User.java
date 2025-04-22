@@ -51,10 +51,18 @@ public class User {
     }
 
     public void chargePoint(Integer amount) {
+        if(Objects.isNull(point)) {
+            point = Point.createWithUser(this);
+        }
+
         this.point.charge(amount);
     }
 
     public void deductPoint(Integer amount) {
+        if(Objects.isNull(amount)) {
+            point = Point.createWithUser(this);
+        }
+
         this.point.deduct(amount);
     }
 
@@ -88,5 +96,9 @@ public class User {
                 ", name='" + name + '\'' +
                 ", id=" + id +
                 '}';
+    }
+
+    public void createPoint() {
+        this.point = Point.createWithUser(this);
     }
 }

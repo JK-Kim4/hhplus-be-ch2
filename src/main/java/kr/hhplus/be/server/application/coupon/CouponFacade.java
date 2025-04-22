@@ -4,7 +4,6 @@ import kr.hhplus.be.server.domain.coupon.CouponService;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCoupon;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponCriteria;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponInfo;
-import kr.hhplus.be.server.domain.user.UserService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,13 +14,11 @@ import java.util.List;
 public class CouponFacade {
 
     private final CouponService couponService;
-    private final UserService userService;
+
 
     public CouponFacade(
-            CouponService couponService,
-            UserService userService) {
+            CouponService couponService) {
         this.couponService = couponService;
-        this.userService = userService;
     }
 
     public UserCouponInfo.Issue issue(UserCouponCriteria.Issue criteria) {
