@@ -15,9 +15,11 @@ public class DatabaseCleanup {
     public void truncateAllTables() {
 
         entityManager.createNativeQuery("TRUNCATE TABLE user").executeUpdate();
+        entityManager.createNativeQuery("TRUNCATE TABLE point").executeUpdate();
         entityManager.createNativeQuery("TRUNCATE TABLE orders").executeUpdate();
         entityManager.createNativeQuery("TRUNCATE TABLE payment").executeUpdate();
         entityManager.createNativeQuery("TRUNCATE TABLE user_coupon").executeUpdate();
+        entityManager.createNativeQuery("TRUNCATE TABLE coupon").executeUpdate();
         entityManager.createNativeQuery("TRUNCATE TABLE item").executeUpdate();
         entityManager.createNativeQuery("TRUNCATE TABLE order_item").executeUpdate();
 

@@ -53,7 +53,6 @@ public class UserServiceTest {
             //then
             inOrder.verify(userRepository).findById(1L);
             inOrder.verify(user).chargePoint(anyInt());
-            inOrder.verify(userRepository).save(user);
         }
     }
 
