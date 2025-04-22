@@ -6,12 +6,14 @@ import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponRepository;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.UserRepository;
+import kr.hhplus.be.server.infrastructure.coupon.InMemoryCouponIssueQueue;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 public class CouponService {
@@ -19,14 +21,17 @@ public class CouponService {
     private CouponRepository couponRepository;
     private UserCouponRepository userCouponRepository;
     private UserRepository userRepository;
+    private InMemoryCouponIssueQueue inMemoryCouponIssueQueue;
 
     public CouponService(
             CouponRepository couponRepository,
             UserCouponRepository userCouponRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository,
+            InMemoryCouponIssueQueue inMemoryCouponIssueQueue) {
         this.couponRepository = couponRepository;
         this.userCouponRepository = userCouponRepository;
         this.userRepository = userRepository;
+        this.inMemoryCouponIssueQueue = inMemoryCouponIssueQueue;
     }
 
     @Transactional
@@ -43,14 +48,15 @@ public class CouponService {
 
         UserCoupon userCoupon = coupon.issue(user, LocalDate.now());
 
-        deductCouponQuantity(couponId); //-> worker
+        inMemoryCouponIssueQueue.enqueue(couponId, UUID.randomUUID().toString().substring(0, 6));
 
         return userCoupon;
     }
 
     @Transactional
     public void deductCouponQuantity(Long couponId) {
-        Coupon coupon = couponRepository.findByIdWithPessimisticLock(couponId).orElseThrow(NoResultException::new);
+        Coupon coupon = couponRepository.findByIdWithPessimisticLock(couponId)
+                .orElseThrow(NoResultException::new);
         coupon.decreaseQuantity();
     }
 
