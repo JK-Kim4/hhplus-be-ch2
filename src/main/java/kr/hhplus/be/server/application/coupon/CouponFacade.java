@@ -25,7 +25,8 @@ public class CouponFacade {
 
     public UserCouponInfo.Issue issue(UserCouponCriteria.Issue criteria) {
         couponService.findByCouponIdAndUserId(criteria.getCouponId(), criteria.getUserId())
-                .ifPresent(uc -> new IllegalArgumentException("이미 발급된 쿠폰입니다."));
+                .ifPresent(uc -> {throw new IllegalArgumentException("이미 발급된 쿠폰입니다.");});
+
 
         UserCoupon userCoupon =
                 Optional.of(couponService.issue(criteria.getCouponId(), criteria.getUserId()))

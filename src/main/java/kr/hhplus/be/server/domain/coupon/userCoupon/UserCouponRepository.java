@@ -6,7 +6,7 @@ import java.util.Optional;
 public interface UserCouponRepository {
     UserCoupon save(UserCoupon userCoupon);
 
-    Optional<UserCoupon> findByCouponIdAndUserId(Long userId, Long couponId);
+    Optional<UserCoupon> findByCouponIdAndUserId(Long couponId, Long userId);
 
     boolean isAlreadyIssuedCoupon(Long userId, Long couponId);
 

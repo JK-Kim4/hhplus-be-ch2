@@ -87,6 +87,6 @@ public class CouponService {
     }
 
     public Optional<UserCoupon> findByCouponIdAndUserId(Long couponId, Long userId) {
-        return userCouponRepository.findByCouponIdAndUserId(userId, couponId);
+        return userCouponRepository.findByCouponIdAndUserId(couponId, userId);
     }
 }
