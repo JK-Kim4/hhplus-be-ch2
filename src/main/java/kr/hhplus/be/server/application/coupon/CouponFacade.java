@@ -1,14 +1,15 @@
 package kr.hhplus.be.server.application.coupon;
 
+import jakarta.persistence.NoResultException;
 import kr.hhplus.be.server.domain.coupon.CouponService;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCoupon;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponCriteria;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponInfo;
-import kr.hhplus.be.server.domain.user.UserService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @Transactional
