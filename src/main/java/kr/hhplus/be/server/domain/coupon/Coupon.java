@@ -30,7 +30,7 @@ public class Coupon {
     @Enumerated(EnumType.STRING)
     private CouponType couponType;
 
-    @OneToOne(mappedBy = "coupon", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "coupon", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     protected FlatDiscountCoupon flatDiscountCoupon;
 
     @Column
