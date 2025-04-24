@@ -1,7 +1,5 @@
 package kr.hhplus.be.server.domain.user.point;
 
-import kr.hhplus.be.server.domain.user.point.pointHistory.PointHistory;
-
 import java.util.List;
 
 public class PointHistories {

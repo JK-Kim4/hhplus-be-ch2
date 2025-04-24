@@ -16,6 +16,7 @@ public class UserFacade {
         this.userService = userService;
     }
 
+
     @Transactional
     public void charge(UserCriteria.Charge criteria) {
         userService.charge(criteria.toCommand());

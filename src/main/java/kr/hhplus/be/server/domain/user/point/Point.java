@@ -93,7 +93,6 @@ public class Point {
     public String toString() {
         return "Point{" +
                 "pointAmount=" + pointAmount +
-                ", user=" + user +
                 ", id=" + id +
                 '}';
     }

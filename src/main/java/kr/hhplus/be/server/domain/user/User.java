@@ -92,7 +92,7 @@ public class User {
     public String toString() {
         return "User{" +
                 "orders=" + orders +
-                ", point=" + point +
+                ", point=" + point.getPointAmount() +
                 ", name='" + name + '\'' +
                 ", id=" + id +
                 '}';
