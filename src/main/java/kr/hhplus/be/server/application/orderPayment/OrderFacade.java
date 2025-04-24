@@ -11,7 +11,7 @@ import kr.hhplus.be.server.domain.payment.Payment;
 import kr.hhplus.be.server.domain.payment.PaymentService;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.UserService;
-import kr.hhplus.be.server.interfaces.client.RestTemplateClient;
+import kr.hhplus.be.server.interfaces.common.client.RestTemplateClient;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 

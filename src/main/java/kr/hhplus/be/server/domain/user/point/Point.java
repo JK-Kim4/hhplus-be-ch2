@@ -2,7 +2,7 @@ package kr.hhplus.be.server.domain.user.point;
 
 import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.user.User;
-import kr.hhplus.be.server.interfaces.exception.InvalidAmountException;
+import kr.hhplus.be.server.interfaces.common.exception.InvalidAmountException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
