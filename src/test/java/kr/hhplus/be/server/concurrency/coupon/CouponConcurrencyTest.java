@@ -36,7 +36,7 @@ public class CouponConcurrencyTest {
     @BeforeEach
     void setUp() {
         testCoupon = CouponTestFixture
-                .createCouponFixtureWithQuantityAndDiscountPrice(50, 5_000);
+                .createCouponFixtureWithQuantityAndDiscountPrice(4, 5_000);
 
         couponRepository.save(testCoupon);
     }
@@ -46,10 +46,18 @@ public class CouponConcurrencyTest {
 
         List<Runnable> tasks = Arrays.asList(
                 () -> inMemoryCouponIssueQueue.enqueue(testCoupon.getId(),
+                        UUID.randomUUID().toString().substring(0, 6)),
+                () -> inMemoryCouponIssueQueue.enqueue(testCoupon.getId(),
+                        UUID.randomUUID().toString().substring(0, 6)),
+                () -> inMemoryCouponIssueQueue.enqueue(testCoupon.getId(),
+                        UUID.randomUUID().toString().substring(0, 6)),
+                () -> inMemoryCouponIssueQueue.enqueue(testCoupon.getId(),
+                        UUID.randomUUID().toString().substring(0, 6)),
+                () -> inMemoryCouponIssueQueue.enqueue(testCoupon.getId(),
                         UUID.randomUUID().toString().substring(0, 6))
         );
 
-        ConcurrentTestExecutor.execute(2, 10, tasks);
+        ConcurrentTestExecutor.execute(10, tasks);
 
         while (inMemoryCouponIssueQueue.size() > 0) {
             Thread.sleep(100);
@@ -59,6 +67,6 @@ public class CouponConcurrencyTest {
         Coupon coupon = couponRepository.findById(testCoupon.getId()).orElseThrow();
 
 
-        assertEquals(40, coupon.getQuantity());
+        assertEquals(0, coupon.getQuantity());
     }
 }

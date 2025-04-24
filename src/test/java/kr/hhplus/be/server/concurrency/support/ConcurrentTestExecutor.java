@@ -7,21 +7,18 @@ import java.util.concurrent.Executors;
 
 public class ConcurrentTestExecutor {
 
-    public static void execute(int numberOfThreads, int counter, List<Runnable> tasks) throws InterruptedException {
+    public static void execute(int numberOfThreads, List<Runnable> tasks) throws InterruptedException {
         ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
-        CountDownLatch latch = new CountDownLatch(counter);
+        CountDownLatch latch = new CountDownLatch(tasks.size());
 
-
-        for(int i = 0; i < counter; i ++){
-            for (Runnable task : tasks) {
-                executorService.execute(() ->{
-                    try {
-                        task.run();
-                    }finally {
-                        latch.countDown();
-                    }
-                });
-            }
+        for (Runnable task : tasks) {
+            executorService.execute(() ->{
+                try {
+                    task.run();
+                }finally {
+                    latch.countDown();
+                }
+            });
         }
 
         latch.await();

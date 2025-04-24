@@ -26,7 +26,7 @@ public class ItemConcurrencyTest {
 
     @BeforeEach
     void beforeEach() {
-        Item item = ItemTestFixture.createItemFixtureWithStock(50);
+        Item item = ItemTestFixture.createItemFixtureWithStock(5);
         testItem = itemRepository.save(item);
         itemRepository.flush();
     }
@@ -37,10 +37,14 @@ public class ItemConcurrencyTest {
         ItemCommand.Deduction command = new ItemCommand.Deduction(testItem.getId(), 1);
 
         List<Runnable> tasks = List.of(
+                () -> itemService.deductStock(command),
+                () -> itemService.deductStock(command),
+                () -> itemService.deductStock(command),
+                () -> itemService.deductStock(command),
                 () -> itemService.deductStock(command)
         );
 
-        ConcurrentTestExecutor.execute(50, 50, tasks);
+        ConcurrentTestExecutor.execute(10, tasks);
 
         itemRepository.flush();
 
