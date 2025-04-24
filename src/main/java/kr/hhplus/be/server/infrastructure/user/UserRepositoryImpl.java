@@ -3,6 +3,7 @@ package kr.hhplus.be.server.infrastructure.user;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.UserRepository;
 import kr.hhplus.be.server.domain.user.point.Point;
+import kr.hhplus.be.server.domain.user.point.PointHistory;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -38,6 +39,14 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Point save(Point point) {
         return pointJpaRepository.save(point);
+    }
+
+    @Override
+    public void savePointHistory(PointHistory pointHistory) {
+        pointJpaRepository.savePointHistory(
+                pointHistory.getUserId(),
+                pointHistory.getPointHistoryType(),
+                pointHistory.getAmount());
     }
 
     @Override
