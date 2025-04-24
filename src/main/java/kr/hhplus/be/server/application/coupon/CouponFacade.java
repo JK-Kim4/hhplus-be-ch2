@@ -5,6 +5,7 @@ import kr.hhplus.be.server.domain.coupon.CouponService;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCoupon;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponCriteria;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponInfo;
+import kr.hhplus.be.server.domain.user.UserService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,11 +17,14 @@ import java.util.Optional;
 public class CouponFacade {
 
     private final CouponService couponService;
+    private final UserService userService;
 
 
     public CouponFacade(
-            CouponService couponService) {
+            CouponService couponService,
+            UserService userService) {
         this.couponService = couponService;
+        this.userService = userService;
     }
 
     public UserCouponInfo.Issue issue(UserCouponCriteria.Issue criteria) {
@@ -43,6 +47,7 @@ public class CouponFacade {
     @Transactional(readOnly = true)
     public UserCouponInfo.UserCouponList findByUserId(Long userId) {
         List<UserCoupon> couponList = couponService.findByUserId(userId);
+
         return UserCouponInfo.UserCouponList.of(couponList);
     }
 

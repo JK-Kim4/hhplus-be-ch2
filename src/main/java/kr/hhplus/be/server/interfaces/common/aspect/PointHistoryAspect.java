@@ -23,7 +23,7 @@ public class PointHistoryAspect {
 
     @Around("@annotation(pointHistoryLog)")
     public Object logPointHistory(ProceedingJoinPoint joinPoint, PointHistoryLog pointHistoryLog) throws Throwable {
-        Object result = joinPoint.proceed(); // 비즈니스 로직 먼저 실행
+        Object result = joinPoint.proceed();
 
         Arrays.stream(joinPoint.getArgs())
                 .filter(UserCommand.Charge.class::isInstance)

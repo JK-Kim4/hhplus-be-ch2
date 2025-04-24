@@ -6,11 +6,13 @@ import jakarta.validation.constraints.Positive;
 import kr.hhplus.be.server.application.orderPayment.criteria.OrderItemCriteria;
 import kr.hhplus.be.server.application.orderPayment.criteria.OrderPaymentCriteria;
 import kr.hhplus.be.server.domain.order.command.OrderCommand;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Getter
 public class OrderRequest {
 
     static public class Create{
@@ -54,6 +56,7 @@ public class OrderRequest {
         }
     }
 
+    @Getter
     public static class OrderPayment {
 
         @Schema(name = "userId", description = "주문 생성 사용자 고유 번호", example = "1")
@@ -64,6 +67,14 @@ public class OrderRequest {
 
         @Schema(name = "orderItems", description = "주문 상품 목록")
         private List<OrderItemRequest> orderItems;
+
+        public OrderPayment(){}
+
+        public OrderPayment(Long userId, Long userCouponId, List<OrderItemRequest> orderItems) {
+            this.userId = userId;
+            this.userCouponId = userCouponId;
+            this.orderItems = orderItems;
+        }
 
         public OrderPaymentCriteria toCriteria() {
             List<OrderItemCriteria> orderItemCriterias = this.orderItems.stream().map(OrderItemRequest::toCriteria)
