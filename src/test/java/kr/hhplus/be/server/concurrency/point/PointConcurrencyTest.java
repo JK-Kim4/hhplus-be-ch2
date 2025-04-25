@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
@@ -35,7 +36,6 @@ PointConcurrencyTest {
 
     @RepeatedTest(10)
     void 사용자포인트_사용_충전_동시성테스트() throws InterruptedException{
-
         // given
         UserCommand.Charge chargeCommand = new UserCommand.Charge(testUser.getId(), 500);
         UserCommand.Deduct deductCommand = new UserCommand.Deduct(testUser.getId(), 500);
@@ -45,14 +45,11 @@ PointConcurrencyTest {
                 () -> userService.deduct(deductCommand)
         );
 
-        // when 각 TASK를 100번씩 실행하기 위해 200개의 스레드 생성
-        ConcurrentTestExecutor.execute(4,tasks);
+        // when
+        List<Throwable> errors = ConcurrentTestExecutor.execute(4,tasks);
 
         // then
-        User updatedUser = userRepository.findById(testUser.getId()).orElseThrow();
-
-        System.out.println("최종 포인트: " + updatedUser.point());
-
-        assertEquals(50_000, updatedUser.point());
+        assertEquals(1, errors.size()); // 포인트 사용과 충전이 동시에 발생할 경우 낙관적 락으로 인해 후발 트랜잭션에서 Throw Exception
+        assertEquals(ObjectOptimisticLockingFailureException.class, errors.get(0).getClass());  // 낙관적 락 반환 오류 검증
     }
 }

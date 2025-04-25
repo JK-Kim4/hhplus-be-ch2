@@ -1,5 +1,7 @@
 package kr.hhplus.be.server.concurrency.support;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -7,7 +9,8 @@ import java.util.concurrent.Executors;
 
 public class ConcurrentTestExecutor {
 
-    public static void execute(int numberOfThreads, List<Runnable> tasks) throws InterruptedException {
+    public static List<Throwable> execute(int numberOfThreads, List<Runnable> tasks) throws InterruptedException {
+        List<Throwable> errors = Collections.synchronizedList(new ArrayList<>());
         ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
         CountDownLatch latch = new CountDownLatch(tasks.size());
 
@@ -15,6 +18,8 @@ public class ConcurrentTestExecutor {
             executorService.execute(() ->{
                 try {
                     task.run();
+                }catch (Throwable e) {
+                    errors.add(e);
                 }finally {
                     latch.countDown();
                 }
@@ -23,6 +28,8 @@ public class ConcurrentTestExecutor {
 
         latch.await();
         executorService.shutdown();
+
+        return errors;
     }
 
 }
