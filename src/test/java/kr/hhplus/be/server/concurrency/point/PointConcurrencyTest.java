@@ -46,7 +46,7 @@ PointConcurrencyTest {
         );
 
         // when 각 TASK를 100번씩 실행하기 위해 200개의 스레드 생성
-        ConcurrentTestExecutor.execute(4, 2, tasks);
+        ConcurrentTestExecutor.execute(4,tasks);
 
         // then
         User updatedUser = userRepository.findById(testUser.getId()).orElseThrow();
