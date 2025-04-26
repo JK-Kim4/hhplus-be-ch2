@@ -2,11 +2,10 @@ package kr.hhplus.be.server.interfaces.api.coupon;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import kr.hhplus.be.server.domain.coupon.CouponType;
-import kr.hhplus.be.server.domain.coupon.userCoupon.UserCoupon;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponInfo;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class CouponResponse {
 
@@ -105,6 +104,7 @@ public class CouponResponse {
         }
     }
 
+    @Getter
     static public class Issue {
 
         private Long userCouponId;
@@ -127,15 +127,16 @@ public class CouponResponse {
         }
     }
 
+    @Getter
     public static class UserCouponList {
 
-        private List<UserCoupon> userCouponList;
+        private UserCouponInfo.UserCouponList userCouponList;
 
         public static UserCouponList from(UserCouponInfo.UserCouponList userCouponList) {
-            return new UserCouponList(userCouponList.getUserCouponList());
+            return new UserCouponList(userCouponList);
         }
 
-        public UserCouponList(List<UserCoupon> userCouponList) {
+        public UserCouponList(UserCouponInfo.UserCouponList userCouponList) {
             this.userCouponList = userCouponList;
         }
     }

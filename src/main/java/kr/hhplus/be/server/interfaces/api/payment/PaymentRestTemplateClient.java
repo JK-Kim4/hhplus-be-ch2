@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.interfaces.api.payment;
 
-import kr.hhplus.be.server.interfaces.RestTemplateClient;
+import kr.hhplus.be.server.interfaces.common.client.RestTemplateClient;
 import org.springframework.stereotype.Component;
 
 @Component

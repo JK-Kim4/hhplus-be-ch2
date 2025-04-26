@@ -3,11 +3,13 @@ package kr.hhplus.be.server.interfaces.api.coupon;
 import io.swagger.v3.oas.annotations.media.Schema;
 import kr.hhplus.be.server.domain.coupon.CouponType;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponCriteria;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 public class CouponRequest {
 
+    @Getter
     public static class Create {
 
         @Schema(name = "name", description = "쿠폰 이름", example = "전 상품 10% 할인 쿠폰")
@@ -42,58 +44,16 @@ public class CouponRequest {
             this.expireDateTime = expireDateTime;
         }
 
-        public String getName() {
-            return name;
-        }
 
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public CouponType getCouponType() {
-            return couponType;
-        }
-
-        public void setCouponType(CouponType couponType) {
-            this.couponType = couponType;
-        }
-
-        public float getDiscountRate() {
-            return discountRate;
-        }
-
-        public void setDiscountRate(float discountRate) {
-            this.discountRate = discountRate;
-        }
-
-        public Integer getDiscountPrice() {
-            return discountPrice;
-        }
-
-        public void setDiscountPrice(Integer discountPrice) {
-            this.discountPrice = discountPrice;
-        }
-
-        public Integer getRemainQuantity() {
-            return remainQuantity;
-        }
-
-        public void setRemainQuantity(Integer remainQuantity) {
-            this.remainQuantity = remainQuantity;
-        }
-
-        public LocalDateTime getExpireDateTime() {
-            return expireDateTime;
-        }
-
-        public void setExpireDateTime(LocalDateTime expireDateTime) {
-            this.expireDateTime = expireDateTime;
-        }
     }
 
     public static class Issue {
 
         private Long userId;
+
+        public Issue(Long userId) {
+            this.userId = userId;
+        }
 
         public UserCouponCriteria.Issue toCriteria(Long couponId){
             return new UserCouponCriteria.Issue(couponId, this.userId);

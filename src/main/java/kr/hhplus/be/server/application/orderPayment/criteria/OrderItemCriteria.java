@@ -2,7 +2,9 @@ package kr.hhplus.be.server.application.orderPayment.criteria;
 
 import kr.hhplus.be.server.domain.item.ItemCommand;
 import kr.hhplus.be.server.domain.order.command.OrderCommand;
+import lombok.Getter;
 
+@Getter
 public class OrderItemCriteria {
 
     private Long itemId;

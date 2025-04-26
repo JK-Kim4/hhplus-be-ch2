@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.domain.item;
 
 import jakarta.persistence.Embeddable;
-import kr.hhplus.be.server.interfaces.exception.InvalidPriceException;
+import kr.hhplus.be.server.interfaces.common.exception.InvalidPriceException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

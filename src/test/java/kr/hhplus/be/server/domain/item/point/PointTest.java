@@ -3,7 +3,7 @@ package kr.hhplus.be.server.domain.item.point;
 import kr.hhplus.be.server.domain.FakeUser;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.point.Point;
-import kr.hhplus.be.server.interfaces.exception.InvalidAmountException;
+import kr.hhplus.be.server.interfaces.common.exception.InvalidAmountException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

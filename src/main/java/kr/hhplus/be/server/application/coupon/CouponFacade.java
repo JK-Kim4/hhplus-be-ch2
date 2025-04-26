@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.application.coupon;
 
+import jakarta.persistence.NoResultException;
 import kr.hhplus.be.server.domain.coupon.CouponService;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCoupon;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponCriteria;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @Transactional
@@ -16,6 +18,7 @@ public class CouponFacade {
 
     private final CouponService couponService;
     private final UserService userService;
+
 
     public CouponFacade(
             CouponService couponService,
@@ -25,13 +28,14 @@ public class CouponFacade {
     }
 
     public UserCouponInfo.Issue issue(UserCouponCriteria.Issue criteria) {
-        if(couponService.isAlreadyIssuedCoupon(criteria.getCouponId(), criteria.getUserId())){
-            throw new IllegalArgumentException("이미 발급된 쿠폰입니다.");
-        }
+        couponService.findByCouponIdAndUserId(criteria.getCouponId(), criteria.getUserId())
+                .ifPresent(uc -> {throw new IllegalArgumentException("이미 발급된 쿠폰입니다.");});
 
-        UserCoupon userCoupon = couponService.issue(criteria.getCouponId(), criteria.getUserId());
 
-        userCoupon = couponService.saveUserCoupon(userCoupon);
+        UserCoupon userCoupon =
+                Optional.of(couponService.issue(criteria.getCouponId(), criteria.getUserId()))
+                        .map(couponService::saveUserCoupon)
+                        .orElseThrow(NoResultException::new);
 
         return UserCouponInfo.Issue.of(
                 userCoupon.getId(),
@@ -43,6 +47,7 @@ public class CouponFacade {
     @Transactional(readOnly = true)
     public UserCouponInfo.UserCouponList findByUserId(Long userId) {
         List<UserCoupon> couponList = couponService.findByUserId(userId);
+
         return UserCouponInfo.UserCouponList.of(couponList);
     }
 

@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.interfaces.exception;
+package kr.hhplus.be.server.interfaces.common.exception;
 
 public class InvalidAmountException extends RuntimeException {
 

@@ -26,7 +26,7 @@ public class ItemConcurrencyTest {
 
     @BeforeEach
     void beforeEach() {
-        Item item = ItemTestFixture.createItemFixtureWithStock(5);
+        Item item = ItemTestFixture.createItemFixtureWithStock(50);
         testItem = itemRepository.save(item);
         itemRepository.flush();
     }
