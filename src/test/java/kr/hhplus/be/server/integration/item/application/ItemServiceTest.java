@@ -1,7 +1,6 @@
 package kr.hhplus.be.server.integration.item.application;
 
 import kr.hhplus.be.server.domain.item.*;
-import kr.hhplus.be.server.interfaces.common.exception.InvalidPriceException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
@@ -75,7 +75,7 @@ public class ItemServiceTest {
         Integer stock = 100;
         ItemCommand.Create itemCommand = ItemCommand.Create.of(name, price, stock);
 
-        assertThrows(InvalidPriceException.class, () -> itemService.save(itemCommand));
+        assertThrows(IllegalArgumentException.class, () -> itemService.save(itemCommand));
     }
 
 

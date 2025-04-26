@@ -40,7 +40,7 @@ public class OrderControllerTest {
 
     @BeforeEach
     void setUp(){
-        databaseCleanup.truncateAllTables();
+        databaseCleanup.truncate();
         sampleValues = initialTestData.load();
     }
 

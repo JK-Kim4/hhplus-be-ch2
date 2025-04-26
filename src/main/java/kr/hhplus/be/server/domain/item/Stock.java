@@ -1,7 +1,6 @@
 package kr.hhplus.be.server.domain.item;
 
 import jakarta.persistence.Embeddable;
-import kr.hhplus.be.server.interfaces.common.exception.InvalidStockException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,11 +25,11 @@ public class Stock implements Serializable {
         stock = Objects.requireNonNullElse(stock, MINIMUM_STOCK_QUANTITY);
 
         if (stock < MINIMUM_STOCK_QUANTITY) {
-            throw new InvalidStockException(InvalidStockException.INSUFFICIENT_MINIMUM_STOCK_QUANTITY);
+            throw new IllegalArgumentException("최소 잔고 수량은 0개입니다.");
         }
 
         if(stock > MAXIMUM_STOCK_QUANTITY) {
-            throw new InvalidStockException(InvalidStockException.OVER_MAXIMUM_STOCK_QUANTITY);
+            throw new IllegalArgumentException("상품 재고는 100,000개를 초과할 수 없습니다.");
         }
 
         return new Stock(stock);

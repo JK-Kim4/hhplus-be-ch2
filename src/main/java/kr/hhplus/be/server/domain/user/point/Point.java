@@ -2,7 +2,6 @@ package kr.hhplus.be.server.domain.user.point;
 
 import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.user.User;
-import kr.hhplus.be.server.interfaces.common.exception.InvalidAmountException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -55,11 +54,11 @@ public class Point {
 
     public void charge(Integer chargeAmount) {
         if(chargeAmount < MINIMUM_CHARGE_AMOUNT) {
-            throw new InvalidAmountException(InvalidAmountException.INSUFFICIENT_CHARGE_AMOUNT);
+            throw new IllegalArgumentException("최소 충전 금액은 100원입니다.");
         }
 
         if(this.pointAmount + chargeAmount > MAXIMUM_BALANCE) {
-            throw new InvalidAmountException(InvalidAmountException.MAXIMUM_BALANCE_EXCEEDED);
+            throw new IllegalArgumentException("최대 보유 가능 금액은 100,000,000원입니다.");
         }
 
         this.pointAmount += chargeAmount;
@@ -67,7 +66,7 @@ public class Point {
 
     public void deduct(Integer deductAmount) {
         if(this.pointAmount < deductAmount){
-            throw new InvalidAmountException(InvalidAmountException.INSUFFICIENT_BALANCE);
+            throw new IllegalArgumentException("잔액이 부족합니다.");
         }
         this.pointAmount -= deductAmount;
     }

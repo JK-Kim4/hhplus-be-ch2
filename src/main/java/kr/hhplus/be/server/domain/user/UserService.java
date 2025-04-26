@@ -1,8 +1,6 @@
 package kr.hhplus.be.server.domain.user;
 
 import jakarta.persistence.NoResultException;
-import kr.hhplus.be.server.domain.user.point.PointHistoryLog;
-import kr.hhplus.be.server.domain.user.point.PointHistoryType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +14,6 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    @PointHistoryLog(PointHistoryType.CHARGE)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public User charge(UserCommand.Charge command){
         User user = userRepository.findById(command.getUserId())

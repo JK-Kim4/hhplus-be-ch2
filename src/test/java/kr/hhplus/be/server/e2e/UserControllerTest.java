@@ -45,7 +45,7 @@ public class UserControllerTest {
 
     @BeforeEach
     void setUp() {
-        cleanup.truncateAllTables();
+        cleanup.truncate();
         sampleValues = initialTestData.load();
     }
 

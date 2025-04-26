@@ -35,7 +35,7 @@ public class ItemControllerTest {
 
     @BeforeEach
     void setUp(){
-        databaseCleanup.truncateAllTables();
+        databaseCleanup.truncate();
         sampleValues = initialTestData.load();
     }
 

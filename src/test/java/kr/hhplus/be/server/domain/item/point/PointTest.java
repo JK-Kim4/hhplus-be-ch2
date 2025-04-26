@@ -3,7 +3,6 @@ package kr.hhplus.be.server.domain.item.point;
 import kr.hhplus.be.server.domain.FakeUser;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.point.Point;
-import kr.hhplus.be.server.interfaces.common.exception.InvalidAmountException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -59,24 +58,24 @@ public class PointTest {
         @ValueSource(ints = {-100, -50, -10, 0, 1, 2, 10, 20, 30, 97, 98, 99})
         void 최소충전금액_100원_미만_충전시_InvalidAmountException를_반환한다(Integer amount){
             //when
-            InvalidAmountException invalidAmountException =
-                    assertThrows(InvalidAmountException.class, () -> point.charge(amount));
+            IllegalArgumentException exception =
+                    assertThrows(IllegalArgumentException.class, () -> point.charge(amount));
 
             //then
-            assertEquals(InvalidAmountException.INSUFFICIENT_CHARGE_AMOUNT,
-                    invalidAmountException.message);
+            assertEquals("최소 충전 금액은 100원입니다.",
+                    exception.getMessage());
         }
 
         @ParameterizedTest
         @ValueSource(ints = {100_000_001, 100_000_100, 100_000_300, 200_000_000, 300_000_000, 400_000_000})
         void 충전후_잔고가_최대보유잔고_100_000_000원_초과시_InvalidAmountException를_반환한다(Integer amount){
             //when
-            InvalidAmountException invalidAmountException =
-                    assertThrows(InvalidAmountException.class, () -> point.charge(amount));
+            IllegalArgumentException exception =
+                    assertThrows(IllegalArgumentException.class, () -> point.charge(amount));
 
             //then
-            assertEquals(InvalidAmountException.MAXIMUM_BALANCE_EXCEEDED,
-                    invalidAmountException.message);
+            assertEquals("최대 보유 가능 금액은 100,000,000원입니다.",
+                    exception.getMessage());
         }
 
     }
@@ -107,11 +106,11 @@ public class PointTest {
 
 
             //when
-            InvalidAmountException invalidAmountException =
-                    assertThrows(InvalidAmountException.class, () -> point.deduct(amount));
+            IllegalArgumentException exception =
+                    assertThrows(IllegalArgumentException.class, () -> point.deduct(amount));
 
             //then
-            assertEquals(InvalidAmountException.INSUFFICIENT_BALANCE ,invalidAmountException.getMessage());
+            assertEquals("잔액이 부족합니다.", exception.getMessage());
 
         }
     }

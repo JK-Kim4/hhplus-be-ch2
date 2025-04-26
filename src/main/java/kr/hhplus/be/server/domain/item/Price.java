@@ -1,7 +1,6 @@
 package kr.hhplus.be.server.domain.item;
 
 import jakarta.persistence.Embeddable;
-import kr.hhplus.be.server.interfaces.common.exception.InvalidPriceException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,11 +26,11 @@ public class Price implements Serializable {
 
 
         if(price > MAXIMUM_ITEM_PRICE) {
-            throw new InvalidPriceException(InvalidPriceException.OVER_MAXIMUM_PRICE);
+            throw new IllegalArgumentException("최대 판매 가능 금액은 100,000,000원입니다.");
         }
 
         if(price < MINIMUM_ITEM_PRICE) {
-            throw new InvalidPriceException(InvalidPriceException.INSUFFICIENT_MINIMUM_PRICE);
+            throw new IllegalArgumentException("최소 판매가능 가격은 100원입니다.");
         }
 
         return new Price(price);
