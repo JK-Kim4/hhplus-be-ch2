@@ -21,7 +21,7 @@ public class UserApiController implements UserApiSpec {
             @PathVariable("id") Long userId) {
 
         UserResult.Point result
-                = userFacade.findPointOrCreateDefaultByUserId(userId);
+                = userFacade.findPointById(userId);
         return ResponseEntity.ok(UserResponse.Point.from(result));
     }
 

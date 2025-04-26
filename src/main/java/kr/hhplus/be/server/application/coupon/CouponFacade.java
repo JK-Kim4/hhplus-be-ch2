@@ -1,17 +1,16 @@
 package kr.hhplus.be.server.application.coupon;
 
-import kr.hhplus.be.server.domain.coupon.Coupon;
+import jakarta.persistence.NoResultException;
 import kr.hhplus.be.server.domain.coupon.CouponService;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCoupon;
-import kr.hhplus.be.server.domain.user.User;
-import kr.hhplus.be.server.domain.user.UserService;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponCriteria;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponInfo;
+import kr.hhplus.be.server.domain.user.UserService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @Transactional
@@ -19,6 +18,7 @@ public class CouponFacade {
 
     private final CouponService couponService;
     private final UserService userService;
+
 
     public CouponFacade(
             CouponService couponService,
@@ -28,16 +28,14 @@ public class CouponFacade {
     }
 
     public UserCouponInfo.Issue issue(UserCouponCriteria.Issue criteria) {
-        Coupon coupon = couponService.findById(criteria.getCouponId());
-        User user = userService.findById(criteria.getUserId());
+        couponService.findByCouponIdAndUserId(criteria.getCouponId(), criteria.getUserId())
+                .ifPresent(uc -> {throw new IllegalArgumentException("이미 발급된 쿠폰입니다.");});
 
-        if(couponService.isAlreadyIssuedCoupon(user.getId(), coupon.getId())){
-            throw new IllegalArgumentException("이미 발급된 쿠폰입니다.");
-        }
 
-        UserCoupon userCoupon = coupon.issue(user, LocalDate.now());
-
-        userCoupon = couponService.saveUserCoupon(userCoupon);
+        UserCoupon userCoupon =
+                Optional.of(couponService.issue(criteria.getCouponId(), criteria.getUserId()))
+                        .map(couponService::saveUserCoupon)
+                        .orElseThrow(NoResultException::new);
 
         return UserCouponInfo.Issue.of(
                 userCoupon.getId(),
@@ -49,6 +47,7 @@ public class CouponFacade {
     @Transactional(readOnly = true)
     public UserCouponInfo.UserCouponList findByUserId(Long userId) {
         List<UserCoupon> couponList = couponService.findByUserId(userId);
+
         return UserCouponInfo.UserCouponList.of(couponList);
     }
 

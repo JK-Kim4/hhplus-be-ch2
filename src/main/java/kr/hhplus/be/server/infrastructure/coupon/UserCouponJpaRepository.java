@@ -10,7 +10,12 @@ import java.util.Optional;
 
 public interface UserCouponJpaRepository extends JpaRepository<UserCoupon, Long> {
 
-    Optional<UserCoupon> findByUserIdAndCouponId(Long userId, Long couponId);
+    @Query("select uc from UserCoupon uc " +
+            "where uc.coupon.id = :couponId " +
+            "and uc.user.id = :userId")
+    Optional<UserCoupon> findByCouponIdAndUserId(
+            @Param("couponId") Long couponId,
+            @Param("userId") Long userId);
 
     @Query( "select count(uc) > 0 from UserCoupon uc " +
             "where uc.user.id = :userId " +

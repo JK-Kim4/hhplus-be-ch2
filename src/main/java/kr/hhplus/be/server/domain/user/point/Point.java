@@ -2,8 +2,7 @@ package kr.hhplus.be.server.domain.user.point;
 
 import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.user.User;
-import kr.hhplus.be.server.domain.user.point.pointHistory.PointHistory;
-import kr.hhplus.be.server.interfaces.exception.InvalidAmountException;
+import kr.hhplus.be.server.interfaces.common.exception.InvalidAmountException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,15 +20,15 @@ public class Point {
     @Column(name = "point_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User user;
 
     @Column(name = "pointAmount", nullable = false)
     private Integer pointAmount;
 
-    @Transient
-    private PointHistories pointHistories;
+    @Version
+    private Integer version;
 
     public static Point createWithUser(User user){
         //Point 객체 생성을 위한 필수 파라미터 검증
@@ -74,9 +73,9 @@ public class Point {
     }
 
     //TODO. 포인트 사용 내역 저장
-    public void registerHistory(PointHistory pointHistory) {
+    /*public void registerHistory(PointHistory pointHistory) {
         this.pointHistories.addPointHistory(pointHistory);
-    }
+    }*/
 
     @Override
     public boolean equals(Object o) {
@@ -94,7 +93,6 @@ public class Point {
     public String toString() {
         return "Point{" +
                 "pointAmount=" + pointAmount +
-                ", user=" + user +
                 ", id=" + id +
                 '}';
     }

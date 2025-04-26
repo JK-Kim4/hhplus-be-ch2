@@ -9,8 +9,12 @@ public interface ItemRepository {
 
     Optional<Item> findById(Long id);
 
+    Optional<Item> findByIdWithPessimisticLock(Long id);
+
     List<Item> findByIds(List<Long> itemIds);
 
     void deleteAll();
+
+    void flush();
 
 }

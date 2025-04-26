@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.interfaces;
+package kr.hhplus.be.server.interfaces.common.client;
 
 
 public interface RestTemplateClient {

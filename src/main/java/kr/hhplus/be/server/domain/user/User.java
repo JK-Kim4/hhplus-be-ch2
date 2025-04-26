@@ -22,7 +22,7 @@ public class User {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     protected Point point;
 
     @Embedded
@@ -51,10 +51,18 @@ public class User {
     }
 
     public void chargePoint(Integer amount) {
+        if(Objects.isNull(point)) {
+            point = Point.createWithUser(this);
+        }
+
         this.point.charge(amount);
     }
 
     public void deductPoint(Integer amount) {
+        if(Objects.isNull(amount)) {
+            point = Point.createWithUser(this);
+        }
+
         this.point.deduct(amount);
     }
 
@@ -84,9 +92,13 @@ public class User {
     public String toString() {
         return "User{" +
                 "orders=" + orders +
-                ", point=" + point +
+                ", point=" + point.getPointAmount() +
                 ", name='" + name + '\'' +
                 ", id=" + id +
                 '}';
+    }
+
+    public void createPoint() {
+        this.point = Point.createWithUser(this);
     }
 }

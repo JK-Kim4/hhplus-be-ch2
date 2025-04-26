@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.interfaces.scheduler;
+package kr.hhplus.be.server.interfaces.common.scheduler;
 
 import kr.hhplus.be.server.domain.item.ItemService;
 import kr.hhplus.be.server.domain.order.OrderService;

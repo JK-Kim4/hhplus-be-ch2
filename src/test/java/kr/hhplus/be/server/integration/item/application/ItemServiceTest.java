@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.integration.item.application;
 
 import kr.hhplus.be.server.domain.item.*;
-import kr.hhplus.be.server.interfaces.exception.InvalidPriceException;
+import kr.hhplus.be.server.interfaces.common.exception.InvalidPriceException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

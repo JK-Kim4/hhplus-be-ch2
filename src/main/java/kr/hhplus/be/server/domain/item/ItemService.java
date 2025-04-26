@@ -4,6 +4,7 @@ import jakarta.persistence.NoResultException;
 import kr.hhplus.be.server.domain.order.OrderItem;
 import kr.hhplus.be.server.domain.order.command.OrderCommand;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,11 +17,20 @@ public class ItemService {
         this.itemRepository = itemRepository;
     }
 
+    @Transactional
     public Item save(ItemCommand.Create command){
         Item item = Item.createWithNameAndPriceAndStock(
                 command.getName(),
                 command.getPrice(),
                 command.getStock());
+        return itemRepository.save(item);
+    }
+
+    @Transactional
+    public Item deductStock(ItemCommand.Deduction command){
+        Item item = itemRepository.findByIdWithPessimisticLock(command.getItemId())
+                        .orElseThrow(NoResultException::new);
+        item.decreaseStock(command.getQuantity());
         return itemRepository.save(item);
     }
 

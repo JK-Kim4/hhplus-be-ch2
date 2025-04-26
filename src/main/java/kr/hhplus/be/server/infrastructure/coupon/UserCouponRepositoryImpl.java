@@ -17,12 +17,14 @@ public class UserCouponRepositoryImpl implements UserCouponRepository {
 
     @Override
     public UserCoupon save(UserCoupon userCoupon) {
-        return userCouponJpaRepository.save(userCoupon);
+        UserCoupon userCouponSaved = userCouponJpaRepository.save(userCoupon);
+        userCouponJpaRepository.flush();
+        return userCouponSaved;
     }
 
     @Override
-    public Optional<UserCoupon> findByUserIdAndCouponId(Long userId, Long couponId) {
-        return userCouponJpaRepository.findByUserIdAndCouponId(userId, couponId);
+    public Optional<UserCoupon> findByCouponIdAndUserId(Long couponId, Long userId) {
+        return userCouponJpaRepository.findByCouponIdAndUserId(couponId, userId);
     }
 
     @Override

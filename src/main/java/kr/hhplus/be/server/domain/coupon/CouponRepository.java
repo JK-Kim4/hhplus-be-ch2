@@ -9,4 +9,8 @@ public interface CouponRepository {
     Optional<Coupon> findById(Long couponId);
 
     Optional<FlatDiscountCoupon> findFlatCouponById(Long couponId);
+
+    void flush();
+
+    Optional<Coupon> findByIdWithPessimisticLock(Long couponId);
 }
