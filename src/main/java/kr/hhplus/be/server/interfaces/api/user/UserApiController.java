@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.interfaces.api.user;
 
-import kr.hhplus.be.server.application.user.UserFacade;
-import kr.hhplus.be.server.application.user.UserResult;
+import kr.hhplus.be.server.domain.user.UserInfo;
+import kr.hhplus.be.server.domain.user.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,10 +9,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/users")
 public class UserApiController implements UserApiSpec {
 
-    private final UserFacade userFacade;
+    private final UserService userService;
 
-    public UserApiController(UserFacade userFacade) {
-        this.userFacade = userFacade;
+    public UserApiController(
+            UserService userService) {
+        this.userService = userService;
     }
 
     @Override
@@ -20,8 +21,7 @@ public class UserApiController implements UserApiSpec {
     public ResponseEntity<UserResponse.Point> findUserPointById(
             @PathVariable("id") Long userId) {
 
-        UserResult.Point result
-                = userFacade.findPointById(userId);
+        UserInfo.Point result = userService.findPointById(userId);
         return ResponseEntity.ok(UserResponse.Point.from(result));
     }
 
@@ -31,7 +31,7 @@ public class UserApiController implements UserApiSpec {
             @PathVariable("id") Long userId,
             @RequestBody UserRequest.Charge point) {
 
-        userFacade.charge(point.toCriteria(userId));
+        userService.charge(point.toCommand(userId));
         return ResponseEntity.ok().build();
     }
 }

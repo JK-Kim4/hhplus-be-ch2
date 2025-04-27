@@ -1,6 +1,4 @@
-package kr.hhplus.be.server.domain.payment.paymentHistory;
-
-import kr.hhplus.be.server.domain.payment.Payment;
+package kr.hhplus.be.server.domain.payment;
 
 import java.time.LocalDateTime;
 

@@ -1,50 +1,27 @@
 package kr.hhplus.be.server.domain.user;
 
+import lombok.Getter;
+
 public class UserInfo {
 
-    public static class Create{
+    @Getter
+    public static class Point {
 
         private Long userId;
-        private String name;
+        private Integer amount;
 
-        public static Create from(kr.hhplus.be.server.domain.user.User user){
-            return new Create(user);
+        public static Point of(Long userId, Integer amount) {
+            return new Point(userId, amount);
         }
 
-        private Create(kr.hhplus.be.server.domain.user.User user){
-            this.userId = user.getId();
-            this.name = user.getName();
+        public static Point from(User user) {
+            return new Point(user.getId(), user.point());
         }
 
-        public Long getUserId() {
-            return userId;
+        private Point(Long userId, Integer amount) {
+            this.userId = userId;
+            this.amount = amount;
         }
 
-        public String getName() {
-            return name;
-        }
-    }
-
-    public static class User {
-
-        private Long userId;
-        private String name;
-
-        public static User from (kr.hhplus.be.server.domain.user.User user){
-            return new User(user);
-        }
-
-        private User(kr.hhplus.be.server.domain.user.User user){
-            this.userId = user.getId();
-            this.name = user.getName();
-        }
-
-        public Long getUserId() {
-            return userId;
-        }
-
-        public String getName() {
-            return name;
-        }
     }
 }

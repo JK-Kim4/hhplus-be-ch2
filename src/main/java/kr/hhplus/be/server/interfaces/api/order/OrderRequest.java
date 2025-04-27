@@ -3,9 +3,9 @@ package kr.hhplus.be.server.interfaces.api.order;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import kr.hhplus.be.server.application.order.criteria.OrderItemCriteria;
-import kr.hhplus.be.server.application.order.criteria.OrderPaymentCriteria;
-import kr.hhplus.be.server.domain.order.command.OrderCommand;
+import kr.hhplus.be.server.application.order.OrderItemCriteria;
+import kr.hhplus.be.server.application.order.OrderPaymentCriteria;
+import kr.hhplus.be.server.domain.order.OrderCommand;
 import lombok.Getter;
 
 import java.util.ArrayList;

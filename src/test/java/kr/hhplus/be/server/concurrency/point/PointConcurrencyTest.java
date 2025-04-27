@@ -37,7 +37,7 @@ PointConcurrencyTest {
     @RepeatedTest(10)
     void 사용자포인트_사용_충전_동시성테스트() throws InterruptedException{
         // given
-        UserCommand.Charge chargeCommand = new UserCommand.Charge(testUser.getId(), 500);
+        UserCommand.Charge chargeCommand = UserCommand.Charge.of(testUser.getId(), 500);
         UserCommand.Deduct deductCommand = UserCommand.Deduct.of(testUser.getId(), 500);
 
         List<Runnable> tasks = List.of(

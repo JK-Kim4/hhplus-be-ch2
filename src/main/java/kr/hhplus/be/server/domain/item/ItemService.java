@@ -2,7 +2,7 @@ package kr.hhplus.be.server.domain.item;
 
 import jakarta.persistence.NoResultException;
 import kr.hhplus.be.server.domain.order.OrderItem;
-import kr.hhplus.be.server.domain.order.command.OrderCommand;
+import kr.hhplus.be.server.domain.order.OrderCommand;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

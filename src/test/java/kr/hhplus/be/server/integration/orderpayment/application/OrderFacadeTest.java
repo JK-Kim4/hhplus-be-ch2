@@ -1,9 +1,9 @@
 package kr.hhplus.be.server.integration.orderpayment.application;
 
 import kr.hhplus.be.server.application.order.OrderFacade;
-import kr.hhplus.be.server.application.order.criteria.OrderItemCriteria;
-import kr.hhplus.be.server.application.order.criteria.OrderPaymentCriteria;
-import kr.hhplus.be.server.application.order.result.OrderPaymentResult;
+import kr.hhplus.be.server.application.order.OrderItemCriteria;
+import kr.hhplus.be.server.application.order.OrderPaymentCriteria;
+import kr.hhplus.be.server.application.order.OrderPaymentResult;
 import kr.hhplus.be.server.domain.item.Item;
 import kr.hhplus.be.server.domain.item.ItemRepository;
 import kr.hhplus.be.server.domain.order.Order;

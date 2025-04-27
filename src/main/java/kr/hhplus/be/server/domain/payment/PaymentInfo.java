@@ -1,7 +1,5 @@
 package kr.hhplus.be.server.domain.payment;
 
-import kr.hhplus.be.server.domain.payment.paymentHistory.PaymentHistory;
-
 public class PaymentInfo {
 
     public static class Create{

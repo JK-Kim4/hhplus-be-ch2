@@ -32,7 +32,7 @@ public class UserServiceTest {
         void 사용자_고유번호에_해당하는_사용자가_존재하지않을경우_NoResultException(){
             //given
             when(userRepository.findById(1L)).thenReturn(Optional.empty());
-            UserCommand.Charge command = new UserCommand.Charge(1L, 5000);
+            UserCommand.Charge command = UserCommand.Charge.of(1L, 5000);
 
             //when//then
             assertThrows(NoResultException.class, () ->
@@ -44,7 +44,7 @@ public class UserServiceTest {
             //given
             User user = Mockito.mock(User.class);
             when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user));
-            UserCommand.Charge command = new UserCommand.Charge(1L, 5000);
+            UserCommand.Charge command = UserCommand.Charge.of(1L, 5000);
 
             //when
             userService.charge(command);

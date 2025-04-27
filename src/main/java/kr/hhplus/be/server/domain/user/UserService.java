@@ -4,6 +4,8 @@ import jakarta.persistence.NoResultException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 public class UserService {
 
@@ -32,5 +34,16 @@ public class UserService {
     public User findById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(NoResultException::new);
+    }
+
+    public UserInfo.Point findPointById(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(NoResultException::new);
+
+        if(Objects.isNull(user.getPoint())){
+            user.createPoint();
+        }
+
+        return UserInfo.Point.from(user);
     }
 }

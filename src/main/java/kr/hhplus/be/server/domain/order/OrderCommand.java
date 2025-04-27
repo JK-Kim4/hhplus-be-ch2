@@ -1,7 +1,6 @@
-package kr.hhplus.be.server.domain.order.command;
+package kr.hhplus.be.server.domain.order;
 
 import kr.hhplus.be.server.domain.item.Item;
-import kr.hhplus.be.server.domain.order.OrderItem;
 
 import java.util.ArrayList;
 import java.util.List;

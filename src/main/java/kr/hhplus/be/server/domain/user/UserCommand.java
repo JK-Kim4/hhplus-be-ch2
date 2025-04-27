@@ -22,7 +22,11 @@ public class UserCommand {
         private Long userId;
         private Integer amount;
 
-        public Charge(Long userId, Integer amount) {
+        public static Charge of(Long userId, Integer amount) {
+            return new Charge(userId, amount);
+        }
+
+        private Charge(Long userId, Integer amount) {
             this.userId = userId;
             this.amount = amount;
         }

@@ -1,7 +1,5 @@
 package kr.hhplus.be.server.application.order;
 
-import kr.hhplus.be.server.application.order.criteria.OrderPaymentCriteria;
-import kr.hhplus.be.server.application.order.result.OrderPaymentResult;
 import kr.hhplus.be.server.domain.coupon.CouponService;
 import kr.hhplus.be.server.domain.item.ItemCommand;
 import kr.hhplus.be.server.domain.item.ItemService;

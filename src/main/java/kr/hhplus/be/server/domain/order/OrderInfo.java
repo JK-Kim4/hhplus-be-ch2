@@ -1,6 +1,4 @@
-package kr.hhplus.be.server.domain.order.command;
-
-import kr.hhplus.be.server.domain.order.Order;
+package kr.hhplus.be.server.domain.order;
 
 public class OrderInfo {
 

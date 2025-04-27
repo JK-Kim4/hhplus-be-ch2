@@ -3,7 +3,6 @@ package kr.hhplus.be.server.domain.payment;
 import jakarta.persistence.NoResultException;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderStatus;
-import kr.hhplus.be.server.domain.payment.paymentHistory.PaymentHistory;
 import kr.hhplus.be.server.domain.user.User;
 import org.springframework.stereotype.Service;
 

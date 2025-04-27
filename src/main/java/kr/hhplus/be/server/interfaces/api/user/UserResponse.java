@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.interfaces.api.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import kr.hhplus.be.server.application.user.UserResult;
+import kr.hhplus.be.server.domain.user.UserInfo;
 
 public class UserResponse {
 
@@ -21,7 +21,7 @@ public class UserResponse {
             return point;
         }
 
-        public static Point from(UserResult.Point point){
+        public static Point from(UserInfo.Point point){
             return new Point(point.getUserId(), point.getAmount());
         }
 
