@@ -1,5 +1,7 @@
 package kr.hhplus.be.server.domain.user;
 
+import lombok.Getter;
+
 public class UserCommand {
 
     public static class Create{
@@ -34,23 +36,20 @@ public class UserCommand {
         }
     }
 
+
+    @Getter
     public static class Deduct {
 
         private Long userId;
         private Integer amount;
 
-        public Deduct(Long userId, Integer amount) {
+        public static Deduct of(Long userId, Integer amount) {
+            return new Deduct(userId, amount);
+        }
+
+        private Deduct(Long userId, Integer amount) {
             this.userId = userId;
             this.amount = amount;
         }
-
-        public Long getUserId() {
-            return userId;
-        }
-
-        public Integer getAmount() {
-            return amount;
-        }
-
     }
 }

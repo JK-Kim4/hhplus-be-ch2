@@ -26,6 +26,10 @@ public class InitialTestData {
         SampleValues.Items items = createItems();
         Coupon coupon = createCoupon();
 
+        userRepository.flush();
+        itemRepository.flush();
+        couponRepository.flush();
+
         return new SampleValues(user, items, coupon);
     }
 

@@ -9,6 +9,8 @@ public interface OrderRepository {
 
     Optional<Order> findById(Long id);
 
+    List<Order> findAllByOrderDate(LocalDate date);
+
     List<Order> findByDateAndStatus(LocalDate orderedDate, OrderStatus status);
 
     List<OrderItem> findOrderItemsByOrderIds(List<Long> orderIds);

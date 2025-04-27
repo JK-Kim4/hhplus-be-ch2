@@ -2,6 +2,7 @@ package kr.hhplus.be.server.domain.coupon;
 
 import jakarta.persistence.NoResultException;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCoupon;
+import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponInfo;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponRepository;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.user.User;
@@ -41,17 +42,27 @@ public class CouponService {
     }
 
     @Transactional
-    public UserCoupon issue(Long couponId, Long userId) {
+    public UserCouponInfo.Issue issue(Long couponId, Long userId) {
         Coupon coupon = couponRepository.findById(couponId)
                 .orElseThrow(NoResultException::new);
         User user = userRepository.findById(userId)
                 .orElseThrow(NoResultException::new);
 
+        findByCouponIdAndUserId(couponId, userId)
+                .ifPresent(uc -> {throw new IllegalArgumentException("이미 발급된 쿠폰입니다.");});
+
         UserCoupon userCoupon = coupon.issue(user, LocalDate.now());
 
         inMemoryCouponIssueQueue.enqueue(couponId, UUID.randomUUID().toString().substring(0, 6));
 
-        return userCoupon;
+        userCouponRepository.save(userCoupon);
+
+        return UserCouponInfo.Issue.of(
+                userCoupon.getId(),
+                userCoupon.getCoupon().getId(),
+                userCoupon.getUser().getId(),
+                userCoupon.getIssueDateTime()
+        );
     }
 
     @Transactional

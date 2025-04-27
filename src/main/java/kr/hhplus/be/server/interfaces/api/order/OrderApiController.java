@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.interfaces.api.order;
 
-import kr.hhplus.be.server.application.orderPayment.OrderFacade;
+import kr.hhplus.be.server.application.order.OrderFacade;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

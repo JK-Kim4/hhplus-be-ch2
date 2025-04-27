@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -38,10 +37,11 @@ public class OrderService {
         return orderRepository.findByDateAndStatus(orderedDate, status);
     }
 
-    public List<OrderItem> findOrderItemsByOrderIds(List<Order> orders) {
-        List<Long> orderIds = orders.stream()
-                .map(Order::getId)
-                .collect(Collectors.toList());
+    public List<Order> findAllByOrderDate(LocalDate orderedDate) {
+        return orderRepository.findAllByOrderDate(orderedDate);
+    }
+
+    public List<OrderItem> findAllByOrderIds(List<Long> orderIds) {
         return orderRepository.findOrderItemsByOrderIds(orderIds);
     }
 

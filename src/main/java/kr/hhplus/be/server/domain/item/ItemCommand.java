@@ -135,11 +135,15 @@ public class ItemCommand {
     }
 
     @Getter
-    public static class Deduction {
+    public static class Deduct {
         private Long ItemId;
         private Integer quantity;
 
-        public Deduction(Long ItemId, Integer quantity) {
+        public static Deduct of(Long ItemId, Integer quantity) {
+            return new Deduct(ItemId, quantity);
+        }
+
+        private Deduct(Long ItemId, Integer quantity) {
             this.ItemId = ItemId;
             this.quantity = quantity;
         }

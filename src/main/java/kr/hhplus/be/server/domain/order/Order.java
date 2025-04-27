@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -40,6 +41,9 @@ public class Order {
 
     @Column(name = "final_payment_price")
     private Integer finalPaymentPrice;
+
+    @Column(name = "order_date")
+    private LocalDate orderDate;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -77,6 +81,10 @@ public class Order {
 
     public void updateOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public void updateOrderDate(LocalDate orderDate) {
+        this.orderDate = orderDate;
     }
 
     public void registerPayment(Payment payment) {

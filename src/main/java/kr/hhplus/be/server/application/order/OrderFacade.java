@@ -1,8 +1,9 @@
-package kr.hhplus.be.server.application.orderPayment;
+package kr.hhplus.be.server.application.order;
 
-import kr.hhplus.be.server.application.orderPayment.criteria.OrderPaymentCriteria;
-import kr.hhplus.be.server.application.orderPayment.result.OrderPaymentResult;
+import kr.hhplus.be.server.application.order.criteria.OrderPaymentCriteria;
+import kr.hhplus.be.server.application.order.result.OrderPaymentResult;
 import kr.hhplus.be.server.domain.coupon.CouponService;
+import kr.hhplus.be.server.domain.item.ItemCommand;
 import kr.hhplus.be.server.domain.item.ItemService;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderItem;
@@ -10,6 +11,7 @@ import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.payment.Payment;
 import kr.hhplus.be.server.domain.payment.PaymentService;
 import kr.hhplus.be.server.domain.user.User;
+import kr.hhplus.be.server.domain.user.UserCommand;
 import kr.hhplus.be.server.domain.user.UserService;
 import kr.hhplus.be.server.interfaces.common.client.RestTemplateClient;
 import org.springframework.stereotype.Component;
@@ -59,14 +61,18 @@ public class OrderFacade {
                 .map((uc) -> couponService.applyCouponToOrder(uc, order));
 
         //결제 생성
-        Payment payment = paymentService.create(order);
+        Payment payment = paymentService.create(order, user);
 
-        //결제 진행
-        paymentService.processPayment(payment, order);
+        //결제 진행(잔액 감소)
+        userService.deduct(UserCommand.Deduct.of(user.getId(), payment.getPaymentPrice()));
 
-        //결과 저장
-        orderService.save(order);
-        paymentService.save(payment);
+        //결제 진행(재고 차감)
+        orderItems.stream().forEach(orderItem -> {
+            itemService.deductStock(ItemCommand.Deduct.of(orderItem.getItemId(), orderItem.getQuantity()));
+        });
+
+        //결과 반영
+        paymentService.success(payment, order);
 
         restTemplateClient.post("test", payment, HashMap.class);
 

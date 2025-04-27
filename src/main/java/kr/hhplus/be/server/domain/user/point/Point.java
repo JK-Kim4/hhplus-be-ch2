@@ -26,6 +26,9 @@ public class Point {
     @Column(name = "pointAmount", nullable = false)
     private Integer pointAmount;
 
+    @Embedded
+    private Balance balance;
+
     @Version
     private Integer version;
 
@@ -71,10 +74,6 @@ public class Point {
         this.pointAmount -= deductAmount;
     }
 
-    //TODO. 포인트 사용 내역 저장
-    /*public void registerHistory(PointHistory pointHistory) {
-        this.pointHistories.addPointHistory(pointHistory);
-    }*/
 
     @Override
     public boolean equals(Object o) {

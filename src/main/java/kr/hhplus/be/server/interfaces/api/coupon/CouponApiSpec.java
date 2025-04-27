@@ -11,14 +11,6 @@ import org.springframework.http.ResponseEntity;
 @Tag(name = "Coupon", description = "쿠폰 생성, 사용자 쿠폰 발급")
 public interface CouponApiSpec {
 
-    @Operation(summary = "쿠폰 생성", description = "새로운 쿠폰을 생성합니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "쿠폰 생성 성공",
-            content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CouponResponse.Create.class))})
-    })
-    ResponseEntity<CouponResponse.Create> createCoupon(CouponRequest.Create request);
-
-
     @Operation(summary = "사용자 쿠폰 발급", description = "사용자 쿠폰을 발급합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "쿠폰 생성 성공",

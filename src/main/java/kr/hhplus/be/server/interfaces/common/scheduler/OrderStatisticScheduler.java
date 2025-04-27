@@ -1,33 +1,33 @@
 package kr.hhplus.be.server.interfaces.common.scheduler;
 
 import kr.hhplus.be.server.domain.item.ItemService;
+import kr.hhplus.be.server.domain.order.Order;
+import kr.hhplus.be.server.domain.order.OrderItem;
 import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.order.OrderStatus;
-import kr.hhplus.be.server.domain.order.OrderItem;
-import kr.hhplus.be.server.domain.order.Order;
-import kr.hhplus.be.server.domain.rank.OrderStatistics;
-import kr.hhplus.be.server.domain.rank.OrderStatisticsCommand;
-import kr.hhplus.be.server.domain.rank.OrderStatisticsService;
+import kr.hhplus.be.server.domain.rank.Rank;
+import kr.hhplus.be.server.domain.rank.RankService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class OrderStatisticScheduler {
 
     private final OrderService orderService;
     private final ItemService itemService;
-    private final OrderStatisticsService orderStatisticsService;
+    private final RankService rankService;
 
     public OrderStatisticScheduler(
             OrderService orderService,
             ItemService itemService,
-            OrderStatisticsService  orderStatisticsService) {
+            RankService  rankService) {
         this.orderService = orderService;
         this.itemService = itemService;
-        this.orderStatisticsService = orderStatisticsService;
+        this.rankService = rankService;
     }
 
     @Scheduled(cron = "0 0 1 * * *")
@@ -36,11 +36,13 @@ public class OrderStatisticScheduler {
 
         List<Order> orders = orderService.findOrdersByDateAndStatus(targetDate, OrderStatus.PAYMENT_COMPLETED);
 
-        List<OrderItem> orderItems = orderService.findOrderItemsByOrderIds(orders);
+        List<Long> orderIds = orders.stream().map(Order::getId).collect(Collectors.toList());
 
-        List<OrderStatistics> orderStatistics = OrderStatistics.calculateOrderStatistics(orderItems, targetDate);
+        List<OrderItem> orderItems = orderService.findAllByOrderIds(orderIds);
 
-        orderStatisticsService.save(new OrderStatisticsCommand(orderStatistics));
+        List<Rank> orderStatistics = Rank.calculateOrderStatistics(orderItems, targetDate);
+
+        rankService.saveAll(orderStatistics);
 
     }
 

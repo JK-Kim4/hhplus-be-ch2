@@ -34,6 +34,11 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
+    public List<Order> findAllByOrderDate(LocalDate date) {
+        return orderJpaRepository.findByOrderDate(date);
+    }
+
+    @Override
     public List<Order> findByDateAndStatus(LocalDate orderedDate, OrderStatus status) {
         return orderJpaRepository.findByDateAndStatus(orderedDate, status);
     }

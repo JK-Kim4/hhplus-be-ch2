@@ -14,4 +14,7 @@ public interface OrderJpaRepository extends JpaRepository<Order, Long> {
     @Query(value = "SELECT * FROM Orders WHERE DATE(created_at) = :orderedDate and order_status = :status", nativeQuery = true)
     List<Order> findByDateAndStatus(@Param("orderedDate")LocalDate orderedDate,
                                     @Param("status")OrderStatus status);
+
+
+    List<Order> findByOrderDate(LocalDate date);
 }

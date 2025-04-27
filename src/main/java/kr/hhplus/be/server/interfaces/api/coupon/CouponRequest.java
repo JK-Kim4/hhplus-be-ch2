@@ -47,6 +47,7 @@ public class CouponRequest {
 
     }
 
+    @Getter
     public static class Issue {
 
         private Long userId;
@@ -58,7 +59,6 @@ public class CouponRequest {
         public UserCouponCriteria.Issue toCriteria(Long couponId){
             return new UserCouponCriteria.Issue(couponId, this.userId);
         }
-
 
     }
 }

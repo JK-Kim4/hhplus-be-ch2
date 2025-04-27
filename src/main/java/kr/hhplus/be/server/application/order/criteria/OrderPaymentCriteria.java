@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.application.orderPayment.criteria;
+package kr.hhplus.be.server.application.order.criteria;
 
 import kr.hhplus.be.server.domain.order.command.OrderCommand;
 import lombok.Getter;

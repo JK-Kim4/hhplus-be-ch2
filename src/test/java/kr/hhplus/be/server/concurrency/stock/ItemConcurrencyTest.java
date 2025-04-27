@@ -26,7 +26,7 @@ public class ItemConcurrencyTest {
 
     @BeforeEach
     void beforeEach() {
-        Item item = ItemTestFixture.createItemFixtureWithStock(50);
+        Item item = ItemTestFixture.createItemFixtureWithStock(5);
         testItem = itemRepository.save(item);
         itemRepository.flush();
     }
@@ -34,7 +34,7 @@ public class ItemConcurrencyTest {
     @Test
     void 상품_재고_차감_동시성_테스트() throws InterruptedException {
 
-        ItemCommand.Deduction command = new ItemCommand.Deduction(testItem.getId(), 1);
+        ItemCommand.Deduct command = ItemCommand.Deduct.of(testItem.getId(), 1);
 
         List<Runnable> tasks = List.of(
                 () -> itemService.deductStock(command),

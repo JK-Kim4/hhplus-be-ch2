@@ -2,7 +2,6 @@ package kr.hhplus.be.server.interfaces.api.item;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -22,34 +21,34 @@ public interface ItemApiSpec {
     ResponseEntity<ItemResponse.Item> findById(@PathVariable(name = "itemId") Long id);
 
 
-    @Operation(summary = "최대 판매 상품 TOP3 조회",
-    description = "현재 일시 기준 지난 3일간 가장 많이 팔린 상품 TOP3 목록을 조회합니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "최다 판매 상품 목록 조회 성공",
-                    content = {@Content(
-                            mediaType = "application/json",
-                            examples = @ExampleObject(name = "최대 판매 상품 TOP3 조회 응답",
-                                    value = """
-                    [
-                        {
-                            "itemId": 2,
-                            "name": "자전거",
-                            "orderCount": 4552
-                        },
-                        {
-                            "itemId": 1,
-                            "name": "자동차",
-                            "orderCount": 2000
-                        },
-                        {
-                            "itemId": 99,
-                            "name": "비행기",
-                            "orderCount": 520
-                        }
-                    ]
-                """
-                            ))}
-            )
-    })
-    ResponseEntity<ItemResponse.Rank> findItemRanking();
+//    @Operation(summary = "최대 판매 상품 TOP3 조회",
+//    description = "현재 일시 기준 지난 3일간 가장 많이 팔린 상품 TOP3 목록을 조회합니다.")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200", description = "최다 판매 상품 목록 조회 성공",
+//                    content = {@Content(
+//                            mediaType = "application/json",
+//                            examples = @ExampleObject(name = "최대 판매 상품 TOP3 조회 응답",
+//                                    value = """
+//                    [
+//                        {
+//                            "itemId": 2,
+//                            "name": "자전거",
+//                            "orderCount": 4552
+//                        },
+//                        {
+//                            "itemId": 1,
+//                            "name": "자동차",
+//                            "orderCount": 2000
+//                        },
+//                        {
+//                            "itemId": 99,
+//                            "name": "비행기",
+//                            "orderCount": 520
+//                        }
+//                    ]
+//                """
+//                            ))}
+//            )
+//    })
+//    ResponseEntity<ItemResponse.Rank> findItemRanking();
 }
