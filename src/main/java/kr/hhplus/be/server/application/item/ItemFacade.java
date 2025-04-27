@@ -1,5 +1,7 @@
-package kr.hhplus.be.server.application.rank;
+package kr.hhplus.be.server.application.item;
 
+import kr.hhplus.be.server.domain.item.ItemCommand;
+import kr.hhplus.be.server.domain.item.ItemService;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderItem;
 import kr.hhplus.be.server.domain.order.OrderService;
@@ -7,19 +9,23 @@ import kr.hhplus.be.server.domain.order.OrderStatus;
 import kr.hhplus.be.server.domain.rank.Rank;
 import kr.hhplus.be.server.domain.rank.RankService;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Component
-public class RankFacade {
+@Transactional
+public class ItemFacade {
 
     private final OrderService orderService;
     private final RankService rankService;
+    private final ItemService itemService;
 
-    public RankFacade(OrderService orderService, RankService rankService) {
+    public ItemFacade(OrderService orderService, RankService rankService, ItemService itemService) {
         this.orderService = orderService;
         this.rankService = rankService;
+        this.itemService = itemService;
     }
 
     public List<Rank> createRankList(LocalDate targetDate) {
@@ -33,11 +39,14 @@ public class RankFacade {
         List<OrderItem> orderItemList = orderService.findAllByOrderIds(orderIds);
 
         //랭크 리스트 생성
-        List<Rank> rankList = Rank.calculate(orderItemList, targetDate);
+        return Rank.calculate(orderItemList, targetDate);
+    }
 
-        //저장
+    public void saveRankList(List<Rank> rankList) {
         rankService.saveAll(rankList);
+    }
 
-        return rankList;
+    public ItemCommand.Item findItemById(Long id) {
+        return itemService.findById(id);
     }
 }

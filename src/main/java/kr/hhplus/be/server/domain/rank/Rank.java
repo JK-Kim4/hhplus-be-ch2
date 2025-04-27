@@ -40,28 +40,7 @@ public class Rank {
         this.orderCount = orderCount;
     }
 
-    public static List<Rank> calculateOrderStatistics(List<OrderItem> orderItems, LocalDate targetDate) {
-        Set<Long> itemIds = orderItems.stream().map(OrderItem::getItemId).collect(Collectors.toSet());
-
-        List<Rank> orderStatistics = new ArrayList<>();
-
-        for(Long itemId : itemIds) {
-            Rank orderStatistic = new Rank(
-                    itemId,
-                    orderItems.stream()
-                            .filter(orderItem -> orderItem.getItemId().equals(itemId))
-                            .mapToInt(OrderItem::getQuantity)
-                            .sum(),
-                    targetDate);
-            orderStatistics.add(orderStatistic);
-        }
-
-        return orderStatistics;
-    }
-
     public static List<Rank> calculate(List<OrderItem> orderItemList, LocalDate targetDate) {
-        Rank.calculateOrderStatistics(orderItemList, targetDate);
-
         List<Rank> ranks = new ArrayList<>();
 
         Set<Long> itemIds = orderItemList.stream()

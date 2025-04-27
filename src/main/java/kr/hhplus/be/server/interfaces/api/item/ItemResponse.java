@@ -2,10 +2,12 @@ package kr.hhplus.be.server.interfaces.api.item;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import kr.hhplus.be.server.domain.item.ItemCommand;
+import lombok.Getter;
 
 public class ItemResponse {
 
-    static public class Item{
+    @Getter
+    public static class Item{
 
         @Schema(name = "itemId", description = "아이템 고유 번호", example = "1")
         private Long itemId;
@@ -36,22 +38,10 @@ public class ItemResponse {
             this.price = price;
             this.stock = stock;
         }
-
-        public Long getItemId() {
-            return itemId;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public Integer getPrice() {
-            return price;
-        }
-
-        public Integer getStock() {
-            return stock;
-        }
     }
 
+    public static class Rank {
+
+
+    }
 }
