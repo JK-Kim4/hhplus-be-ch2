@@ -32,7 +32,7 @@ public class ItemConcurrencyTest {
     }
 
     @Test
-    void 상품_재고_차감_동시성_테스트() throws InterruptedException {
+    void 상품_재고_요청이_동시에_발생할_경우_차감_가능_수량만큼_차감되고_나머지는_오류를_반환() throws InterruptedException {
 
         ItemCommand.Deduct command = ItemCommand.Deduct.of(testItem.getId(), 1);
 
@@ -41,10 +41,12 @@ public class ItemConcurrencyTest {
                 () -> itemService.deductStock(command),
                 () -> itemService.deductStock(command),
                 () -> itemService.deductStock(command),
+                () -> itemService.deductStock(command),
+                () -> itemService.deductStock(command),
                 () -> itemService.deductStock(command)
         );
 
-        ConcurrentTestExecutor.execute(10, tasks);
+        List<Throwable> execute = ConcurrentTestExecutor.execute(10, tasks);
 
         itemRepository.flush();
 
@@ -54,5 +56,6 @@ public class ItemConcurrencyTest {
         System.out.println("최종 상품 재고: " + updatedItem.stock());
 
         assertEquals(0, updatedItem.stock());
+        assertEquals(tasks.size() - testItem.stock(), execute.size());
     }
 }
