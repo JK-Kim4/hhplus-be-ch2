@@ -36,6 +36,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6")
 	implementation("org.instancio:instancio-core:5.4.0")
+	implementation("org.instancio:instancio-core:5.4.0")
+	implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
 	// Lombok
 	compileOnly("org.projectlombok:lombok:1.18.38")
@@ -54,7 +56,7 @@ dependencies {
 	testImplementation("org.testcontainers:mysql")
 	testImplementation("org.instancio:instancio-junit:5.4.0")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-	//
+	testImplementation("org.testcontainers:redis:1.19.7")
 }
 
 tasks.withType<Test> {
