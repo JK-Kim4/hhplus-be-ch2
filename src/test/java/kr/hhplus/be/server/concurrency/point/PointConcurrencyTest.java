@@ -35,7 +35,7 @@ PointConcurrencyTest {
     }
 
     @RepeatedTest(10)
-    void 사용자포인트_사용_충전_동시성테스트() throws InterruptedException{
+    void 충전과_차감요청이_동시에_발생할_경우_하나의_트랜잭션만_수행되고_후행_트랜잭션은_오류를_반환한다() throws InterruptedException{
         // given
         UserCommand.Charge chargeCommand = UserCommand.Charge.of(testUser.getId(), 500);
         UserCommand.Deduct deductCommand = UserCommand.Deduct.of(testUser.getId(), 500);
@@ -48,7 +48,12 @@ PointConcurrencyTest {
         // when
         List<Throwable> errors = ConcurrentTestExecutor.execute(4,tasks);
 
+        userRepository.flush();
+
+        User result = userRepository.findById(testUser.getId()).get();
+
         // then
+        //assertEquals(50_500, result.point());
         assertEquals(1, errors.size()); // 포인트 사용과 충전이 동시에 발생할 경우 낙관적 락으로 인해 후발 트랜잭션에서 Throw Exception
         assertEquals(ObjectOptimisticLockingFailureException.class, errors.get(0).getClass());  // 낙관적 락 반환 오류 검증
     }

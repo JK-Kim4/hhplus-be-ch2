@@ -20,7 +20,7 @@ public class UserService {
         User user = userRepository.findById(command.getUserId())
                 .orElseThrow(NoResultException::new);
         user.chargePoint(command.getAmount());
-        return user;
+        return userRepository.save(user);
     }
 
     @Transactional
