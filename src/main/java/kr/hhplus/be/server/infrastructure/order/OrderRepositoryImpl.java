@@ -63,4 +63,8 @@ public class OrderRepositoryImpl implements OrderRepository {
         return orderItemJpaRepository.saveAll(orderItemList);
     }
 
+    @Override
+    public void flush() {
+        orderJpaRepository.flush();
+    }
 }

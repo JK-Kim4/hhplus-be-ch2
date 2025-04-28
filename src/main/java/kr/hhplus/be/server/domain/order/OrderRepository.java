@@ -20,4 +20,7 @@ public interface OrderRepository {
     OrderItem saveOrderItem(OrderItem orderItem);
 
     List<OrderItem> saveOrderItemList(List<OrderItem> orderItemList);
+
+    void flush();
+
 }
