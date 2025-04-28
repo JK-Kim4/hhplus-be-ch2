@@ -8,7 +8,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity(name = "user")
@@ -27,9 +26,6 @@ public class User {
 
     @Embedded
     protected Orders orders;
-
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     public static User createWithName(String name) {
         if(Objects.isNull(name)) {

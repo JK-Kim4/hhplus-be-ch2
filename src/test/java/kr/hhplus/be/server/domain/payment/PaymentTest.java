@@ -1,17 +1,13 @@
 package kr.hhplus.be.server.domain.payment;
 
-import kr.hhplus.be.server.domain.item.Item;
 import kr.hhplus.be.server.domain.order.Order;
-import kr.hhplus.be.server.domain.order.OrderItem;
 import kr.hhplus.be.server.domain.order.OrderTestFixture;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.UserTestFixture;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PaymentTest {
 
@@ -28,43 +24,20 @@ public class PaymentTest {
         assertThrows(IllegalArgumentException.class, () -> payment.isPayable());
     }
 
-    @Test
-    void 결제에_성공하면_사용자잔액이_차감된다(){
-        //given
-        Item car  = Item.createWithNameAndPriceAndStock("car", 3_000, 10);
-        Item book  = Item.createWithNameAndPriceAndStock("book", 2_000, 10);
-        Item food  = Item.createWithNameAndPriceAndStock("food", 5_000, 10);
 
-        OrderItem carOi = OrderTestFixture.createOrderItemWithItemAndPriceAndQuantity(
-                car,
-                3_000,
-                5);
-        OrderItem bookOi = OrderTestFixture.createOrderItemWithItemAndPriceAndQuantity(
-                book,
-                2_000,
-                5
-        );
-        OrderItem foodOi = OrderTestFixture.createOrderItemWithItemAndPriceAndQuantity(
-                food,
-                5_000,
-                1
-        );
-        List<OrderItem> orderItems = Arrays.asList(carOi, bookOi, foodOi);
-        User user = UserTestFixture.createTestUser();
-        user.chargePoint(100_000);
-        Order order = new Order(user, orderItems);
-        Integer finalPrice = order.getFinalPaymentPrice();
-        Payment payment = PaymentTestFixture.creatTestPaymentWithOrderAndUser(order);
+    @Test
+    void 주문_생성자와_결제_요청자_정보가_일치하지_않을경우_결제_생성_실패(){
+        //given
+        User orderUser = UserTestFixture.createTestUserWithIdAndName(1L, "orderUser");
+        User paymentUser = UserTestFixture.createTestUserWithIdAndName(2L, "paymentUser");
+        Order order = OrderTestFixture.createTestOrderWithUser(orderUser);
 
         //when
-        payment.pay();
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                Payment.createWithOrderValidation(order, paymentUser));
 
         //then
-        assertEquals(100_000 - finalPrice, user.point());
+        assertEquals("사용자 정보가 일치하지않습니다.", exception.getMessage());
+
     }
-
-
-
-
-
 }

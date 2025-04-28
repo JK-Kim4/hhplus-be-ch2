@@ -51,10 +51,6 @@ public class Point {
         this.pointAmount = 0;
     }
 
-    public User user(){
-        return user;
-    }
-
     public void charge(Integer chargeAmount) {
         if(chargeAmount < MINIMUM_CHARGE_AMOUNT) {
             throw new IllegalArgumentException("최소 충전 금액은 100원입니다.");
@@ -93,9 +89,5 @@ public class Point {
                 "pointAmount=" + pointAmount +
                 ", id=" + id +
                 '}';
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 }

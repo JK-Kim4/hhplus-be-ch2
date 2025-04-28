@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -44,9 +43,6 @@ public class Order {
 
     @Column(name = "order_date")
     private LocalDate orderDate;
-
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     public static Order createWithItems(User user, List<OrderItem> orderItemList) {
         validationUser(user);

@@ -1,7 +1,6 @@
 package kr.hhplus.be.server.domain.order;
 
 import jakarta.persistence.NoResultException;
-import kr.hhplus.be.server.domain.payment.Payment;
 import kr.hhplus.be.server.domain.user.User;
 import org.springframework.stereotype.Service;
 
@@ -19,13 +18,6 @@ public class OrderService {
 
     public void save(Order order) {
         orderRepository.save(order);
-    }
-
-    public void processPayment(Order order, Payment payment) {
-        payment.isPayable();
-        payment.pay();
-        order.deductOrderItemStock();
-        order.updateOrderStatus(OrderStatus.PAYMENT_COMPLETED);
     }
 
     public Order findById(Long orderId) {

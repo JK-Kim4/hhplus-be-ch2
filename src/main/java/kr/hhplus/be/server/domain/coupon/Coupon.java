@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 import static java.lang.Math.max;
@@ -35,9 +34,6 @@ public class Coupon {
 
     @Column
     private LocalDate expireDate;
-
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     public static Coupon createFlatCoupon(String name, Integer quantity, LocalDate expireDate, Integer discountAmount){
         return new Coupon(name, CouponType.FLAT, quantity, expireDate, discountAmount);

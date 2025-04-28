@@ -6,7 +6,7 @@ import kr.hhplus.be.server.domain.order.OrderStatus;
 import kr.hhplus.be.server.domain.user.User;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 public class PaymentService {
@@ -16,7 +16,6 @@ public class PaymentService {
     public PaymentService(PaymentRepository paymentRepository) {
         this.paymentRepository = paymentRepository;
     }
-
 
     public void save(Payment payment) {
         paymentRepository.save(payment);
@@ -36,16 +35,8 @@ public class PaymentService {
         return paymentRepository.save(payment);
     }
 
-    public void processPayment(Payment payment, Order order) {
-        payment.isPayable();
-        payment.pay();
-        order.deductOrderItemStock();
-        order.updateOrderStatus(OrderStatus.PAYMENT_COMPLETED);
-        order.updateOrderDate(LocalDate.now());
-    }
-
     public void success(Payment payment, Order order) {
-        payment.updatePaymentResult();
+        payment.updatePaymentResponseDateTime(LocalDateTime.now());
         order.updateOrderStatus(OrderStatus.PAYMENT_COMPLETED);
     }
 }

@@ -35,20 +35,12 @@ public class Payment {
     @Column
     private LocalDateTime paymentResponseDateTime;
 
-    @Column
-    private LocalDateTime createdAt;
-
-    @Column
-    private LocalDateTime updatedAt;
-
     public Payment(Order order, User user){
         validation(order, user);
 
         this.order = order;
         this.user = user;
         this.paymentPrice = order.getFinalPaymentPrice();
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
     }
 
     public Payment(Order order){
@@ -57,8 +49,6 @@ public class Payment {
         this.order = order;
         this.user = order.getUser();
         this.paymentPrice = order.getFinalPaymentPrice();
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
         order.registerPayment(this);
 
     }
@@ -71,20 +61,14 @@ public class Payment {
         return new Payment(order);
     }
 
-    public void updatePaymentResult(){
-        this.paymentResponseDateTime = LocalDateTime.now();
+    public void updatePaymentResponseDateTime(LocalDateTime responseDateTime) {
+        this.paymentResponseDateTime = responseDateTime;
     }
 
     public void isPayable(){
         if(user.point() < paymentPrice){
             throw new IllegalArgumentException("잔액이 부족합니다.");
         }
-    }
-
-    public void pay(){
-        this.paymentRequestDateTime = LocalDateTime.now();
-        this.user.deductPoint(paymentPrice);
-        this.paymentResponseDateTime = LocalDateTime.now();
     }
 
     private void validation(Order order, User user) {
@@ -127,8 +111,6 @@ public class Payment {
         return "Payment{" +
                 "id=" + id +
                 ", paymentPrice=" + paymentPrice +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
                 '}';
     }
 }

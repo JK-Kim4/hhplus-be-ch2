@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.infrastructure.orderStatistics;
+package kr.hhplus.be.server.infrastructure.rank;
 
 import kr.hhplus.be.server.domain.rank.Rank;
 import kr.hhplus.be.server.domain.rank.RankRepository;
