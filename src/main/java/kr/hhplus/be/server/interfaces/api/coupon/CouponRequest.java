@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.interfaces.api.coupon;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import kr.hhplus.be.server.application.coupon.CouponCommand;
 import kr.hhplus.be.server.domain.coupon.CouponType;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponCriteria;
 import lombok.Getter;
@@ -54,6 +55,10 @@ public class CouponRequest {
 
         public Issue(Long userId) {
             this.userId = userId;
+        }
+
+        public CouponCommand.Issue toCommand(Long couponId){
+            return CouponCommand.Issue.of(couponId, userId);
         }
 
         public UserCouponCriteria.Issue toCriteria(Long couponId){

@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 @Tag(name = "Coupon", description = "쿠폰 생성, 사용자 쿠폰 발급")
 public interface CouponApiSpec {
 
@@ -23,6 +25,6 @@ public interface CouponApiSpec {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "쿠폰 조회 성공")
     })
-    ResponseEntity<CouponResponse.UserCouponList> findByUserId(Long userId);
+    ResponseEntity<List<CouponResponse.UserCoupon>> findByUserId(Long userId);
 
 }

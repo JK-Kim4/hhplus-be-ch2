@@ -36,8 +36,8 @@ public class CouponQueryService {
                 .orElse(null);
     }
 
-    public List<UserCoupon> findByUserId(Long userId) {
-        return userCouponRepository.findByUserId(userId);
+    public List<CouponInfo.UserCouponInfo> findByUserId(Long userId) {
+        return CouponInfo.UserCouponInfo.fromList(userCouponRepository.findByUserId(userId));
     }
 
     public Optional<UserCoupon> findByCouponIdAndUserId(Long couponId, Long userId) {
