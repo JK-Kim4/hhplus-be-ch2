@@ -27,12 +27,13 @@ public class Coupon {
     private Integer quantity;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "coupon_type")
     private CouponType couponType;
 
     @OneToOne(mappedBy = "coupon", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     protected FlatDiscountCoupon flatDiscountCoupon;
 
-    @Column
+    @Column(name = "expire_date")
     private LocalDate expireDate;
 
     public static Coupon createFlatCoupon(String name, Integer quantity, LocalDate expireDate, Integer discountAmount){
