@@ -14,4 +14,6 @@ public interface UserCouponRepository {
 
     List<UserCoupon> findByUserId(Long userId);
 
+    Integer countByCouponId(Long couponId);
+
 }

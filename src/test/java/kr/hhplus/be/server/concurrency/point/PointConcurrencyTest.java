@@ -1,7 +1,11 @@
 package kr.hhplus.be.server.concurrency.point;
 
+import kr.hhplus.be.server.application.user.UserCommandService;
 import kr.hhplus.be.server.concurrency.support.ConcurrentTestExecutor;
-import kr.hhplus.be.server.domain.user.*;
+import kr.hhplus.be.server.domain.user.User;
+import kr.hhplus.be.server.domain.user.UserCommand;
+import kr.hhplus.be.server.domain.user.UserRepository;
+import kr.hhplus.be.server.domain.user.UserTestFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +27,7 @@ PointConcurrencyTest {
     UserRepository userRepository;
 
     @Autowired
-    UserService userService;
+    UserCommandService userCommandService;
 
     private User testUser;
 
@@ -41,8 +45,8 @@ PointConcurrencyTest {
         UserCommand.Deduct deductCommand = UserCommand.Deduct.of(testUser.getId(), 500);
 
         List<Runnable> tasks = List.of(
-                () -> userService.charge(chargeCommand),
-                () -> userService.deduct(deductCommand)
+                () -> userCommandService.charge(chargeCommand),
+                () -> userCommandService.deduct(deductCommand)
         );
 
         // when
