@@ -1,34 +1,22 @@
-package kr.hhplus.be.server.domain.user;
+package kr.hhplus.be.server.application.user;
 
 import jakarta.persistence.NoResultException;
+import kr.hhplus.be.server.domain.user.User;
+import kr.hhplus.be.server.domain.user.UserInfo;
+import kr.hhplus.be.server.domain.user.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
 @Service
-public class UserService {
+@Transactional(readOnly = true)
+public class UserQueryService {
 
     private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserQueryService(UserRepository userRepository) {
         this.userRepository = userRepository;
-    }
-
-    @Transactional
-    public User charge(UserCommand.Charge command){
-        User user = userRepository.findById(command.getUserId())
-                .orElseThrow(NoResultException::new);
-        user.chargePoint(command.getAmount());
-        return user;
-    }
-
-    @Transactional
-    public User deduct(UserCommand.Deduct command){
-        User user = userRepository.findById(command.getUserId())
-                .orElseThrow(NoResultException::new);
-        user.deductPoint(command.getAmount());
-        return user;
     }
 
     public User findById(Long userId) {

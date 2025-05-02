@@ -1,7 +1,8 @@
 package kr.hhplus.be.server.interfaces.api.user;
 
+import kr.hhplus.be.server.application.user.UserCommandService;
+import kr.hhplus.be.server.application.user.UserQueryService;
 import kr.hhplus.be.server.domain.user.UserInfo;
-import kr.hhplus.be.server.domain.user.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,11 +10,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/users")
 public class UserApiController implements UserApiSpec {
 
-    private final UserService userService;
+    private final UserCommandService userCommandService;
+    private final UserQueryService userQueryService;
 
     public UserApiController(
-            UserService userService) {
-        this.userService = userService;
+            UserCommandService userCommandService,
+            UserQueryService userQueryService) {
+        this.userCommandService = userCommandService;
+        this.userQueryService = userQueryService;
     }
 
     @Override
@@ -21,7 +25,7 @@ public class UserApiController implements UserApiSpec {
     public ResponseEntity<UserResponse.Point> findUserPointById(
             @PathVariable("id") Long userId) {
 
-        UserInfo.Point result = userService.findPointById(userId);
+        UserInfo.Point result = userQueryService.findPointById(userId);
         return ResponseEntity.ok(UserResponse.Point.from(result));
     }
 
@@ -31,7 +35,7 @@ public class UserApiController implements UserApiSpec {
             @PathVariable("id") Long userId,
             @RequestBody UserRequest.Charge point) {
 
-        userService.charge(point.toCommand(userId));
+        userCommandService.charge(point.toCommand(userId));
         return ResponseEntity.ok().build();
     }
 }

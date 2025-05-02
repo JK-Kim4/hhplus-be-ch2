@@ -1,9 +1,9 @@
 package kr.hhplus.be.server.integration.user.application;
 
 import jakarta.persistence.NoResultException;
+import kr.hhplus.be.server.application.user.UserQueryService;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.UserRepository;
-import kr.hhplus.be.server.domain.user.UserService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class UserServiceTest {
 
     @Autowired
-    UserService userService;
+    UserQueryService userQueryService;
 
     @Autowired
     UserRepository userRepository;
@@ -44,7 +44,7 @@ public class UserServiceTest {
     @Test
     void 사용자를_조회한다(){
         //when
-        User savedUser = userService.findById(userId);
+        User savedUser = userQueryService.findById(userId);
 
         //then
         assertEquals(name, savedUser.getName());
@@ -57,6 +57,6 @@ public class UserServiceTest {
 
         //then
         assertThrows(NoResultException.class,
-                () -> userService.findById(nonExist));
+                () -> userQueryService.findById(nonExist));
     }
 }

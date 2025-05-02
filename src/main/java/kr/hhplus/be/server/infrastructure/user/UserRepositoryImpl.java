@@ -6,6 +6,7 @@ import kr.hhplus.be.server.domain.user.point.Point;
 import kr.hhplus.be.server.domain.user.point.PointHistory;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -57,5 +58,10 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Optional<User> findById(Long userId) {
         return userJpaRepository.findById(userId);
+    }
+
+    @Override
+    public List<User> findAll() {
+        return userJpaRepository.findAll();
     }
 }

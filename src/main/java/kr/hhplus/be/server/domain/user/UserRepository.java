@@ -3,6 +3,7 @@ package kr.hhplus.be.server.domain.user;
 import kr.hhplus.be.server.domain.user.point.Point;
 import kr.hhplus.be.server.domain.user.point.PointHistory;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -21,4 +22,6 @@ public interface UserRepository {
     Optional<User> findByName(String name);
 
     Optional<User> findById(Long userId);
+
+    List<User> findAll();
 }

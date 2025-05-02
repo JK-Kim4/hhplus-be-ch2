@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.domain.user;
 
 import jakarta.persistence.NoResultException;
+import kr.hhplus.be.server.application.user.UserCommandService;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +24,7 @@ public class UserServiceTest {
     UserRepository userRepository;
 
     @InjectMocks
-    UserService userService;
+    UserCommandService userCommandService;
 
     @Nested
     class 사용자_포인트_충전_커멘드를_전달받아_포인트를_충전 {
@@ -36,7 +37,7 @@ public class UserServiceTest {
 
             //when//then
             assertThrows(NoResultException.class, () ->
-                    userService.charge(command));
+                    userCommandService.charge(command));
         }
 
         @Test
@@ -47,7 +48,7 @@ public class UserServiceTest {
             UserCommand.Charge command = UserCommand.Charge.of(1L, 5000);
 
             //when
-            userService.charge(command);
+            userCommandService.charge(command);
             InOrder inOrder = Mockito.inOrder(user, userRepository);
 
             //then

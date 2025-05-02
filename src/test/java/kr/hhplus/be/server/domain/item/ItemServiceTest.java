@@ -53,7 +53,7 @@ public class ItemServiceTest {
             List<OrderCommand.OrderItemCreate> emptyCommandList = Arrays.asList(
                     new OrderCommand.OrderItemCreate(1L, 1000, 10)
             );
-            when(itemRepository.findById(1L)).thenReturn(Optional.empty());
+            when(itemRepository.findByIdWithPessimisticLock(1L)).thenReturn(Optional.empty());
 
             //when//then
             assertThrows(NoResultException.class, ()

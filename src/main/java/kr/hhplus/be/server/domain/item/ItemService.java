@@ -1,10 +1,9 @@
 package kr.hhplus.be.server.domain.item;
 
 import jakarta.persistence.NoResultException;
-import kr.hhplus.be.server.domain.order.OrderItem;
 import kr.hhplus.be.server.domain.order.OrderCommand;
+import kr.hhplus.be.server.domain.order.OrderItem;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,7 +16,6 @@ public class ItemService {
         this.itemRepository = itemRepository;
     }
 
-    @Transactional
     public Item save(ItemCommand.Create command){
         Item item = Item.createWithNameAndPriceAndStock(
                 command.getName(),
@@ -26,9 +24,8 @@ public class ItemService {
         return itemRepository.save(item);
     }
 
-    @Transactional
     public Item deductStock(ItemCommand.Deduct command){
-        Item item = itemRepository.findByIdWithPessimisticLock(command.getItemId())
+        Item item = itemRepository.findById(command.getItemId())
                         .orElseThrow(NoResultException::new);
         item.decreaseStock(command.getQuantity());
         return itemRepository.save(item);
@@ -54,7 +51,7 @@ public class ItemService {
 
         return orderItemCreateCommand.stream()
                 .map(command -> OrderItem.createWithItemAndPriceAndQuantity(
-                        itemRepository.findById(command.getItemId())
+                        itemRepository.findByIdWithPessimisticLock(command.getItemId())
                                 .orElseThrow(NoResultException::new),
                         command.getPrice(),
                         command.getQuantity()))
