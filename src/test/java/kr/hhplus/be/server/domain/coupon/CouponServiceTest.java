@@ -1,6 +1,8 @@
 package kr.hhplus.be.server.domain.coupon;
 
 import jakarta.persistence.NoResultException;
+import kr.hhplus.be.server.application.coupon.CouponCommandService;
+import kr.hhplus.be.server.application.coupon.CouponQueryService;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCoupon;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponRepository;
 import kr.hhplus.be.server.domain.order.Order;
@@ -26,7 +28,9 @@ public class CouponServiceTest {
     @Mock
     private UserCouponRepository userCouponRepository;
     @InjectMocks
-    private CouponService couponService;
+    private CouponCommandService couponCommandService;
+    @InjectMocks
+    private CouponQueryService couponQueryService;
 
     @Test
     void 고유번호를_전달받아_쿠폰_상세정보를_조회할때_쿠폰이_존재하지않으면_NoResultException() {
@@ -37,7 +41,7 @@ public class CouponServiceTest {
 
         //when//then
         assertThrows(NoResultException.class,
-                () -> couponService.findById(findCouponId));
+                () -> couponQueryService.findById(findCouponId));
     }
 
     @Test
@@ -46,7 +50,7 @@ public class CouponServiceTest {
         when(userCouponRepository.findById(1L)).thenReturn(Optional.empty());
 
         //when//then
-        assertNull(couponService.findUserCouponById(1L));
+        assertNull(couponQueryService.findUserCouponById(1L));
     }
 
     @Test
@@ -58,7 +62,7 @@ public class CouponServiceTest {
         UserCoupon userCoupon = UserCoupon.create(user, coupon);
 
         //when
-        couponService.applyCouponToOrder(userCoupon, order);
+        couponCommandService.applyCouponToOrder(userCoupon, order);
 
         //then
         assertEquals(OrderTestFixture.TestOrder.TOTAL_PRICE, order.getTotalPrice());
