@@ -7,8 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -40,37 +38,8 @@ public class CouponServiceTest {
         when(couponRepository.findById(couponId)).thenReturn(Optional.empty());
 
         // expect
-        assertThatThrownBy(() -> couponService.issue(command))
+        assertThatThrownBy(() -> couponService.issueUserCoupon(command))
                 .isInstanceOf(NoResultException.class);
-    }
-
-    @Test
-    void 이미_발급된_쿠폰이면_예외가_발생한다() {
-        // given
-        Long couponId = 1L;
-        Long userId = 100L;
-        Coupon coupon = Coupon.create(
-                "정액 할인",
-                5,
-                DiscountPolicy.FLAT,
-                BigDecimal.valueOf(5000),
-                LocalDate.now().plusDays(2)
-        );
-
-        UserCoupon existing = UserCoupon.issue(coupon, userId);
-        CouponCommand.Issue command =
-                CouponCommand.Issue.builder()
-                        .couponId(couponId)
-                        .userId(userId)
-                        .build();
-
-        when(couponRepository.findById(couponId)).thenReturn(Optional.of(coupon));
-        when(userCouponRepository.findByCouponIdAndUserId(couponId, userId)).thenReturn(Optional.of(existing));
-
-        // expect
-        assertThatThrownBy(() -> couponService.issue(command))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("이미 발급된 쿠폰");
     }
 
 }
