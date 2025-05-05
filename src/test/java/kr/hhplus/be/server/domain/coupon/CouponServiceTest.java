@@ -1,52 +1,76 @@
 package kr.hhplus.be.server.domain.coupon;
 
 import jakarta.persistence.NoResultException;
-import kr.hhplus.be.server.application.coupon.CouponCommandService;
-import kr.hhplus.be.server.application.coupon.CouponQueryService;
-import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class CouponServiceTest {
 
     @Mock
-    private CouponRepository couponRepository;
+    CouponRepository couponRepository;
+
     @Mock
-    private UserCouponRepository userCouponRepository;
+    UserCouponRepository userCouponRepository;
+
     @InjectMocks
-    private CouponCommandService couponCommandService;
-    @InjectMocks
-    private CouponQueryService couponQueryService;
+    CouponService couponService;
 
     @Test
-    void 고유번호를_전달받아_쿠폰_상세정보를_조회할때_쿠폰이_존재하지않으면_NoResultException() {
-        //given
-        when(couponRepository.findById(1L)).thenReturn(Optional.empty());
-        Long findCouponId = 1L;
+    void 쿠폰이_존재하지_않으면_예외가_발생한다() {
+        // given
+        Long couponId = 1L;
+        Long userId = 100L;
+        CouponCommand.Issue command =
+                CouponCommand.Issue.builder()
+                    .couponId(couponId)
+                    .userId(userId)
+                    .build();
 
+        when(couponRepository.findById(couponId)).thenReturn(Optional.empty());
 
-        //when//then
-        assertThrows(NoResultException.class,
-                () -> couponQueryService.findById(findCouponId));
+        // expect
+        assertThatThrownBy(() -> couponService.issue(command))
+                .isInstanceOf(NoResultException.class);
     }
 
     @Test
-    void 고유번호를_전달받아_발급되_사용자쿠폰의_상세정보를_조회할떄_존재하지않으면_return_null(){
-        //given
-        when(userCouponRepository.findById(1L)).thenReturn(Optional.empty());
+    void 이미_발급된_쿠폰이면_예외가_발생한다() {
+        // given
+        Long couponId = 1L;
+        Long userId = 100L;
+        Coupon coupon = Coupon.create(
+                "정액 할인",
+                5,
+                DiscountPolicy.FLAT,
+                BigDecimal.valueOf(5000),
+                LocalDate.now().plusDays(2)
+        );
 
-        //when//then
-        assertNull(couponQueryService.findUserCouponById(1L));
+        UserCoupon existing = UserCoupon.issue(coupon, userId);
+        CouponCommand.Issue command =
+                CouponCommand.Issue.builder()
+                        .couponId(couponId)
+                        .userId(userId)
+                        .build();
+
+        when(couponRepository.findById(couponId)).thenReturn(Optional.of(coupon));
+        when(userCouponRepository.findByCouponIdAndUserId(couponId, userId)).thenReturn(Optional.of(existing));
+
+        // expect
+        assertThatThrownBy(() -> couponService.issue(command))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("이미 발급된 쿠폰");
     }
 
 }

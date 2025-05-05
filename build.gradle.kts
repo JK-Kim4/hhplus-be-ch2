@@ -59,7 +59,6 @@ dependencies {
 	testImplementation("org.testcontainers:mysql")
 	testImplementation("org.instancio:instancio-junit:5.4.0")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-	testImplementation("org.testcontainers:redis:2.2.2")
 }
 
 tasks.withType<Test> {
