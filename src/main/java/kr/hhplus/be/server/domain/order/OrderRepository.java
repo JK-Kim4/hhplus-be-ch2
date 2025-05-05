@@ -23,4 +23,5 @@ public interface OrderRepository {
 
     void flush();
 
+    List<Order> findAll();
 }

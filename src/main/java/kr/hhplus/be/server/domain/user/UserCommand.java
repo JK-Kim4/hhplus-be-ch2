@@ -4,23 +4,13 @@ import lombok.Getter;
 
 public class UserCommand {
 
-    public static class Create{
-
-        private String name;
-
-        public Create(String name){
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
-    }
-
+    @Getter
     public static class Charge {
 
         private Long userId;
         private Integer amount;
+
+        public Charge() {}
 
         public static Charge of(Long userId, Integer amount) {
             return new Charge(userId, amount);
@@ -29,14 +19,6 @@ public class UserCommand {
         private Charge(Long userId, Integer amount) {
             this.userId = userId;
             this.amount = amount;
-        }
-
-        public Long getUserId() {
-            return userId;
-        }
-
-        public Integer getAmount() {
-            return amount;
         }
     }
 
@@ -55,5 +37,22 @@ public class UserCommand {
             this.userId = userId;
             this.amount = amount;
         }
+    }
+
+    @Getter
+    public static class Pay{
+
+        Long userId;
+        Integer finalPaymentPrice;
+
+        public static Pay of(Long userId, Integer finalPaymentPrice) {
+            return new Pay(userId, finalPaymentPrice);
+        }
+
+        private Pay(Long userId, Integer finalPaymentPrice) {
+            this.userId = userId;
+            this.finalPaymentPrice = finalPaymentPrice;
+        }
+
     }
 }

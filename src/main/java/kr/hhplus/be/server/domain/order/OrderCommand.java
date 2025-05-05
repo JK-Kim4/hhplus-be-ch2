@@ -1,12 +1,48 @@
 package kr.hhplus.be.server.domain.order;
 
 import kr.hhplus.be.server.domain.item.Item;
+import kr.hhplus.be.server.domain.item.ItemInfo;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class OrderCommand {
 
+    @Getter
+    public static class RegisterPayment{
+
+        Long orderId;
+        Long paymentId;
+
+        public static RegisterPayment of(Long orderId, Long paymentId) {
+            return new RegisterPayment(orderId, paymentId);
+        }
+
+        private RegisterPayment(Long orderId, Long paymentId) {
+            this.orderId = orderId;
+            this.paymentId = paymentId;
+        }
+
+    }
+
+    @Getter
+    public static class CreateV2 {
+        Long userId;
+        Long userCouponId;
+        List<ItemInfo.OrderItem> orderItems;
+
+        public static CreateV2 of(Long userId, Long userCouponId, List<ItemInfo.OrderItem> orderItems) {
+            return new CreateV2(userId, userCouponId, orderItems);
+        }
+
+        private CreateV2(Long userId, Long userCouponId, List<ItemInfo.OrderItem> orderItems) {
+            this.userId = userId;
+            this.userCouponId = userCouponId;
+            this.orderItems = orderItems;
+        }
+
+    }
 
     public static class Create {
         private Long userId;

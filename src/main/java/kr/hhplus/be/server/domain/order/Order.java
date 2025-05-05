@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.domain.order;
 
 import jakarta.persistence.*;
+import kr.hhplus.be.server.domain.coupon.userCoupon.UserCoupon;
 import kr.hhplus.be.server.domain.payment.Payment;
 import kr.hhplus.be.server.domain.user.User;
 import lombok.AccessLevel;
@@ -51,7 +52,20 @@ public class Order {
         return new Order(user, orderItemList);
     }
 
-    public Order(User user, List<OrderItem> orderItemList){
+    public static Order createWithUser(User user) {
+        validationUser(user);
+        Order order = new Order(user);
+        order.orderItems = new OrderItems(order);
+        return order;
+    }
+
+    private Order(User user) {
+        this.user = user;
+        this.orderStatus = OrderStatus.ORDER_CREATED;
+        user.addOrder(this);
+    }
+
+    private Order(User user, List<OrderItem> orderItemList){
         this.user = user;
         user.addOrder(this);
         this.orderItems = new OrderItems(this, orderItemList);
@@ -91,13 +105,18 @@ public class Order {
         this.orderStatus = OrderStatus.PAYMENT_WAITING;
     }
 
-    public void deductOrderItemStock() {
-        orderItems.deductStock();
+    public void applyDiscount(UserCoupon userCoupon) {
+
+        userCoupon.isUsable(LocalDate.now(), this.getUser());
+        this.userCouponId = userCoupon.getId();
+        this.finalPaymentPrice = userCoupon.discount(this.getTotalPrice());
+        userCoupon.updateUsedCouponInformation(this);
+
     }
 
-    public void applyDiscount(Long userCouponId, Integer finalPaymentPrice) {
-        this.userCouponId = userCouponId;
-        this.finalPaymentPrice = finalPaymentPrice;
+    public void addOrderItem(OrderItem orderItem) {
+        orderItem.setOrder(this);
+        this.orderItems.addOrderItem(orderItem);
     }
 
     private static void validationUser(User user) {
@@ -112,5 +131,9 @@ public class Order {
         if(orderItemList == null || orderItemList.isEmpty()) {
             throw new IllegalArgumentException("구매하실 상품이 존재하지않습니다.");
         }
+    }
+
+    public void setUserCouponId(Long userCouponId) {
+        this.userCouponId = userCouponId;
     }
 }

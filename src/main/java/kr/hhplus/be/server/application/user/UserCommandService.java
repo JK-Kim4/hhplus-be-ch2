@@ -32,4 +32,10 @@ public class UserCommandService {
         return user;
     }
 
+    public void pay(UserCommand.Pay command) {
+        User user = userRepository.findById(command.getUserId())
+                .orElseThrow(NoResultException::new);
+
+        user.deductPoint(command.getFinalPaymentPrice());
+    }
 }

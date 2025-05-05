@@ -3,12 +3,7 @@ package kr.hhplus.be.server.domain.coupon;
 import jakarta.persistence.NoResultException;
 import kr.hhplus.be.server.application.coupon.CouponCommandService;
 import kr.hhplus.be.server.application.coupon.CouponQueryService;
-import kr.hhplus.be.server.domain.coupon.userCoupon.UserCoupon;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponRepository;
-import kr.hhplus.be.server.domain.order.Order;
-import kr.hhplus.be.server.domain.order.OrderTestFixture;
-import kr.hhplus.be.server.domain.user.User;
-import kr.hhplus.be.server.domain.user.UserTestFixture;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,7 +12,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,23 +47,6 @@ public class CouponServiceTest {
 
         //when//then
         assertNull(couponQueryService.findUserCouponById(1L));
-    }
-
-    @Test
-    void 쿠폰을_적용하여_할인금액을_계산하고_쿠폰정보를_개신한다(){
-        //given
-        User user = UserTestFixture.createTestUser();
-        Order order = OrderTestFixture.createTestOrderWithUser(user);
-        Coupon coupon = CouponTestFixture.createTestCouponWithDiscountPrice(5000);
-        UserCoupon userCoupon = UserCoupon.create(user, coupon);
-
-        //when
-        couponCommandService.applyCouponToOrder(userCoupon, order);
-
-        //then
-        assertEquals(OrderTestFixture.TestOrder.TOTAL_PRICE, order.getTotalPrice());
-        assertEquals(OrderTestFixture.TestOrder.TOTAL_PRICE - 5000, order.getFinalPaymentPrice());
-        assertEquals(order, userCoupon.getAppliedOrder());
     }
 
 }

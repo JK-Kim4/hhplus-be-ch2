@@ -34,4 +34,9 @@ public class UserQueryService {
 
         return UserInfo.Point.from(user);
     }
+
+    public void isPayable(Long userId, Integer finalPrice) {
+        User user = userRepository.findById(userId).orElseThrow(NoResultException::new);
+        user.isPayable(finalPrice);
+    }
 }

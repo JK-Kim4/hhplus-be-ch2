@@ -55,20 +55,23 @@ public class User {
     }
 
     public void deductPoint(Integer amount) {
-        if(Objects.isNull(amount)) {
-            point = Point.createWithUser(this);
-        }
-
         this.point.deduct(amount);
     }
 
     public void addOrder(Order order) {
+        canCreateOrder();
         this.orders.addOrder(order);
     }
 
     public void canCreateOrder(){
         if(!orders.areAllOrdersPaymentCompleted()){
             throw new IllegalArgumentException("결제가 완료되지 않은 주문이 존재합니다.");
+        }
+    }
+
+    public void isPayable(Integer finalPrice){
+        if(point() < finalPrice){
+            throw new IllegalArgumentException("잔고가 부족합니다.");
         }
     }
 

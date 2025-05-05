@@ -36,6 +36,10 @@ public class CouponQueryService {
                 .orElse(null);
     }
 
+    public CouponInfo.UserCouponInfo findUserCouponInfoById(Long userCouponId) {
+        return CouponInfo.UserCouponInfo.from(findUserCouponById(userCouponId));
+    }
+
     public List<CouponInfo.UserCouponInfo> findByUserId(Long userId) {
         return CouponInfo.UserCouponInfo.fromList(userCouponRepository.findByUserId(userId));
     }

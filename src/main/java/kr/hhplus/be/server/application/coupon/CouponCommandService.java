@@ -6,7 +6,6 @@ import kr.hhplus.be.server.domain.coupon.CouponRepository;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCoupon;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponInfo;
 import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponRepository;
-import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.UserRepository;
 import kr.hhplus.be.server.interfaces.common.annotation.DistributedLock;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Objects;
 
 @Service
 @Transactional
@@ -129,17 +127,6 @@ public class CouponCommandService {
                 userCoupon.getUser().getId(),
                 userCoupon.getIssueDateTime()
         );
-    }
-
-    public UserCoupon applyCouponToOrder(UserCoupon userCoupon, Order order) {
-        if (Objects.isNull(userCoupon)) {
-            return null;
-        }
-        userCoupon.isUsable(LocalDate.now(), order.getUser());
-        Integer finalPaymentPrice = userCoupon.discount(order.getTotalPrice());
-        order.applyDiscount(userCoupon.getId(), finalPaymentPrice);
-        userCoupon.updateUsedCouponInformation(order);
-        return userCoupon;
     }
 
 }

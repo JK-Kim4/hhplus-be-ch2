@@ -22,6 +22,10 @@ public class OrderItems {
         this.setOrder(order);
     }
 
+    public OrderItems(Order order){
+        this.setOrder(order);
+    }
+
     public boolean empty(){
         return orderItems.isEmpty();
     }
@@ -30,6 +34,10 @@ public class OrderItems {
         return orderItems.stream()
                 .mapToInt(OrderItem::calculatePrice)
                 .sum();
+    }
+
+    public void addOrderItem(OrderItem orderItem) {
+        this.orderItems.add(orderItem);
     }
 
     public void setOrder(Order order) {

@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.concurrency.stock;
 
+import jakarta.transaction.Transactional;
 import kr.hhplus.be.server.concurrency.support.ConcurrentTestExecutor;
 import kr.hhplus.be.server.domain.item.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +33,7 @@ public class ItemConcurrencyTest {
     }
 
     @Test
+    @Transactional
     void 상품_재고_차감_동시성_테스트() throws InterruptedException {
 
         ItemCommand.Deduct command = ItemCommand.Deduct.of(testItem.getId(), 1);

@@ -37,6 +37,13 @@ public class Item {
         return new Item(name, price, stock);
     }
 
+    protected Item(Long id, String name, Integer price, Integer stock) {
+        this.id = id;
+        this.name = name;
+        this.price = Price.createOrDefault(price);
+        this.stock = Stock.createOrDefault(stock);
+    }
+
     protected Item(String name, Integer price) {
         this.name = name;
         this.price = Price.createOrDefault(price);
@@ -118,5 +125,16 @@ public class Item {
                 ", price=" + price +
                 ", stock=" + stock +
                 '}';
+    }
+
+    public void canOrder(Integer price, Integer quantity) {
+        if(!Objects.equals(this.price(), price)){
+            throw new IllegalArgumentException("상품 가격 정보가 일치하지않아 주문할 수 없습니다.");
+        }
+
+        if(!this.hasEnoughStock(quantity)){
+            throw new IllegalArgumentException("재고가 부족하여 주문할 수 없습니다.");
+        }
+
     }
 }

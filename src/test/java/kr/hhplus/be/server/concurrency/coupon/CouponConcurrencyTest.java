@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.concurrency.coupon;
 
 import jakarta.persistence.NoResultException;
+import kr.hhplus.be.server.application.coupon.CouponCommand;
 import kr.hhplus.be.server.application.coupon.CouponCommandService;
 import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.coupon.CouponRepository;
@@ -55,19 +56,19 @@ public class CouponConcurrencyTest {
         @Test
         void DB_낙관적락_선착순_쿠폰발급_동시성_제어_테스트() throws InterruptedException {
             runConcurrentIssueTest("DB 비관적락 동시성 제어", (user)
-                    -> couponCommandService.issue(testCoupon.getId(), user.getId()));
+                    -> couponCommandService.issue(CouponCommand.Issue.of(testCoupon.getId(), user.getId())));
         }
 
         @Test
         void redisson_락_선착순_쿠폰발급_동시성_테스트() throws InterruptedException {
             runConcurrentIssueTest("Redisson 분산락", (user)
-                    -> couponCommandService.issueWithDistributeLock(testCoupon.getId(), user.getId()));
+                    -> couponCommandService.issueWithDistributeLock(CouponCommand.Issue.of(testCoupon.getId(), user.getId())));
         }
 
         @Test
         void spin_락_선착순_쿠폰발급_동시성_테스트() throws InterruptedException {
             runConcurrentIssueTest("SpinLock 분산락", (user)
-                    -> couponCommandService.issueWithSpinLock(testCoupon.getId(), user.getId()));
+                    -> couponCommandService.issueWithSpinLock(CouponCommand.Issue.of(testCoupon.getId(), user.getId())));
         }
 
     }

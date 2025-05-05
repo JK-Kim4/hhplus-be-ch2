@@ -13,8 +13,19 @@ public class ItemCommand {
         private Integer price;
         private Integer stock;
 
+        public static Item of(Long itemId, Integer price, Integer stock) {
+            return new Item(itemId, null, price, stock);
+        }
+
         public static Item from(kr.hhplus.be.server.domain.item.Item item) {
             return new Item(item);
+        }
+
+        public Item(Long itemId, String name, Integer price, Integer stock) {
+            this.itemId = itemId;
+            this.name = name;
+            this.price = price;
+            this.stock = stock;
         }
 
         public Item(kr.hhplus.be.server.domain.item.Item item) {
@@ -60,31 +71,6 @@ public class ItemCommand {
                     ", price=" + price +
                     ", stock=" + stock +
                     '}';
-        }
-    }
-
-    public static class DecreaseStock {
-
-        private Long itemId;
-        private Integer quantity;
-
-        public DecreaseStock() {}
-
-        public DecreaseStock(Long itemId) {
-            this.itemId = itemId;
-        }
-
-        public DecreaseStock(Long itemId, Integer quantity) {
-            this.itemId = itemId;
-            this.quantity = quantity;
-        }
-
-        public Long getItemId() {
-            return itemId;
-        }
-
-        public Integer getQuantity() {
-            return quantity;
         }
     }
 
@@ -145,6 +131,25 @@ public class ItemCommand {
 
         private Deduct(Long ItemId, Integer quantity) {
             this.ItemId = ItemId;
+            this.quantity = quantity;
+        }
+    }
+
+    @Getter
+    public static class OrderItem {
+
+        Long itemId;
+        Integer price;
+        Integer quantity;
+
+
+        public static OrderItem of(Long itemId, Integer price, Integer quantity) {
+            return new OrderItem(itemId, price, quantity);
+        }
+
+        private OrderItem(Long itemId, Integer price, Integer quantity) {
+            this.itemId = itemId;
+            this.price = price;
             this.quantity = quantity;
         }
     }

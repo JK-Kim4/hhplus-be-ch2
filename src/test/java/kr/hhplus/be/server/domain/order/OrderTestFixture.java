@@ -22,7 +22,7 @@ public class OrderTestFixture {
         );
 
         //when
-        return new Order(user, orderItems);
+        return Order.createWithItems(user, orderItems);
     }
 
     public static Order createTestOrderWithUser(User user){
@@ -33,7 +33,7 @@ public class OrderTestFixture {
         );
 
         //when
-        return new Order(user, orderItems);
+        return Order.createWithItems(user, orderItems);
     }
 
     public static OrderItem createOrderItemFixture(String name, Integer price, Integer quantity) {

@@ -53,6 +53,10 @@ public class Payment {
 
     }
 
+    public static Payment createWithOrder(Order order) {
+        return new Payment(order);
+    }
+
     public static Payment createWithOrderValidation(Order order, User user) {
         if(!order.getUser().equals(user)) {
             throw new IllegalArgumentException("사용자 정보가 일치하지않습니다.");

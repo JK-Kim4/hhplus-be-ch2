@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.integration.orderpayment.infrastructure;
+package kr.hhplus.be.server.integration.order.infrastructure;
 
 import kr.hhplus.be.server.domain.item.Item;
 import kr.hhplus.be.server.domain.item.ItemRepository;
@@ -63,7 +63,7 @@ public class OrderRepositoryTest {
         OrderItem orderItem1 = OrderItem.createWithItemAndPriceAndQuantity(car, 2000, 30);
         OrderItem orderItem2 = OrderItem.createWithItemAndPriceAndQuantity(truck, 1000, 10);
         List<OrderItem> orderItems = Arrays.asList(orderItem1, orderItem2);
-        Order order = new Order(user1, orderItems);
+        Order order = Order.createWithItems(user1, orderItems);
         Order save = orderRepository.save(order);
 
         //when

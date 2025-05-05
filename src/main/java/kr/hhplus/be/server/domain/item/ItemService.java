@@ -6,6 +6,7 @@ import kr.hhplus.be.server.domain.order.OrderItem;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ItemService {
@@ -25,7 +26,7 @@ public class ItemService {
     }
 
     public Item deductStock(ItemCommand.Deduct command){
-        Item item = itemRepository.findById(command.getItemId())
+        Item item = itemRepository.findByIdWithPessimisticLock(command.getItemId())
                         .orElseThrow(NoResultException::new);
         item.decreaseStock(command.getQuantity());
         return itemRepository.save(item);
@@ -57,4 +58,18 @@ public class ItemService {
                         command.getQuantity()))
                 .toList();
     }
+
+
+    public List<ItemInfo.OrderItem> getOrderItemsV2(List<ItemCommand.OrderItem> items) {
+        return items.stream()
+                .map(item -> {
+                    Item temp = itemRepository.findByIdWithPessimisticLock(item.getItemId())
+                            .orElseThrow(NoResultException::new);
+
+                    temp.canOrder(item.getPrice(), item.getQuantity());
+                    return ItemInfo.OrderItem.of(temp.getId(), item.getPrice(), item.getQuantity());
+                })
+                .collect(Collectors.toList());
+    }
+
 }

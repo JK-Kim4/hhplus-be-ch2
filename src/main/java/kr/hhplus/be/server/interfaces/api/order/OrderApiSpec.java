@@ -11,11 +11,11 @@ import org.springframework.http.ResponseEntity;
 @Tag(name = "Order", description = "주문 생성")
 public interface OrderApiSpec {
 
-    @Operation(summary = "주문/결제 일괄 처리",
-                description = "주문생성과 결제 진행을 일괄로 처리합니다.")
+    @Operation(summary = "주문 생성",
+                description = "주문 정보를 전달받아 주문을 생성합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "주문 생성 / 결제 성공",
-            content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Void.class))})
+            @ApiResponse(responseCode = "200", description = "주문 생성",
+            content = {@Content(mediaType = "application/json", schema = @Schema(implementation = OrderResponse.Order.class))})
     })
-    ResponseEntity<Void> orderPayment(OrderRequest.OrderPayment request);
+    ResponseEntity<OrderResponse.Order> order(OrderRequest.Order request);
 }
