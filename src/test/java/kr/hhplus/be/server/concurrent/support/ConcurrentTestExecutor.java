@@ -20,6 +20,7 @@ public class ConcurrentTestExecutor {
                     task.run();
                 }catch (Throwable e) {
                     errors.add(e);
+                    e.printStackTrace();
                 }finally {
                     latch.countDown();
                 }
