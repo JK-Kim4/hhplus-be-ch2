@@ -28,4 +28,25 @@ public class OrderInfo {
         }
 
     }
+
+    @Getter
+    public static class ApplyCoupon {
+
+        Long orderId;
+        BigDecimal totalPrice;
+        BigDecimal finalPrice;
+        LocalDateTime orderedAt;
+
+        public static ApplyCoupon from(Order order) {
+            return new ApplyCoupon(order.getId(), order.getTotalAmount(), order.getFinalAmount(), order.getOrderedAt());
+        }
+
+        @Builder
+        private ApplyCoupon(Long orderId, BigDecimal totalPrice, BigDecimal finalPrice, LocalDateTime orderedAt) {
+            this.orderId = orderId;
+            this.totalPrice = totalPrice;
+            this.finalPrice = finalPrice;
+            this.orderedAt = orderedAt;
+        }
+    }
 }

@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.domain.order;
 
 import jakarta.persistence.NoResultException;
+import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.domain.coupon.UserCouponRepository;
 import kr.hhplus.be.server.domain.product.Price;
 import kr.hhplus.be.server.domain.product.Product;
@@ -9,7 +10,6 @@ import kr.hhplus.be.server.domain.user.Orders;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class OrderService {
@@ -25,29 +25,38 @@ public class OrderService {
         this.userCouponRepository = userCouponRepository;
     }
 
-    public OrderInfo.Create create(OrderCommand.Create command){
-        //1.사용자 미결제 주문 여부 검증
-        List<Order> userOrders = orderRepository.findByUserId(command.getUserId());
+    public void validationUserOrder(Long userId){
+        List<Order> userOrders = orderRepository.findByUserId(userId);
         Orders.validateNoPendingOrders(userOrders);
+    }
 
-        //2.상품 주문 가능 여부 검증
-        List<OrderItem> orderItems = command.items.stream()
+    public void validationOrderItems(List<OrderCommand.Items> command){
+        List<OrderItem> orderItems = command.stream()
                 .map(this::toOrderItem)
                 .toList();
+    }
 
-        //3.주문 생성
-        Order order = Order.create(command.getUserId(), orderItems);
+    public OrderInfo.Create createOrder(OrderCommand.Create command){
 
-        //4.할인 쿠폰 적용
-        Optional.ofNullable(command.getUserCouponId())
-                .map(userCouponId -> userCouponRepository.findById(command.getUserCouponId())
-                        .orElseThrow(NoResultException::new))
-                .ifPresent(order::applyCoupon);
-
-        //5.주문 저정
+        Order order = Order.create(
+                command.getUserId(),
+                command.getItems().stream()
+                        .map(this::toOrderItem)
+                        .toList());
         orderRepository.save(order);
 
         return OrderInfo.Create.from(order);
+    }
+
+    public OrderInfo.ApplyCoupon applyCoupon(OrderCommand.ApplyCoupon command){
+        UserCoupon userCoupon = userCouponRepository.findById(command.getUserCouponId())
+                .orElseThrow(NoResultException::new);
+        Order order = orderRepository.findById(command.getOrderId())
+                .orElseThrow(NoResultException::new);
+
+        order.applyCoupon(userCoupon);
+
+        return OrderInfo.ApplyCoupon.from(order);
     }
 
     private OrderItem toOrderItem(OrderCommand.Items item) {
@@ -56,5 +65,4 @@ public class OrderService {
         product.validateOrder(item.getPrice(), item.getQuantity());
         return OrderItem.create(product.getId(), Price.of(item.getPrice()), item.getQuantity());
     }
-
 }
