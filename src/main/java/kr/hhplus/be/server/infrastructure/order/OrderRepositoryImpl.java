@@ -1,0 +1,35 @@
+package kr.hhplus.be.server.infrastructure.order;
+
+import kr.hhplus.be.server.domain.order.Order;
+import kr.hhplus.be.server.domain.order.OrderRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public class OrderRepositoryImpl implements OrderRepository {
+
+    private final OrderJpaRepository orderJpaRepository;
+    private final OrderItemJpaRepository orderItemJpaRepository;
+
+    public OrderRepositoryImpl(OrderJpaRepository orderJpaRepository, OrderItemJpaRepository orderItemJpaRepository) {
+        this.orderJpaRepository = orderJpaRepository;
+        this.orderItemJpaRepository = orderItemJpaRepository;
+    }
+
+    @Override
+    public void flush() {
+        orderJpaRepository.flush();
+    }
+
+    @Override
+    public Order save(Order order) {
+        orderItemJpaRepository.saveAll(order.getOrderItems());
+        return orderJpaRepository.save(order);
+    }
+
+    @Override
+    public List<Order> findByUserId(Long userId) {
+        return orderJpaRepository.findByUserId(userId);
+    }
+}

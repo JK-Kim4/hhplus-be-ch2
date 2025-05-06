@@ -59,4 +59,14 @@ public class Product {
         this.stock.increase(quantity);
     }
 
+    public void validateOrder(BigDecimal expectedPrice, int orderQuantity) {
+        if (this.price.getAmount().compareTo(expectedPrice) != 0) {
+            throw new IllegalArgumentException("상품 가격이 일치하지 않습니다.");
+        }
+
+        if (this.stock.getQuantity() < orderQuantity) {
+            throw new IllegalStateException("재고가 부족합니다.");
+        }
+    }
+
 }

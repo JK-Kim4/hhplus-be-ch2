@@ -12,6 +12,12 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
+    public ProductInfo.OrderItem getOrderItems(ProductCommand.OrderItem command){
+        Product product = productRepository.findById(command.getProductId())
+                .orElseThrow(NoResultException::new);
+        return ProductInfo.OrderItem.from(product);
+    }
+
     public ProductInfo.Create create(ProductCommand.Create command){
         Product product = Product.create(command.getName(), command.getPrice(), command.getStock());
         productRepository.save(product);

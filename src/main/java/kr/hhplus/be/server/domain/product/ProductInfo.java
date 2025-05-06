@@ -65,4 +65,27 @@ public class ProductInfo {
             return DecreaseStock.builder().productId(product.getId()).nowStock(product.getQuantity()).build();
         }
     }
+
+    @Getter
+    public static class OrderItem {
+        Long productId;
+        BigDecimal price;
+        Integer quantity;
+
+
+        public static OrderItem from(Product product) {
+            return OrderItem.builder()
+                        .productId(product.getId())
+                        .price(product.getAmount())
+                        .quantity(product.getQuantity())
+                    .build();
+        }
+
+        @Builder
+        private OrderItem(Long productId, BigDecimal price, Integer quantity) {
+            this.productId = productId;
+            this.price = price;
+            this.quantity = quantity;
+        }
+    }
 }

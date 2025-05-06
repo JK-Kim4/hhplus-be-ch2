@@ -16,6 +16,13 @@ public class CouponService {
         this.userCouponRepository = userCouponRepository;
     }
 
+    public CouponInfo.Coupon findById(Long couponId){
+        Coupon coupon = couponRepository.findById(couponId)
+                .orElseThrow(NoResultException::new);
+
+        return CouponInfo.Coupon.from(coupon);
+    }
+
     public CouponInfo.Coupon findByIdWithPessimisticLock(Long couponId){
         Coupon coupon = couponRepository.findByIdWithPessimisticLock(couponId)
                 .orElseThrow(NoResultException::new);

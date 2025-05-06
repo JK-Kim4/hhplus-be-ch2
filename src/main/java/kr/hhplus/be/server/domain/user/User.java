@@ -17,6 +17,10 @@ public class User {
     @Column(name = "name")
     private String name;
 
+    @Transient
+    private Orders orders;
+
+
     @Builder
     public User(Long id, String name) {
         this.id = id;
