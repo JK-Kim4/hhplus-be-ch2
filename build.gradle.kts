@@ -36,7 +36,6 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6")
 	implementation("org.instancio:instancio-core:5.4.0")
-	implementation("org.instancio:instancio-core:5.4.0")
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")
 	implementation("org.redisson:redisson-spring-boot-starter:3.26.0")
 	implementation("org.springframework.boot:spring-boot-starter-aop")
