@@ -13,7 +13,7 @@ public class PriceTest {
     void 금액이_음수이면_예외를_던진다() {
         assertThatThrownBy(() -> Price.of(BigDecimal.valueOf(-100)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("가격은 음수일 수 없습니다.");
+                .hasMessageContaining("가격은 NUll이거나 음수일 수 없습니다.");
     }
 
     @Test

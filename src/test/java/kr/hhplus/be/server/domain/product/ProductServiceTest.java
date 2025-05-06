@@ -52,7 +52,7 @@ public class ProductServiceTest {
         Product product = Product.create("상품1", BigDecimal.valueOf(10000), 5);
         Long productId = 1L;
 
-        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+        when(productRepository.findByIdWithPessimisticLock(productId)).thenReturn(Optional.of(product));
 
         ProductCommand.IncreaseStock command = ProductCommand.IncreaseStock.builder()
                 .productId(productId)
@@ -73,7 +73,7 @@ public class ProductServiceTest {
         Product product = Product.create("상품1", BigDecimal.valueOf(10000), 5);
         Long productId = 1L;
 
-        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+        when(productRepository.findByIdWithPessimisticLock(productId)).thenReturn(Optional.of(product));
 
         ProductCommand.DecreaseStock command =
                 ProductCommand.DecreaseStock.builder()
@@ -95,7 +95,7 @@ public class ProductServiceTest {
         Product product = Product.create("상품1", BigDecimal.valueOf(10000), 5);
         Long productId = 1L;
 
-        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+        when(productRepository.findByIdWithPessimisticLock(productId)).thenReturn(Optional.of(product));
 
         ProductCommand.DecreaseStock command =
                 ProductCommand.DecreaseStock.builder()
@@ -113,7 +113,7 @@ public class ProductServiceTest {
     @Test
     void 재고차감시_상품이_없으면_예외() {
         // given
-        when(productRepository.findById(any())).thenReturn(Optional.empty());
+        when(productRepository.findByIdWithPessimisticLock(any())).thenReturn(Optional.empty());
 
         ProductCommand.DecreaseStock command =
                 ProductCommand.DecreaseStock.builder()
