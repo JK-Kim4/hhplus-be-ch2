@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public class ProductRepositoryImpl implements ProductRepository {
@@ -31,8 +32,19 @@ public class ProductRepositoryImpl implements ProductRepository {
         return productJpaRepository.findById(productId);
     }
 
+
+    @Override
+    public Optional<Product> findByIdWithPessimisticLock(Long productId) {
+        return productJpaRepository.findByIdWithPessimisticLock(productId);
+    }
+
     @Override
     public List<Product> findByIdInWithPessimisticLock(List<Long> orderItemIds) {
         return productJpaRepository.findByIdInWithPessimisticLock(orderItemIds);
+    }
+
+    @Override
+    public List<Product> findByIdIn(Set<Long> Ids) {
+        return productJpaRepository.findByIdIn(Ids);
     }
 }

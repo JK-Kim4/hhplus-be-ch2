@@ -23,7 +23,7 @@ public class OrderFacade {
 
         orderService.validationOrderItems(OrderCriteria.Items.toCommandList(criteria.getItems()));
 
-        OrderInfo.Create order = orderService.createOrder(OrderCriteria.Create.toCommand(criteria));
+        OrderInfo.Create order = orderService.create(OrderCriteria.Create.toCommand(criteria));
 
         Optional.ofNullable(criteria.getUserCouponId())
                 .ifPresent(userCouponId ->

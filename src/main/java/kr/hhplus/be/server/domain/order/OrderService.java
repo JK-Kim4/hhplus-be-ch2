@@ -24,6 +24,11 @@ public class OrderService {
         this.userCouponRepository = userCouponRepository;
     }
 
+    public OrderInfo.OrderItems findOrderItemsByOrderId(Long orderId){
+        Order order = orderRepository.findById(orderId).orElseThrow(NoResultException::new);
+        return OrderInfo.OrderItems.fromList(order.getOrderItems());
+    }
+
     public void validationUserOrder(Long userId){
         List<Order> userOrders = orderRepository.findByUserId(userId);
         Orders.validateNoPendingOrders(userOrders);
@@ -35,13 +40,13 @@ public class OrderService {
                 .toList();
     }
 
-    public OrderInfo.Create createOrder(OrderCommand.Create command){
-
+    public OrderInfo.Create create(OrderCommand.Create command){
         Order order = Order.create(
                 command.getUserId(),
                 command.getItems().stream()
                         .map(this::toOrderItem)
                         .toList());
+
         orderRepository.save(order);
 
         return OrderInfo.Create.from(order);

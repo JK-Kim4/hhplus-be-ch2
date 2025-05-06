@@ -118,9 +118,23 @@ public class OrderServiceTest {
 
         given(productRepository.findById(productId)).willReturn(Optional.ofNullable(Product.create("test", price, 10)));
 
-        OrderInfo.Create result = orderService.createOrder(command);
+        OrderInfo.Create result = orderService.create(command);
 
         assertThat(result).isNotNull();
         verify(orderRepository).save(any(Order.class));
+    }
+
+    @Test
+    void findOrderItemsByOrderId_정상조회() {
+        Long orderId = 1L;
+        Order order = mock(Order.class);
+        List<OrderItem> orderItems = List.of(mock(OrderItem.class));
+
+        given(order.getOrderItems()).willReturn(orderItems);
+        given(orderRepository.findById(orderId)).willReturn(Optional.of(order));
+
+        OrderInfo.OrderItems result = orderService.findOrderItemsByOrderId(orderId);
+
+        assertThat(result).isNotNull();
     }
 }

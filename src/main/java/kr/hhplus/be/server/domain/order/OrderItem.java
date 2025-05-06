@@ -6,6 +6,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Entity @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderItem {
@@ -42,5 +44,9 @@ public class OrderItem {
 
     public void assignToOrder(Order order){
         this.order = order;
+    }
+
+    public BigDecimal getPrice() {
+        return this.price.getAmount();
     }
 }

@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class ProductInfo {
 
@@ -22,7 +23,7 @@ public class ProductInfo {
             this.stock = stock;
         }
 
-        public static Create from(Product product) {
+        public static Create from(kr.hhplus.be.server.domain.product.Product product) {
             return Create.builder()
                     .productId(product.getId())
                     .name(product.getName())
@@ -44,7 +45,7 @@ public class ProductInfo {
             this.nowStock = nowStock;
         }
 
-        public static IncreaseStock from(Product product) {
+        public static IncreaseStock from(kr.hhplus.be.server.domain.product.Product product) {
             return IncreaseStock.builder().productId(product.getId()).nowStock(product.getQuantity()).build();
         }
     }
@@ -61,7 +62,7 @@ public class ProductInfo {
             this.nowStock = nowStock;
         }
 
-        public static DecreaseStock from(Product product) {
+        public static DecreaseStock from(kr.hhplus.be.server.domain.product.Product product) {
             return DecreaseStock.builder().productId(product.getId()).nowStock(product.getQuantity()).build();
         }
     }
@@ -73,7 +74,7 @@ public class ProductInfo {
         Integer quantity;
 
 
-        public static OrderItem from(Product product) {
+        public static OrderItem from(kr.hhplus.be.server.domain.product.Product product) {
             return OrderItem.builder()
                         .productId(product.getId())
                         .price(product.getAmount())
@@ -83,6 +84,43 @@ public class ProductInfo {
 
         @Builder
         private OrderItem(Long productId, BigDecimal price, Integer quantity) {
+            this.productId = productId;
+            this.price = price;
+            this.quantity = quantity;
+        }
+    }
+
+    @Getter
+    public static class Products{
+        List<ProductInfo.Product> products;
+
+        public static Products fromList(List<kr.hhplus.be.server.domain.product.Product> productList) {
+            return Products.builder().products(productList.stream().map(ProductInfo.Product::from).toList()).build();
+        }
+
+        @Builder
+        private Products(List<ProductInfo.Product> products) {
+            this.products = products;
+        }
+
+    }
+
+    @Getter
+    public static class Product {
+        Long productId;
+        BigDecimal price;
+        Integer quantity;
+
+        public static Product from(kr.hhplus.be.server.domain.product.Product product) {
+            return Product.builder()
+                    .productId(product.getId())
+                    .price(product.getAmount())
+                    .quantity(product.getQuantity())
+                    .build();
+        }
+
+        @Builder
+        private Product(Long productId, BigDecimal price, Integer quantity) {
             this.productId = productId;
             this.price = price;
             this.quantity = quantity;

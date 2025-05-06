@@ -8,11 +8,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -122,5 +124,20 @@ public class ProductServiceTest {
         // expect
         assertThatThrownBy(() -> productService.decreaseStock(command))
                 .isInstanceOf(NoResultException.class);
+    }
+
+    @Test
+    void findByIdInWithPessimisticLock_정상조회() {
+        List<Long> ids = List.of(1L, 2L);
+        List<Product> products = List.of(
+                Product.create("상품1", BigDecimal.valueOf(1000), 10),
+                Product.create("상품2", BigDecimal.valueOf(2000), 20)
+        );
+
+        given(productRepository.findByIdInWithPessimisticLock(ids)).willReturn(products);
+
+        ProductInfo.Products result = productService.findByIdInWithPessimisticLock(ids);
+
+        assertThat(result).isNotNull();
     }
 }
