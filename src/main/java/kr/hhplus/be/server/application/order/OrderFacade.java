@@ -18,7 +18,7 @@ public class OrderFacade {
         this.orderService = orderService;
     }
 
-    public OrderResult.Create create(OrderCriteria.Create criteria){
+    public OrderResult.Create order(OrderCriteria.Create criteria){
         orderService.validationUserOrder(criteria.getUserId());
 
         orderService.validationOrderItems(OrderCriteria.Items.toCommandList(criteria.getItems()));

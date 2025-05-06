@@ -20,9 +20,11 @@ public class Product {
     private String name;
 
     @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "price"))
     private Price price;
 
     @Embedded
+    @AttributeOverride(name = "quantity", column = @Column(name = "stock"))
     private Stock stock;
 
     @Builder

@@ -14,12 +14,8 @@ public class User {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "user_name")
     private String name;
-
-    @Transient
-    private Orders orders;
-
 
     @Builder
     public User(Long id, String name) {

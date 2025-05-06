@@ -1,12 +1,10 @@
 package kr.hhplus.be.server.domain.product;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
 public class Stock {
 
-    @Column(name = "stock", nullable = false)
     private Integer quantity;
 
     protected Stock() {}

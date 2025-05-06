@@ -13,7 +13,7 @@ public class Price {
 
     private Price(BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("가격은 음수일 수 없습니다.");
+            throw new IllegalArgumentException("가격은 NUll이거나 음수일 수 없습니다.");
         }
         this.amount = amount;
     }

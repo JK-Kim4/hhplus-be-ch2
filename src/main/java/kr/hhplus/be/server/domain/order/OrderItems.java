@@ -56,4 +56,8 @@ public class OrderItems {
     public boolean isEmpty() {
         return items.isEmpty();
     }
+
+    public void deductStock() {
+
+    }
 }

@@ -1,7 +1,5 @@
-package kr.hhplus.be.server.domain.user;
+package kr.hhplus.be.server.domain.order;
 
-import kr.hhplus.be.server.domain.order.Order;
-import kr.hhplus.be.server.domain.order.OrderItem;
 import kr.hhplus.be.server.domain.product.Price;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

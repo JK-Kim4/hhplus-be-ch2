@@ -4,6 +4,7 @@ import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -28,5 +29,10 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public Optional<Product> findById(Long productId) {
         return productJpaRepository.findById(productId);
+    }
+
+    @Override
+    public List<Product> findByIdInWithPessimisticLock(List<Long> orderItemIds) {
+        return productJpaRepository.findByIdInWithPessimisticLock(orderItemIds);
     }
 }

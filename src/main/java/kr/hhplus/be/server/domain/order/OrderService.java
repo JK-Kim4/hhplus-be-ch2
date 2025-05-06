@@ -6,7 +6,6 @@ import kr.hhplus.be.server.domain.coupon.UserCouponRepository;
 import kr.hhplus.be.server.domain.product.Price;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductRepository;
-import kr.hhplus.be.server.domain.user.Orders;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

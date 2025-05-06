@@ -16,16 +16,20 @@ public class Coupon {
     @Column(name = "coupon_id")
     private Long id;
 
+    @Column(name = "coupon_name")
     private String name;
 
+    @Column(name = "quantity", nullable = false)
     private int quantity; // 발급 가능한 총 수량
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "discount_policy", nullable = false)
     private DiscountPolicy discountPolicy;
 
-    @Column(nullable = false)
+    @Column(name = "discount_amount", nullable = false)
     private BigDecimal discountAmount; // 정액이면 금액, 정률이면 비율(%)
 
+    @Column(name = "expire_date", nullable = false)
     private LocalDate expireDate;
 
     protected Coupon(

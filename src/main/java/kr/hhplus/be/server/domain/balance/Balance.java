@@ -20,7 +20,11 @@ public class Balance {
     private Long userId;
 
     @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "point"))
     private Point point;
+
+    @Version
+    private Long version;
 
     @Builder
     private Balance(Long id, Long userId, Point point) {

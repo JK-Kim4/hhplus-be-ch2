@@ -1,7 +1,4 @@
-package kr.hhplus.be.server.domain.user;
-
-import kr.hhplus.be.server.domain.order.Order;
-import kr.hhplus.be.server.domain.order.OrderStatus;
+package kr.hhplus.be.server.domain.order;
 
 import java.util.ArrayList;
 import java.util.Collections;

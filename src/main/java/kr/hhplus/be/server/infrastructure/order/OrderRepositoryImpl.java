@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.infrastructure.order;
 
 import kr.hhplus.be.server.domain.order.Order;
+import kr.hhplus.be.server.domain.order.OrderItem;
 import kr.hhplus.be.server.domain.order.OrderRepository;
 import org.springframework.stereotype.Repository;
 
@@ -37,5 +38,10 @@ public class OrderRepositoryImpl implements OrderRepository {
     @Override
     public Optional<Order> findById(Long orderId) {
         return orderJpaRepository.findById(orderId);
+    }
+
+    @Override
+    public List<OrderItem> findOrderItemsByOrderId(Long orderId) {
+        return orderItemJpaRepository.findByOrderId(orderId);
     }
 }
