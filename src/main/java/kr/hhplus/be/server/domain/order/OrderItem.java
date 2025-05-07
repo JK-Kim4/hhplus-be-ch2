@@ -34,7 +34,7 @@ public class OrderItem {
         this.quantity = quantity;
     }
 
-    public static OrderItem create(Long productId, Price price,  int quantity) {
+    public static OrderItem create(Long productId, Price price, int quantity) {
         return new OrderItem(productId, price, quantity);
     }
 

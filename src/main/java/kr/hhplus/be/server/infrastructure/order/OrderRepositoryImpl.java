@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public class OrderRepositoryImpl implements OrderRepository {
@@ -44,5 +45,10 @@ public class OrderRepositoryImpl implements OrderRepository {
     @Override
     public List<OrderItem> findOrderItemsByOrderId(Long orderId) {
         return orderItemJpaRepository.findByOrderId(orderId);
+    }
+
+    @Override
+    public List<OrderItem> findOrderItemsByOrderIds(Set<Long> targetOrderIds) {
+        return orderItemJpaRepository.findOrderItemsByOrderIds(targetOrderIds);
     }
 }

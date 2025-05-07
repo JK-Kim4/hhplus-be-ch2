@@ -28,10 +28,11 @@ public class Product {
     private Stock stock;
 
     @Builder
-    private Product(String name, BigDecimal price, Integer stock) {
+    private Product(Long id, String name, BigDecimal price, Integer stock) {
         if (name == null || price == null || stock == null) {
             throw new IllegalArgumentException("상품 이름, 가격, 재고는 필수입니다.");
         }
+        this.id = id;
         this.name = name;
         this.price = Price.of(price);
         this.stock = Stock.of(stock);

@@ -5,7 +5,6 @@ import kr.hhplus.be.server.domain.balance.Balance;
 import kr.hhplus.be.server.domain.balance.BalanceRepository;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderRepository;
-import kr.hhplus.be.server.domain.product.ProductRepository;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,17 +13,14 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final OrderRepository orderRepository;
     private final BalanceRepository balanceRepository;
-    private final ProductRepository productRepository;
 
     public PaymentService(
             PaymentRepository paymentRepository,
             OrderRepository orderRepository,
-            BalanceRepository balanceRepository,
-            ProductRepository productRepository) {
+            BalanceRepository balanceRepository) {
         this.paymentRepository = paymentRepository;
         this.orderRepository = orderRepository;
         this.balanceRepository = balanceRepository;
-        this.productRepository = productRepository;
     }
 
     public PaymentInfo.Create create(PaymentCommand.Create command){
