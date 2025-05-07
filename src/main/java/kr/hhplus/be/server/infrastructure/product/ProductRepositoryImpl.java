@@ -2,6 +2,9 @@ package kr.hhplus.be.server.infrastructure.product;
 
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -46,5 +49,12 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public List<Product> findByIdIn(Set<Long> Ids) {
         return productJpaRepository.findByIdIn(Ids);
+    }
+
+    @Override
+    public List<Product> findAll(Integer offset, Integer limit) {
+        Pageable pageable = PageRequest.of(offset/limit, limit, Sort.by("id").descending());
+        return productJpaRepository.findAll(pageable)
+                .getContent();
     }
 }

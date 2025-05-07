@@ -15,6 +15,13 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
+
+    public ProductInfo.Products findAll(Integer offset, Integer limit){
+
+        List<Product> all = productRepository.findAll(offset, limit);
+        return ProductInfo.Products.fromList(all);
+    }
+
     public ProductInfo.Products findByIdInWithPessimisticLock(List<Long> orderItemIds){
         List<Product> products = productRepository.findByIdInWithPessimisticLock(orderItemIds);
         return ProductInfo.Products.fromList(products);
@@ -26,12 +33,6 @@ public class ProductService {
             int quantity = command.getQuantityMap().getOrDefault(product.getId(), 0);
             product.decreaseStock(quantity);
         }
-    }
-
-    public ProductInfo.OrderItem getOrderItems(ProductCommand.OrderItem command){
-        Product product = productRepository.findById(command.getProductId())
-                .orElseThrow(NoResultException::new);
-        return ProductInfo.OrderItem.from(product);
     }
 
     public ProductInfo.Create create(ProductCommand.Create command){

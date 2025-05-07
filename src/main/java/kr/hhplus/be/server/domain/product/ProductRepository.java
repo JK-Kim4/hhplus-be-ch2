@@ -17,4 +17,6 @@ public interface ProductRepository {
     List<Product> findByIdInWithPessimisticLock(List<Long> orderItemIds);
 
     List<Product> findByIdIn(Set<Long> longs);
+
+    List<Product> findAll(Integer offset, Integer limit);
 }

@@ -108,20 +108,23 @@ public class ProductInfo {
     @Getter
     public static class Product {
         Long productId;
+        String productName;
         BigDecimal price;
         Integer quantity;
 
         public static Product from(kr.hhplus.be.server.domain.product.Product product) {
             return Product.builder()
-                    .productId(product.getId())
-                    .price(product.getAmount())
-                    .quantity(product.getQuantity())
+                        .productId(product.getId())
+                        .productName(product.getName())
+                        .price(product.getAmount())
+                        .quantity(product.getQuantity())
                     .build();
         }
 
         @Builder
-        private Product(Long productId, BigDecimal price, Integer quantity) {
+        private Product(Long productId, String productName, BigDecimal price, Integer quantity) {
             this.productId = productId;
+            this.productName = productName;
             this.price = price;
             this.quantity = quantity;
         }
