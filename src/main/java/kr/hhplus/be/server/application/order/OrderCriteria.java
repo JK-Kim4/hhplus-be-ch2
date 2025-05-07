@@ -26,7 +26,11 @@ public class OrderCriteria {
         }
 
         public static OrderCriteria.Create of(Long userId, Long userCouponId, List<Items> items){
-            return OrderCriteria.Create.builder().userId(userId).userCouponId(userCouponId).items(items).build();
+            return OrderCriteria.Create.builder()
+                    .userId(userId)
+                    .userCouponId(userCouponId)
+                    .items(items)
+                    .build();
         }
 
         @Builder
@@ -44,6 +48,10 @@ public class OrderCriteria {
         Long productId;
         BigDecimal price;
         Integer quantity;
+
+        public static Items of(Long productId, BigDecimal price, Integer quantity){
+            return Items.builder().productId(productId).price(price).quantity(quantity).build();
+        }
 
         public static List<OrderCommand.Items> toCommandList(List<Items> items){
             return items.stream().map((i) -> OrderCommand.Items.builder()

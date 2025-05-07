@@ -9,7 +9,6 @@ import kr.hhplus.be.server.domain.balance.Point;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderItem;
 import kr.hhplus.be.server.domain.order.OrderRepository;
-import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductRepository;
 import kr.hhplus.be.server.domain.user.User;
@@ -32,9 +31,6 @@ public class PaymentFacadeConcurrentTest {
     PaymentFacade paymentFacade;
 
     @Autowired
-    OrderService orderService;
-
-    @Autowired
     OrderRepository orderRepository;
 
     @Autowired
@@ -54,37 +50,24 @@ public class PaymentFacadeConcurrentTest {
     Long productId;
 
     @BeforeEach
-    void setup(){
-        User user1 = User.createWithName("tester");
-        userRepository.save(user1);
-        User user2 = User.createWithName("tester");
-        userRepository.save(user2);
-        User user3 = User.createWithName("tester");
-        userRepository.save(user3);
-        User user4 = User.createWithName("tester");
-        userRepository.save(user4);
-        balanceRepository.save(Balance.create(user1.getId(), Point.of(BigDecimal.valueOf(100_000))));
-        balanceRepository.save(Balance.create(user2.getId(), Point.of(BigDecimal.valueOf(100_000))));
-        balanceRepository.save(Balance.create(user3.getId(), Point.of(BigDecimal.valueOf(100_000))));
-        balanceRepository.save(Balance.create(user4.getId(), Point.of(BigDecimal.valueOf(100_000))));
+    void setup() {
+        User user1 = createUserWithBalance("tester", BigDecimal.valueOf(100_000));
+        User user2 = createUserWithBalance("tester", BigDecimal.valueOf(100_000));
+        User user3 = createUserWithBalance("tester", BigDecimal.valueOf(100_000));
+        User user4 = createUserWithBalance("tester", BigDecimal.valueOf(100_000));
 
-        Product product1 = productRepository.save(Product.create("product1", BigDecimal.valueOf(10_000), 2));
+        Product product1 = createProduct("product1", BigDecimal.valueOf(10_000), 2);
         productId = product1.getId();
 
-        Order order1 = Order.create(user1.getId(), List.of(OrderItem.create(product1.getId(), product1.getPrice(), 1)));
-        Order order2 = Order.create(user2.getId(), List.of(OrderItem.create(product1.getId(), product1.getPrice(), 1)));
-        Order order3 = Order.create(user3.getId(), List.of(OrderItem.create(product1.getId(), product1.getPrice(), 1)));
-        Order order4 = Order.create(user4.getId(), List.of(OrderItem.create(product1.getId(), product1.getPrice(), 1)));
-        orderRepository.save(order1);
-        orderRepository.save(order2);
-        orderRepository.save(order3);
-        orderRepository.save(order4);
+        Order order1 = createOrder(user1.getId(), product1);
+        Order order2 = createOrder(user2.getId(), product1);
+        Order order3 = createOrder(user3.getId(), product1);
+        Order order4 = createOrder(user4.getId(), product1);
 
-        pay1 = PaymentCriteria.Pay.builder().userId(user1.getId()).orderId(order1.getId()).build();
-        pay2 = PaymentCriteria.Pay.builder().userId(user2.getId()).orderId(order2.getId()).build();
-        pay3 = PaymentCriteria.Pay.builder().userId(user3.getId()).orderId(order3.getId()).build();
-        pay4 = PaymentCriteria.Pay.builder().userId(user4.getId()).orderId(order4.getId()).build();
-
+        pay1 = toPaymentCriteria(user1, order1);
+        pay2 = toPaymentCriteria(user2, order2);
+        pay3 = toPaymentCriteria(user3, order3);
+        pay4 = toPaymentCriteria(user4, order4);
     }
 
     @Test
@@ -105,7 +88,29 @@ public class PaymentFacadeConcurrentTest {
         Assertions.assertEquals(0, product.getQuantity());
         Assertions.assertEquals(2, execute.size());
 
+    }
 
 
+    private User createUserWithBalance(String name, BigDecimal balanceAmount) {
+        User user = User.createWithName(name);
+        userRepository.save(user);
+        balanceRepository.save(Balance.create(user.getId(), Point.of(balanceAmount)));
+        return user;
+    }
+
+    private Product createProduct(String name, BigDecimal price, int stock) {
+        return productRepository.save(Product.create(name, price, stock));
+    }
+
+    private Order createOrder(Long userId, Product product) {
+        Order order = Order.create(userId, List.of(OrderItem.create(product.getId(), product.getPrice(), 1)));
+        return orderRepository.save(order);
+    }
+
+    private PaymentCriteria.Pay toPaymentCriteria(User user, Order order) {
+        return PaymentCriteria.Pay.builder()
+                .userId(user.getId())
+                .orderId(order.getId())
+                .build();
     }
 }

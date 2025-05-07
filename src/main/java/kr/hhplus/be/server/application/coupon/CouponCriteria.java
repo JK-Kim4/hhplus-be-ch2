@@ -11,6 +11,10 @@ public class CouponCriteria {
         Long couponId;
         Long userId;
 
+        public static Issue of(Long couponId, Long userId){
+            return Issue.builder().couponId(couponId).userId(userId).build();
+        }
+
         @Builder
         private Issue(Long couponId, Long userId) {
             this.couponId = couponId;

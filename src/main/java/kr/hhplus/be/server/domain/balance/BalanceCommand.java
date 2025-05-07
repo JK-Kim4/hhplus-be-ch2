@@ -13,6 +13,10 @@ public class BalanceCommand {
         Long userId;
         BigDecimal point;
 
+        public static Create of(Long userId, BigDecimal point) {
+            return new Create(userId, point);
+        }
+
         @Builder
         public Create(Long userId, BigDecimal point) {
             this.userId = userId;
@@ -25,8 +29,12 @@ public class BalanceCommand {
         Long userId;
         BigDecimal chargePoint;
 
+        public static Charge of(Long userId, BigDecimal chargePoint) {
+            return new Charge(userId, chargePoint);
+        }
+
         @Builder
-        public Charge(Long userId, BigDecimal chargePoint) {
+        private Charge(Long userId, BigDecimal chargePoint) {
             this.userId = userId;
             this.chargePoint = chargePoint;
         }

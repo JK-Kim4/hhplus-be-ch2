@@ -15,7 +15,6 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    @Transactional
     public ProductInfo.Products findByIdInWithPessimisticLock(List<Long> orderItemIds){
         List<Product> products = productRepository.findByIdInWithPessimisticLock(orderItemIds);
         return ProductInfo.Products.fromList(products);

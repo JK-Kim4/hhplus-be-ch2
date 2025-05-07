@@ -8,10 +8,12 @@ public class PaymentCriteria {
 
     @Getter
     public static class Pay {
-
         Long orderId;
         Long userId;
 
+        public static Pay of(Long orderId, Long userId){
+            return Pay.builder().orderId(orderId).userId(userId).build();
+        }
 
         public PaymentCommand.Create toPaymentCreateCommand(){
             return PaymentCommand.Create.of(this.orderId);

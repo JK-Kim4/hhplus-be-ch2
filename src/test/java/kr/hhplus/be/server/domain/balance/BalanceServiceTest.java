@@ -75,7 +75,7 @@ class BalanceServiceTest {
 
         when(balanceRepository.findByUserId(userId)).thenReturn(Optional.of(balance));
 
-        BalanceCommand.Charge command = new BalanceCommand.Charge(userId, chargeAmount);
+        BalanceCommand.Charge command = BalanceCommand.Charge.of(userId, chargeAmount);
 
         // when
         BalanceInfo.Charge result = balanceService.charge(command);
@@ -110,7 +110,7 @@ class BalanceServiceTest {
         // given
         when(balanceRepository.findByUserId(any())).thenReturn(Optional.empty());
 
-        BalanceCommand.Charge command = new BalanceCommand.Charge(1L, BigDecimal.valueOf(1000));
+        BalanceCommand.Charge command = BalanceCommand.Charge.of(1L, BigDecimal.valueOf(1000));
 
         // expect
         assertThatThrownBy(() -> balanceService.charge(command))
