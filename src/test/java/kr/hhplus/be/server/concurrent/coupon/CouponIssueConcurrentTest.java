@@ -2,7 +2,7 @@ package kr.hhplus.be.server.concurrent.coupon;
 
 import kr.hhplus.be.server.application.coupon.CouponCriteria;
 import kr.hhplus.be.server.application.coupon.CouponFacade;
-import kr.hhplus.be.server.concurrent.support.ConcurrentTestExecutor;
+import kr.hhplus.be.server.support.ConcurrentTestExecutor;
 import kr.hhplus.be.server.domain.coupon.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -9,6 +9,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity @Getter
+@Table(name = "user_coupon", indexes = {
+        @Index(name = "idx_join_coupon_id", columnList = "coupon_id"),
+        @Index(name = "idx_join_user_id", columnList = "user_id")})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserCoupon {
 

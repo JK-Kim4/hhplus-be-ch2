@@ -11,7 +11,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity(name = "orders") @Getter
+@Entity @Getter
+@Table(name = "orders", indexes = {
+        @Index(name = "idx_join_user_coupon_id", columnList = "user_coupon_id"),
+        @Index(name = "idx_join_user_id", columnList = "user_id")})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Order {
 

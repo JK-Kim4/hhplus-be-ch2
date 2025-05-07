@@ -6,6 +6,7 @@ import kr.hhplus.be.server.application.user.UserFacade;
 import kr.hhplus.be.server.application.user.UserResult;
 import kr.hhplus.be.server.domain.user.UserRepository;
 import kr.hhplus.be.server.interfaces.api.balance.BalanceRequest;
+import kr.hhplus.be.server.support.DatabaseCleanup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +42,13 @@ public class BalanceApiControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    DatabaseCleanup databaseCleanup;
+
     @BeforeEach
     void setup() {
+
+        databaseCleanup.truncate();
         UserResult.Create create = userFacade.create(UserCriteria.Create.of(EXIST_USER_NAME));
         userId = create.getUserId();
         userRepository.flush();

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 @Entity @Getter
+@Table(name = "balance", indexes = @Index(name = "idx_join_user_id", columnList = "user_id"))
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Balance {
 

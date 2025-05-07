@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 @Entity @Getter
+@Table(name = "order_item", indexes = {
+        @Index(name = "idx_join_product_id", columnList = "product_id"),
+        @Index(name = "idx_join_order_id", columnList = "order_id")})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderItem {
 

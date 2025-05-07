@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.concurrent.product;
 
-import kr.hhplus.be.server.concurrent.support.ConcurrentTestExecutor;
+import kr.hhplus.be.server.support.ConcurrentTestExecutor;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductCommand;
 import kr.hhplus.be.server.domain.product.ProductRepository;

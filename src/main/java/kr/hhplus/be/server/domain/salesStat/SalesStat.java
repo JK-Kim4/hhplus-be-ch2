@@ -10,10 +10,11 @@ import java.time.LocalDate;
 
 @Entity @Getter
 @Table(name = "sales_stat",
+        indexes = @Index(name = "idx_join_product_id", columnList = "product_id"),
         uniqueConstraints={
                 @UniqueConstraint(
-                        name="contstraintName",
-                        columnNames={"unique_one", "unique_two"} // DB 상의 column name 을 작성해야한다. (변수명X)
+                        name="unique_product_id_and_date",
+                        columnNames={"product_id", "sales_date"}
                 )
         })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

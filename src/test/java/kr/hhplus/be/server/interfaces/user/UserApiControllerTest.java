@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.UserRepository;
 import kr.hhplus.be.server.interfaces.api.user.UserRequest;
+import kr.hhplus.be.server.support.DatabaseCleanup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +35,12 @@ public class UserApiControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    DatabaseCleanup databaseCleanup;
+
     @BeforeEach
     void setup() {
+        databaseCleanup.truncate();
         User existUser = User.createWithName(EXIST_USER_NAME);
         userRepository.save(existUser);
         userRepository.flush();

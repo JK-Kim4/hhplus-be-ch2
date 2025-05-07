@@ -2,7 +2,7 @@ package kr.hhplus.be.server.concurrent.payment;
 
 import kr.hhplus.be.server.application.payment.PaymentCriteria;
 import kr.hhplus.be.server.application.payment.PaymentFacade;
-import kr.hhplus.be.server.concurrent.support.ConcurrentTestExecutor;
+import kr.hhplus.be.server.support.ConcurrentTestExecutor;
 import kr.hhplus.be.server.domain.balance.Balance;
 import kr.hhplus.be.server.domain.balance.BalanceRepository;
 import kr.hhplus.be.server.domain.balance.Point;

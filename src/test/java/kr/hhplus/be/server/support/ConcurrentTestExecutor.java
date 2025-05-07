@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.concurrent.support;
+package kr.hhplus.be.server.support;
 
 import java.util.ArrayList;
 import java.util.Collections;
