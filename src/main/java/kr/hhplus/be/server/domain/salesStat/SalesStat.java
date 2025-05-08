@@ -47,4 +47,14 @@ public class SalesStat {
                     .salesAmount(salesAmount)
                 .build();
     }
+
+    @Override
+    public String toString() {
+        return "SalesStat{" +
+                "id=" + id +
+                ", productId=" + productId +
+                ", salesDate=" + salesDate +
+                ", salesAmount=" + salesAmount +
+                '}';
+    }
 }
