@@ -43,6 +43,13 @@ public class ProductService {
         return ProductInfo.Ranks.of(salesStats, products);
     }
 
+
+    public ProductInfo.Products findAll(Integer offset, Integer limit){
+
+        List<Product> all = productRepository.findAll(offset, limit);
+        return ProductInfo.Products.fromList(all);
+    }
+
     public ProductInfo.Products findByIdInWithPessimisticLock(List<Long> orderItemIds){
         List<Product> products = productRepository.findByIdInWithPessimisticLock(orderItemIds);
         return ProductInfo.Products.fromList(products);
