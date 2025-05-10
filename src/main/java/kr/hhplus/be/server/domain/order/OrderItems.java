@@ -3,52 +3,61 @@ package kr.hhplus.be.server.domain.order;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.OneToMany;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import kr.hhplus.be.server.domain.product.Price;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-@Embeddable @Getter
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@Embeddable
 public class OrderItems {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> orderItems = new ArrayList<>();
+    private final List<OrderItem> items = new ArrayList<>();
 
-    public OrderItems(Order order, List<OrderItem> orderItems) {
-        this.orderItems.addAll(orderItems);
-        this.setOrder(order);
+    protected OrderItems() {}
+
+    public OrderItems(List<OrderItem> items) {
+        for (OrderItem item : items) {
+            add(item);
+        }
     }
 
-    public boolean empty(){
-        return orderItems.isEmpty();
+    public OrderItems(List<OrderItem> items, Order order) {
+        for (OrderItem item : items) {
+            add(item);
+        }
+        assignOrder(order);
     }
 
-    public Integer calculateTotalPrice() {
-        return orderItems.stream()
-                .mapToInt(OrderItem::calculatePrice)
-                .sum();
+    public void add(OrderItem item) {
+        if (item == null) {
+            throw new IllegalArgumentException("OrderItem must not be null");
+        }
+        items.add(item);
     }
 
-    public void setOrder(Order order) {
-        orderItems.stream()
-                .forEach(orderItem -> orderItem.setOrder(order));
+    public List<OrderItem> getItems() {
+        return Collections.unmodifiableList(items);
     }
 
-    public Integer size(){
-        return orderItems.size();
+    public Price calculateTotalAmount() {
+        return items.stream()
+                .map(OrderItem::calculateAmount)
+                .reduce(Price.ZERO, Price::add);
+    }
+
+    public void assignOrder(Order order) {
+        for (OrderItem item : items) {
+            item.assignToOrder(order);
+        }
+    }
+
+    public boolean isEmpty() {
+        return items.isEmpty();
     }
 
     public void deductStock() {
-        orderItems.forEach(OrderItem::deductItemQuantity);
-    }
 
-    @Override
-    public String toString() {
-        return "OrderItems{" +
-                "orderItems=" + orderItems +
-                '}';
     }
 }

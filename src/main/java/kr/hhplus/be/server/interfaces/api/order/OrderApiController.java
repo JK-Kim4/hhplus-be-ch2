@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.interfaces.api.order;
 
 import kr.hhplus.be.server.application.order.OrderFacade;
+import kr.hhplus.be.server.application.order.OrderResult;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -8,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/orders")
-public class OrderApiController implements OrderApiSpec{
+@RequestMapping("/api/v1/orders")
+public class OrderApiController implements OrderApiSpec {
 
     private final OrderFacade orderFacade;
 
@@ -19,10 +20,10 @@ public class OrderApiController implements OrderApiSpec{
 
     @Override
     @PostMapping
-    public ResponseEntity<Void> orderPayment(
-            @RequestBody OrderRequest.OrderPayment request) {
+    public ResponseEntity<OrderResponse.Order> order(
+            @RequestBody OrderRequest.Order request) {
 
-        orderFacade.orderPayment(request.toCriteria());
-        return ResponseEntity.ok().build();
+        OrderResult.Create order = orderFacade.order(request.toCriteria());
+        return ResponseEntity.ok(OrderResponse.Order.from(order));
     }
 }

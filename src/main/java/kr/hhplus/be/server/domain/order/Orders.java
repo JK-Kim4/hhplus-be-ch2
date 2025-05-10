@@ -1,51 +1,56 @@
 package kr.hhplus.be.server.domain.order;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.OneToMany;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
-@Embeddable
-@Getter @NoArgsConstructor
 public class Orders {
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.DETACH)
-    List<Order> orders = new ArrayList<>();
+    private List<Order> orders = new ArrayList<>();
 
-    public static Orders createDefault() {
-        return new Orders();
+    public Orders(List<Order> orders) {
+        this.orders = Objects.requireNonNullElse(orders, List.of());
     }
 
-    public static Orders createWithOrder(Order order) {
-        Orders orders = new Orders();
-        orders.orders.add(order);
-        return orders;
+    public List<Order> values() {
+        return Collections.unmodifiableList(orders);
     }
 
-    public static Orders createWithOrders(List<Order> orders) {
-        return new Orders(orders);
+    public int size() {
+        return orders.size();
     }
 
-    protected Orders(List<Order> orders) {
-        this.orders = new ArrayList<>(orders); // 복사만 하고, 불변처리 안 함
+    public boolean isEmpty() {
+        return orders.isEmpty();
     }
 
-    public void addOrder(Order order) {
-        this.orders.add(order); // 기존 리스트에 추가
+    public static void validateNoPendingOrders(List<Order> orders) {
+        boolean hasPending = orders.stream()
+                .anyMatch(o -> o.getStatus().isPendingPayment());
+
+        if (hasPending) {
+            throw new IllegalStateException("미결제 주문이 존재합니다.");
+        }
     }
 
-    public List<Order> getOrders() {
-        return Collections.unmodifiableList(this.orders);
+    public long countPaidOrders() {
+        return orders.stream()
+                .filter(order -> order.getStatus() == OrderStatus.PAID)
+                .count();
     }
 
-    public boolean areAllOrdersPaymentCompleted(){
-        return this.orders.stream()
-            .allMatch(order -> order.getOrderStatus().equals(OrderStatus.PAYMENT_COMPLETED));
+    public List<Order> filterByStatus(OrderStatus status) {
+        return orders.stream()
+                .filter(order -> order.getStatus() == status)
+                .collect(Collectors.toList());
+    }
+
+    public void validateNoPendingOrders() {
+        if (orders.stream().anyMatch(o -> o.getStatus().isPendingPayment())) {
+            throw new IllegalStateException("미결제 주문이 존재합니다.");
+        }
     }
 
 }

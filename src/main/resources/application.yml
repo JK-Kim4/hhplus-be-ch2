@@ -16,10 +16,15 @@ spring:
     generate-ddl: false
     show-sql: false
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate.timezone.default_storage: NORMALIZE_UTC
       hibernate.jdbc.time_zone: UTC
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 2s
 
 ---
 spring.config.activate.on-profile: local, test

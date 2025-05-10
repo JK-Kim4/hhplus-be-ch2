@@ -1,97 +1,76 @@
 package kr.hhplus.be.server.interfaces.api.order;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import kr.hhplus.be.server.application.order.OrderItemCriteria;
-import kr.hhplus.be.server.application.order.OrderPaymentCriteria;
-import kr.hhplus.be.server.domain.order.OrderCommand;
+import kr.hhplus.be.server.application.order.OrderCriteria;
+import lombok.Builder;
 import lombok.Getter;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-@Getter
 public class OrderRequest {
 
-    static public class Create{
+    @Getter
+    public static class Order {
 
-        public Create(){}
+        Long userId;
+        Long userCouponId;
+        List<Item> items = new ArrayList<>();
 
-        @Schema(name = "userId", description = "주문 생성 사용자 고유 번호", example = "1")
-        @NotNull @Positive
-        private Long userId;
+        public static Order of(Long userId, Long userCouponId, List<Item> items){
+            return Order.builder()
+                        .userId(userId)
+                        .userCouponId(userCouponId)
+                        .items(items)
+                    .build();
+        }
 
-        @Schema(name = "userCouponId", description = "(선택) 사용자 쿠폰 고유번호", example = "50")
-        @Positive
-        private Long userCouponId;
+        public OrderCriteria.Create toCriteria() {
+            return OrderCriteria.Create.of(
+                    this.userId,
+                    this.userCouponId,
+                    Item.toCriteriaList(this.items)
+            );
+        }
 
-        @Schema(name = "orderItems", description = "주문 상품 목록")
-        private List<OrderItemRequest> orderItems = new ArrayList<>();
-
-        public Create(Long userId, Long userCouponId, List<OrderItemRequest> orderItems) {
+        @Builder
+        private Order(Long userId, Long userCouponId, List<Item> items) {
             this.userId = userId;
             this.userCouponId = userCouponId;
-            this.orderItems = orderItems;
-        }
-
-
-        public OrderCommand.Create toCommand(){
-            List<OrderCommand.OrderItemCreate> orderItemList =
-                    this.orderItems.stream()
-                        .map(OrderItemRequest::toCommand)
-                        .collect(Collectors.toList());
-
-            return OrderCommand.Create.of(this.userId, this.userCouponId, orderItemList);
-        }
-
-        public OrderPaymentCriteria toCriteria(){
-            List<OrderItemCriteria> orderItemList = orderItems.stream()
-                    .map(oi ->
-                            OrderItemCriteria.of(oi.getItemId(), oi.getPrice(), oi.getQuantity()))
-                    .collect(Collectors.toList());
-
-            return new OrderPaymentCriteria(this.userId, this.userCouponId, orderItemList);
+            this.items = items;
         }
     }
 
     @Getter
-    public static class OrderPayment {
+    public static class Item {
 
-        @Schema(name = "userId", description = "주문 생성 사용자 고유 번호", example = "1")
-        private Long userId;
+        Long productId;
+        BigDecimal price;
+        Integer quantity;
 
-        @Schema(name = "userCouponId", description = "(선택) 사용자 쿠폰 고유번호", example = "50")
-        private Long userCouponId;
-
-        @Schema(name = "orderItems", description = "주문 상품 목록")
-        private List<OrderItemRequest> orderItems;
-
-        public OrderPayment(){}
-
-        public OrderPayment(Long userId, Long userCouponId, List<OrderItemRequest> orderItems) {
-            this.userId = userId;
-            this.userCouponId = userCouponId;
-            this.orderItems = orderItems;
+        public static Item of(Long productId, BigDecimal price, Integer quantity){
+            return Item.builder()
+                        .productId(productId)
+                        .price(price)
+                        .quantity(quantity)
+                    .build();
         }
 
-        public OrderPaymentCriteria toCriteria() {
-            List<OrderItemCriteria> orderItemCriterias = this.orderItems.stream().map(OrderItemRequest::toCriteria)
-                    .collect(Collectors.toList());
-            return new OrderPaymentCriteria(this.userId, this.userCouponId, orderItemCriterias);
+        public static List<OrderCriteria.Items> toCriteriaList(List<Item> items){
+            return items.stream().map((i) -> OrderCriteria.Items.builder()
+                        .productId(i.getProductId())
+                        .price(i.getPrice())
+                        .quantity(i.getQuantity())
+                    .build()
+            ).toList();
         }
 
-        public Long getUserId() {
-            return userId;
+        @Builder
+        private Item(Long productId, BigDecimal price, Integer quantity) {
+            this.productId = productId;
+            this.price = price;
+            this.quantity = quantity;
         }
 
-        public Long getUserCouponId() {
-            return userCouponId;
-        }
-
-        public List<OrderItemRequest> getOrderItems() {
-            return orderItems;
-        }
     }
 }

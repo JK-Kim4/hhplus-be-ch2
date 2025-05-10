@@ -1,116 +1,89 @@
 package kr.hhplus.be.server.domain.order;
 
 import jakarta.persistence.*;
-import kr.hhplus.be.server.domain.payment.Payment;
-import kr.hhplus.be.server.domain.user.User;
+import kr.hhplus.be.server.domain.coupon.UserCoupon;
+import kr.hhplus.be.server.domain.product.Price;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
-@Entity(name = "Orders")
-@Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity @Getter
+@Table(name = "orders", indexes = {
+        @Index(name = "idx_join_user_coupon_id", columnList = "user_coupon_id"),
+        @Index(name = "idx_join_user_id", columnList = "user_id")})
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Order {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private User user;
+    @Column(name = "user_id")
+    private Long userId;
 
     @Column(name = "user_coupon_id")
     private Long userCouponId;
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Payment payment;
-
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus;
+    private OrderStatus status;
 
     @Embedded
     private OrderItems orderItems;
 
-    @Column(name = "total_price")
-    protected Integer totalPrice;
+    @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "total_amount"))
+    private Price totalAmount;
 
-    @Column(name = "final_payment_price")
-    private Integer finalPaymentPrice;
+    @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "final_amount"))
+    private Price finalAmount;
 
-    @Column(name = "order_date")
-    private LocalDate orderDate;
+    private LocalDateTime orderedAt;
 
-    public static Order createWithItems(User user, List<OrderItem> orderItemList) {
-        validationUser(user);
-        validationOrderItems(orderItemList);
+    public static Order create(Long userId, List<OrderItem> items) {
+        if (items == null || items.isEmpty()) {
+            throw new IllegalArgumentException("주문 상품이 없습니다.");
+        }
 
-        return new Order(user, orderItemList);
+        Order order = new Order();
+        order.userId = userId;
+        order.status = OrderStatus.ORDER_CREATED;
+        order.orderedAt = LocalDateTime.now();
+
+        order.orderItems = new OrderItems(items, order);
+        order.calculateTotalAmount();
+
+        return order;
     }
 
-    public Order(User user, List<OrderItem> orderItemList){
-        this.user = user;
-        user.addOrder(this);
-        this.orderItems = new OrderItems(this, orderItemList);
-        calculateTotalPrice();
-        this.orderStatus = OrderStatus.ORDER_CREATED;
+    public void completePayment() {
+        this.status = OrderStatus.PAID;
+    }
+
+    public void applyCoupon(UserCoupon userCoupon) {
+        this.userCouponId = userCoupon.getId();
+        BigDecimal discountAmount = userCoupon.calculateDiscountAmount(this.totalAmount.getAmount());
+        this.finalAmount = this.totalAmount.subtractDiscountAmount(discountAmount);
+    }
+
+    public void calculateTotalAmount() {
+        this.totalAmount = this.orderItems.calculateTotalAmount();
+        this.finalAmount = this.orderItems.calculateTotalAmount();
+    }
+
+    public BigDecimal getTotalAmount() {
+        return this.totalAmount.getAmount();
+    }
+
+    public BigDecimal getFinalAmount() {
+        return this.finalAmount.getAmount();
     }
 
     public List<OrderItem> getOrderItems() {
-        return this.orderItems.getOrderItems();
-    }
-
-    public Long getOrderUserId(){
-        return user.getId();
-    }
-
-    public void calculateTotalPrice() {
-        if(orderItems.empty()){
-            throw new IllegalArgumentException("주문 상품이 존재하지않습니다.");
-        }
-        this.totalPrice = orderItems.calculateTotalPrice();
-        this.finalPaymentPrice = orderItems.calculateTotalPrice();
-    }
-
-    public void updateOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public void updateOrderDate(LocalDate orderDate) {
-        this.orderDate = orderDate;
-    }
-
-    public void registerPayment(Payment payment) {
-        if(!this.equals(payment.getOrder())){
-            throw new IllegalArgumentException("주문 정보가 일치하지않습니다.");
-        }
-        this.payment = payment;
-        this.orderStatus = OrderStatus.PAYMENT_WAITING;
-    }
-
-    public void deductOrderItemStock() {
-        orderItems.deductStock();
-    }
-
-    public void applyDiscount(Long userCouponId, Integer finalPaymentPrice) {
-        this.userCouponId = userCouponId;
-        this.finalPaymentPrice = finalPaymentPrice;
-    }
-
-    private static void validationUser(User user) {
-        if(Objects.isNull(user)) {
-            throw new IllegalArgumentException("사용자 정보가 존재하지않습니다.");
-        }
-
-        user.canCreateOrder();
-    }
-
-    private static void validationOrderItems(List<OrderItem> orderItemList) {
-        if(orderItemList == null || orderItemList.isEmpty()) {
-            throw new IllegalArgumentException("구매하실 상품이 존재하지않습니다.");
-        }
+        return orderItems.getItems() ;
     }
 }

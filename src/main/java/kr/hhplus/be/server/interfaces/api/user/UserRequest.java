@@ -1,26 +1,27 @@
 package kr.hhplus.be.server.interfaces.api.user;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import kr.hhplus.be.server.domain.user.UserCommand;
+import kr.hhplus.be.server.application.user.UserCriteria;
+import lombok.Builder;
+import lombok.Getter;
 
 public class UserRequest {
 
-    public static class Charge {
+    @Getter
+    public static class Create {
+        String username;
 
-        @NotNull @Positive
-        private Integer chargePoint;
 
-        public Charge(Integer chargePoint) {
-            this.chargePoint = chargePoint;
+        public static Create of(String username) {
+            return new Create(username);
         }
 
-        public Integer getChargePoint() {
-            return chargePoint;
+        @Builder
+        private Create(String username) {
+            this.username = username;
         }
 
-        public UserCommand.Charge toCommand(Long userId) {
-            return UserCommand.Charge.of(userId, chargePoint);
+        public UserCriteria.Create toCriteria() {
+            return UserCriteria.Create.builder().username(username).build();
         }
     }
 }

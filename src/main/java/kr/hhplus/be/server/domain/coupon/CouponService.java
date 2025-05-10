@@ -1,103 +1,46 @@
 package kr.hhplus.be.server.domain.coupon;
 
 import jakarta.persistence.NoResultException;
-import kr.hhplus.be.server.domain.coupon.userCoupon.UserCoupon;
-import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponInfo;
-import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponRepository;
-import kr.hhplus.be.server.domain.order.Order;
-import kr.hhplus.be.server.domain.user.User;
-import kr.hhplus.be.server.domain.user.UserRepository;
-import kr.hhplus.be.server.infrastructure.coupon.InMemoryCouponIssueQueue;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class CouponService {
 
-    private CouponRepository couponRepository;
-    private UserCouponRepository userCouponRepository;
-    private UserRepository userRepository;
-    private InMemoryCouponIssueQueue inMemoryCouponIssueQueue;
+    private final CouponRepository couponRepository;
+    private final UserCouponRepository userCouponRepository;
 
     public CouponService(
             CouponRepository couponRepository,
-            UserCouponRepository userCouponRepository,
-            UserRepository userRepository,
-            InMemoryCouponIssueQueue inMemoryCouponIssueQueue) {
+            UserCouponRepository userCouponRepository) {
         this.couponRepository = couponRepository;
         this.userCouponRepository = userCouponRepository;
-        this.userRepository = userRepository;
-        this.inMemoryCouponIssueQueue = inMemoryCouponIssueQueue;
     }
 
-    @Transactional
-    public UserCoupon saveUserCoupon(UserCoupon userCoupon) {
-        return userCouponRepository.save(userCoupon);
-    }
-
-    @Transactional
-    public UserCouponInfo.Issue issue(Long couponId, Long userId) {
+    public CouponInfo.Coupon findById(Long couponId){
         Coupon coupon = couponRepository.findById(couponId)
                 .orElseThrow(NoResultException::new);
-        User user = userRepository.findById(userId)
-                .orElseThrow(NoResultException::new);
 
-        findByCouponIdAndUserId(couponId, userId)
-                .ifPresent(uc -> {throw new IllegalArgumentException("이미 발급된 쿠폰입니다.");});
-
-        UserCoupon userCoupon = coupon.issue(user, LocalDate.now());
-
-        inMemoryCouponIssueQueue.enqueue(couponId, UUID.randomUUID().toString().substring(0, 6));
-
-        userCouponRepository.save(userCoupon);
-
-        return UserCouponInfo.Issue.of(
-                userCoupon.getId(),
-                userCoupon.getCoupon().getId(),
-                userCoupon.getUser().getId(),
-                userCoupon.getIssueDateTime()
-        );
+        return CouponInfo.Coupon.from(coupon);
     }
 
-    @Transactional
-    public void deductCouponQuantity(Long couponId) {
+    public CouponInfo.Coupon findByIdWithPessimisticLock(Long couponId){
         Coupon coupon = couponRepository.findByIdWithPessimisticLock(couponId)
                 .orElseThrow(NoResultException::new);
-        coupon.decreaseQuantity();
+
+        return CouponInfo.Coupon.from(coupon);
     }
 
-    public UserCoupon applyCouponToOrder(UserCoupon userCoupon, Order order) {
-        if (Objects.isNull(userCoupon)) {
-            return null;
-        }
-        userCoupon.isUsable(LocalDate.now(), order.getUser());
-        Integer finalPaymentPrice = userCoupon.discount(order.getTotalPrice());
-        order.applyDiscount(userCoupon.getId(), finalPaymentPrice);
-        userCoupon.updateUsedCouponInformation(order);
-        return userCoupon;
+    public CouponInfo.UserCouponOptional findUserCouponByCouponIdAndUserId(Long couponId, Long userId){
+        return CouponInfo.UserCouponOptional.from(userCouponRepository.findByCouponIdAndUserId(couponId, userId));
     }
 
-    public Coupon findById(Long couponId) {
-        return couponRepository.findById(couponId)
+    public CouponInfo.Issue issueUserCoupon(CouponCommand.Issue command){
+        Coupon coupon = couponRepository.findById(command.couponId)
                 .orElseThrow(NoResultException::new);
-    }
 
-    public UserCoupon findUserCouponById(Long userCouponId) {
-        return userCouponRepository.findById(userCouponId)
-                .orElse(null);
-    }
+        UserCoupon userCoupon = UserCoupon.issue(coupon, command.getUserId());
+        userCouponRepository.save(userCoupon);
 
-    public List<UserCoupon> findByUserId(Long userId) {
-        return userCouponRepository.findByUserId(userId);
-    }
-
-    public Optional<UserCoupon> findByCouponIdAndUserId(Long couponId, Long userId) {
-        return userCouponRepository.findByCouponIdAndUserId(couponId, userId);
+        return CouponInfo.Issue.from(userCoupon);
     }
 }

@@ -2,7 +2,6 @@ package kr.hhplus.be.server.infrastructure.coupon;
 
 import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.coupon.CouponRepository;
-import kr.hhplus.be.server.domain.coupon.FlatDiscountCoupon;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -11,12 +10,14 @@ import java.util.Optional;
 public class CouponRepositoryImpl implements CouponRepository {
 
     private final CouponJpaRepository couponJpaRepository;
-    private final FlatDiscountCouponJpaRepository flatDiscountCouponJpaRepository;
-    public CouponRepositoryImpl(
-            CouponJpaRepository couponJpaRepository,
-            FlatDiscountCouponJpaRepository flatDiscountCouponJpaRepository) {
+
+    public CouponRepositoryImpl(CouponJpaRepository couponJpaRepository) {
         this.couponJpaRepository = couponJpaRepository;
-        this.flatDiscountCouponJpaRepository = flatDiscountCouponJpaRepository;
+    }
+
+    @Override
+    public void flush() {
+        couponJpaRepository.flush();
     }
 
     @Override
@@ -27,16 +28,6 @@ public class CouponRepositoryImpl implements CouponRepository {
     @Override
     public Optional<Coupon> findById(Long couponId) {
         return couponJpaRepository.findById(couponId);
-    }
-
-    @Override
-    public Optional<FlatDiscountCoupon> findFlatCouponById(Long couponId) {
-        return flatDiscountCouponJpaRepository.findById(couponId);
-    }
-
-    @Override
-    public void flush() {
-        couponJpaRepository.flush();
     }
 
     @Override

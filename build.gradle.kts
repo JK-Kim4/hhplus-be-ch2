@@ -36,6 +36,12 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6")
 	implementation("org.instancio:instancio-core:5.4.0")
+	implementation("org.springframework.boot:spring-boot-starter-data-redis")
+	implementation("org.redisson:redisson-spring-boot-starter:3.26.0")
+	implementation("org.springframework.boot:spring-boot-starter-aop")
+	implementation("org.springframework.boot:spring-boot-starter-cache")
+	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+
 
 	// Lombok
 	compileOnly("org.projectlombok:lombok:1.18.38")
@@ -54,10 +60,14 @@ dependencies {
 	testImplementation("org.testcontainers:mysql")
 	testImplementation("org.instancio:instancio-junit:5.4.0")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-	//
 }
 
 tasks.withType<Test> {
 	useJUnitPlatform()
 	systemProperty("user.timezone", "UTC")
+}
+
+tasks.withType<JavaCompile> {
+	// 파라미터 이름을 런타임에 보존하도록 컴파일 옵션 추가
+	options.compilerArgs.add("-parameters")
 }

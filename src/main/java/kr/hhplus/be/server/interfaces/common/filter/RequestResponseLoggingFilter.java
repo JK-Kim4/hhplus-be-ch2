@@ -14,10 +14,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.stream.Collectors;
-
 @Component
 @Slf4j
 public class RequestResponseLoggingFilter extends OncePerRequestFilter {
+
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
@@ -77,4 +77,5 @@ public class RequestResponseLoggingFilter extends OncePerRequestFilter {
                                 .map(value -> name + ": " + value))
                 .collect(Collectors.joining(", "));
     }
+
 }

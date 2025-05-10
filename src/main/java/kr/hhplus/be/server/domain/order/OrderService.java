@@ -1,45 +1,72 @@
 package kr.hhplus.be.server.domain.order;
 
 import jakarta.persistence.NoResultException;
-import kr.hhplus.be.server.domain.user.User;
+import kr.hhplus.be.server.domain.coupon.UserCoupon;
+import kr.hhplus.be.server.domain.coupon.UserCouponRepository;
+import kr.hhplus.be.server.domain.product.Price;
+import kr.hhplus.be.server.domain.product.Product;
+import kr.hhplus.be.server.domain.product.ProductRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final ProductRepository productRepository;
+    private final UserCouponRepository userCouponRepository;
 
-    public OrderService(OrderRepository orderRepository) {
+
+    public OrderService(OrderRepository orderRepository, ProductRepository productRepository, UserCouponRepository userCouponRepository) {
         this.orderRepository = orderRepository;
+        this.productRepository = productRepository;
+        this.userCouponRepository = userCouponRepository;
     }
 
-    public void save(Order order) {
+    public OrderInfo.OrderItems findOrderItemsByOrderId(Long orderId){
+        Order order = orderRepository.findById(orderId).orElseThrow(NoResultException::new);
+        return OrderInfo.OrderItems.fromList(order.getOrderItems());
+    }
+
+    public void validationUserOrder(Long userId){
+        List<Order> userOrders = orderRepository.findByUserId(userId);
+        Orders.validateNoPendingOrders(userOrders);
+    }
+
+    public void validationOrderItems(List<OrderCommand.Items> command){
+        List<OrderItem> orderItems = command.stream()
+                .map(this::toOrderItem)
+                .toList();
+    }
+
+    public OrderInfo.Create create(OrderCommand.Create command){
+        Order order = Order.create(
+                command.getUserId(),
+                command.getItems().stream()
+                        .map(this::toOrderItem)
+                        .toList());
+
         orderRepository.save(order);
+
+        return OrderInfo.Create.from(order);
     }
 
-    public Order findById(Long orderId) {
-        return orderRepository.findById(orderId)
+    public OrderInfo.ApplyCoupon applyCoupon(OrderCommand.ApplyCoupon command){
+        UserCoupon userCoupon = userCouponRepository.findById(command.getUserCouponId())
                 .orElseThrow(NoResultException::new);
+        Order order = orderRepository.findById(command.getOrderId())
+                .orElseThrow(NoResultException::new);
+
+        order.applyCoupon(userCoupon);
+
+        return OrderInfo.ApplyCoupon.from(order);
     }
 
-    public List<Order> findOrdersByDateAndStatus(LocalDate orderedDate, OrderStatus status) {
-        return orderRepository.findByDateAndStatus(orderedDate, status);
-    }
-
-    public List<Order> findAllByOrderDate(LocalDate orderedDate) {
-        return orderRepository.findAllByOrderDate(orderedDate);
-    }
-
-    public List<OrderItem> findAllByOrderIds(List<Long> orderIds) {
-        return orderRepository.findOrderItemsByOrderIds(orderIds);
-    }
-
-    public Order create(User user, List<OrderItem> orderItems) {
-        user.canCreateOrder();
-        Order order = Order.createWithItems(user, orderItems);
-        return orderRepository.save(order);
+    private OrderItem toOrderItem(OrderCommand.Items item) {
+        Product product = productRepository.findById(item.getProductId())
+                .orElseThrow(NoResultException::new);
+        product.validateOrder(item.getPrice(), item.getQuantity());
+        return OrderItem.create(product.getId(), Price.of(item.getPrice()), item.getQuantity());
     }
 }

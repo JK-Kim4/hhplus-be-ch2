@@ -1,77 +1,55 @@
 package kr.hhplus.be.server.domain.order;
 
 import jakarta.persistence.*;
-import kr.hhplus.be.server.domain.item.Item;
+import kr.hhplus.be.server.domain.product.Price;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Objects;
+import java.math.BigDecimal;
 
-@Entity
-@Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity @Getter
+@Table(name = "order_item", indexes = {
+        @Index(name = "idx_join_product_id", columnList = "product_id"),
+        @Index(name = "idx_join_order_id", columnList = "order_id")})
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderItem {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_item_id")
     private Long id;
 
+    @Column(name = "product_id")
+    private Long productId;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "order_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "item_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private Item item;
+    @Embedded
+    private Price price;
 
-    @Column
-    private Integer price;
+    private int quantity;
 
-    @Column
-    private Integer quantity;
-
-    public static OrderItem createWithItemAndPriceAndQuantity(Item item, Integer price, Integer quantity) {
-        return new OrderItem(item, price, quantity);
-    }
-
-    private OrderItem(Item item, Integer price, Integer quantity) {
-        validateItem(item, price, quantity);
-
-        this.item = item;
+    protected OrderItem(Long productId, Price price, int quantity) {
+        this.productId = productId;
         this.price = price;
         this.quantity = quantity;
     }
 
-    protected void setOrder(Order order){
+    public static OrderItem create(Long productId, Price price, int quantity) {
+        return new OrderItem(productId, price, quantity);
+    }
+
+    public Price calculateAmount() {
+        return this.price.multiply(this.quantity);
+    }
+
+    public void assignToOrder(Order order){
         this.order = order;
     }
 
-    public Long getItemId() {
-        return item.getId();
-    }
-
-    public void deductItemQuantity() {
-        this.item.decreaseStock(quantity);
-    }
-
-    public Integer calculatePrice(){
-        return price * quantity;
-    }
-
-    public boolean belongsTo(Order order){
-        return this.order.equals(order);
-    }
-
-    private static void validateItem(Item item, Integer price, Integer quantity) {
-        if(Objects.isNull(item)) {
-            throw new IllegalArgumentException("상품이 존재하지않습니다.");
-        }
-
-        if(!item.isSamePrice(price)) {
-            throw new IllegalArgumentException("주문 상품의 가격이 일치하지않습니다.");
-        }
-
-        if(!item.hasEnoughStock(quantity)){
-            throw new IllegalArgumentException("상품 재고가 부족합니다.");
-        }
+    public BigDecimal getPrice() {
+        return this.price.getAmount();
     }
 }

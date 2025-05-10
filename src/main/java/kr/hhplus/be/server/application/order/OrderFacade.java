@@ -1,22 +1,11 @@
 package kr.hhplus.be.server.application.order;
 
-import kr.hhplus.be.server.domain.coupon.CouponService;
-import kr.hhplus.be.server.domain.item.ItemCommand;
-import kr.hhplus.be.server.domain.item.ItemService;
-import kr.hhplus.be.server.domain.order.Order;
-import kr.hhplus.be.server.domain.order.OrderItem;
+import kr.hhplus.be.server.domain.order.OrderCommand;
+import kr.hhplus.be.server.domain.order.OrderInfo;
 import kr.hhplus.be.server.domain.order.OrderService;
-import kr.hhplus.be.server.domain.payment.Payment;
-import kr.hhplus.be.server.domain.payment.PaymentService;
-import kr.hhplus.be.server.domain.user.User;
-import kr.hhplus.be.server.domain.user.UserCommand;
-import kr.hhplus.be.server.domain.user.UserService;
-import kr.hhplus.be.server.interfaces.common.client.RestTemplateClient;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -24,60 +13,22 @@ import java.util.Optional;
 public class OrderFacade {
 
     private final OrderService orderService;
-    private final PaymentService paymentService;
-    private final ItemService itemService;
-    private final CouponService couponService;
-    private final UserService userService;
-    private final RestTemplateClient restTemplateClient;
 
-    public OrderFacade(
-            OrderService orderService,
-            PaymentService paymentService,
-            ItemService itemService,
-            CouponService couponService,
-            UserService userService,
-            RestTemplateClient restTemplateClient) {
+    public OrderFacade(OrderService orderService) {
         this.orderService = orderService;
-        this.paymentService = paymentService;
-        this.itemService = itemService;
-        this.couponService = couponService;
-        this.userService = userService;
-        this.restTemplateClient = restTemplateClient;
     }
 
+    public OrderResult.Create order(OrderCriteria.Create criteria){
+        orderService.validationUserOrder(criteria.getUserId());
 
-    @Transactional
-    public OrderPaymentResult orderPayment(OrderPaymentCriteria criteria){
-        //주문 생성
-        User user = userService.findById(criteria.getUserId());
-        List<OrderItem> orderItems = itemService.getOrderItems(criteria.toOrderItemCreateCommand());
-        Order order = orderService.create(user, orderItems);
+        orderService.validationOrderItems(OrderCriteria.Items.toCommandList(criteria.getItems()));
 
-        //쿠폰 적용
+        OrderInfo.Create order = orderService.create(OrderCriteria.Create.toCommand(criteria));
+
         Optional.ofNullable(criteria.getUserCouponId())
-                .map(couponService::findUserCouponById)
-                .map((uc) -> couponService.applyCouponToOrder(uc, order));
+                .ifPresent(userCouponId ->
+                        orderService.applyCoupon(OrderCommand.ApplyCoupon.of(userCouponId, order.getOrderId())));
 
-        //결제 생성
-        Payment payment = paymentService.create(order, user);
-
-        //결제 진행(잔액 감소)
-        userService.deduct(UserCommand.Deduct.of(user.getId(), payment.getPaymentPrice()));
-
-        //결제 진행(재고 차감)
-        orderItems.stream().forEach(orderItem -> {
-            itemService.deductStock(ItemCommand.Deduct.of(orderItem.getItemId(), orderItem.getQuantity()));
-        });
-
-        //결과 반영
-        paymentService.success(payment, order);
-
-        restTemplateClient.post("test", payment, HashMap.class);
-
-        return new OrderPaymentResult(
-                order.getId(),
-                payment.getId(),
-                payment.getPaymentPrice()
-        );
+        return OrderResult.Create.from(order);
     }
 }

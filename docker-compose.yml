@@ -12,6 +12,13 @@ services:
     volumes:
       - ./data/mysql/:/var/lib/mysql
 
+  redis-master:
+    container_name: redis-master
+    image: redis:7
+    ports:
+      - "6379:6379"
+    command: [ "redis-server", "--appendonly", "yes" ]
+
 networks:
   default:
     driver: bridge

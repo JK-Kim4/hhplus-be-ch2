@@ -1,37 +1,29 @@
 package kr.hhplus.be.server.interfaces.api.user;
 
-import kr.hhplus.be.server.domain.user.UserInfo;
-import kr.hhplus.be.server.domain.user.UserService;
+import kr.hhplus.be.server.application.user.UserFacade;
+import kr.hhplus.be.server.application.user.UserResult;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/users")
-public class UserApiController implements UserApiSpec {
+@RequestMapping("/api/v1/users")
+public class UserApiController implements UserApiSpec{
 
-    private final UserService userService;
+    private final UserFacade userFacade;
 
-    public UserApiController(
-            UserService userService) {
-        this.userService = userService;
+    public UserApiController(UserFacade userFacade) {
+        this.userFacade = userFacade;
     }
 
     @Override
-    @GetMapping("/{id}/point")
-    public ResponseEntity<UserResponse.Point> findUserPointById(
-            @PathVariable("id") Long userId) {
+    @PostMapping
+    public ResponseEntity<UserResponse.Create> create(
+            @RequestBody UserRequest.Create request) {
+        UserResult.Create user = userFacade.create(request.toCriteria());
 
-        UserInfo.Point result = userService.findPointById(userId);
-        return ResponseEntity.ok(UserResponse.Point.from(result));
-    }
-
-    @Override
-    @PatchMapping("/{id}/point")
-    public ResponseEntity<Void> chargePoint(
-            @PathVariable("id") Long userId,
-            @RequestBody UserRequest.Charge point) {
-
-        userService.charge(point.toCommand(userId));
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(UserResponse.Create.from(user));
     }
 }

@@ -1,42 +1,58 @@
 package kr.hhplus.be.server.domain.payment;
 
 import jakarta.persistence.NoResultException;
+import kr.hhplus.be.server.domain.balance.Balance;
+import kr.hhplus.be.server.domain.balance.BalanceRepository;
 import kr.hhplus.be.server.domain.order.Order;
-import kr.hhplus.be.server.domain.order.OrderStatus;
-import kr.hhplus.be.server.domain.user.User;
+import kr.hhplus.be.server.domain.order.OrderRepository;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 
 @Service
 public class PaymentService {
 
     private final PaymentRepository paymentRepository;
+    private final OrderRepository orderRepository;
+    private final BalanceRepository balanceRepository;
 
-    public PaymentService(PaymentRepository paymentRepository) {
+    public PaymentService(
+            PaymentRepository paymentRepository,
+            OrderRepository orderRepository,
+            BalanceRepository balanceRepository) {
         this.paymentRepository = paymentRepository;
+        this.orderRepository = orderRepository;
+        this.balanceRepository = balanceRepository;
     }
 
-    public void save(Payment payment) {
-        paymentRepository.save(payment);
-    }
-
-    public Payment findById(Long paymentId) {
-        return paymentRepository.findById(paymentId)
+    public PaymentInfo.Create create(PaymentCommand.Create command){
+        Order order = orderRepository.findById(command.getOrderId())
                 .orElseThrow(NoResultException::new);
+        Payment payment = Payment.create(order);
+
+        paymentRepository.save(payment);
+        return PaymentInfo.Create.from(payment);
     }
 
-    private PaymentHistory savePaymentHistory(Payment payment) {
-        return paymentRepository.savePaymentHistory(new PaymentHistory(payment));
+    public PaymentInfo.Pay pay(PaymentCommand.Pay command){
+        Payment payment = paymentRepository.findById(command.getPaymentId())
+                .orElseThrow(NoResultException::new);
+        Balance balance = balanceRepository.findByUserId(command.getUserId())
+                .orElseThrow(NoResultException::new);
+
+        payment.pay(balance);
+        paymentRepository.save(payment);
+
+        return PaymentInfo.Pay.from(payment);
     }
 
-    public Payment create(Order order, User user) {
-        Payment payment = Payment.createWithOrderValidation(order, user);
-        return paymentRepository.save(payment);
-    }
+    public PaymentInfo.Complete complete(PaymentCommand.Complete command){
+        Payment payment = paymentRepository.findById(command.getPaymentId())
+                .orElseThrow(NoResultException::new);
+        Order order = orderRepository.findById(command.getOrderId())
+                .orElseThrow(NoResultException::new);
 
-    public void success(Payment payment, Order order) {
-        payment.updatePaymentResponseDateTime(LocalDateTime.now());
-        order.updateOrderStatus(OrderStatus.PAYMENT_COMPLETED);
+        payment.complete(order);
+        paymentRepository.save(payment);
+
+        return PaymentInfo.Complete.from(payment);
     }
 }

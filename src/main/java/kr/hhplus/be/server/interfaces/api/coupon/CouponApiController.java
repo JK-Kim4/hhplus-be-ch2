@@ -1,36 +1,29 @@
 package kr.hhplus.be.server.interfaces.api.coupon;
 
-import kr.hhplus.be.server.domain.coupon.CouponService;
-import kr.hhplus.be.server.domain.coupon.userCoupon.UserCouponInfo;
+import kr.hhplus.be.server.application.coupon.CouponFacade;
+import kr.hhplus.be.server.application.coupon.CouponResult;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/coupons")
-public class CouponApiController implements CouponApiSpec{
+@RequestMapping("/api/v1/coupons")
+public class CouponApiController implements CouponApiSpec {
 
-    private final CouponService couponService;
+    private final CouponFacade couponFacade;
 
-    public CouponApiController(CouponService couponService) {
-        this.couponService = couponService;
+    public CouponApiController(CouponFacade couponFacade) {
+        this.couponFacade = couponFacade;
     }
 
     @Override
-    @PostMapping("/{id}/issue")
-    public ResponseEntity<CouponResponse.Issue> issueCoupon(
-            @PathVariable("id") Long couponId,
+    @PostMapping
+    public ResponseEntity<CouponResponse.Issue> issue(
             @RequestBody CouponRequest.Issue request) {
 
-        UserCouponInfo.Issue issue = couponService.issue(couponId, request.getUserId());
+        CouponResult.Issue issue = couponFacade.issue(request.toCriteria());
         return ResponseEntity.ok(CouponResponse.Issue.from(issue));
-    }
-
-    @Override
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<CouponResponse.UserCouponList> findByUserId(
-            @PathVariable("userId") Long userId) {
-
-        UserCouponInfo.UserCouponList result = UserCouponInfo.UserCouponList.of(couponService.findByUserId(userId));
-        return ResponseEntity.ok(CouponResponse.UserCouponList.from(result));
     }
 }
