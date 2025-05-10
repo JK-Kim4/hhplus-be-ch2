@@ -1,0 +1,13 @@
+INSERT INTO product(name, price, stock) VALUES
+                                            ('product-sample', FLOOR(RAND() * 10000),FLOOR(RAND() * 100)),
+                                            ('product-sample', FLOOR(RAND() * 10000),FLOOR(RAND() * 100)),
+                                            ('product-sample', FLOOR(RAND() * 10000),FLOOR(RAND() * 100)),
+                                            ('product-sample', FLOOR(RAND() * 10000),FLOOR(RAND() * 100)),
+                                            ('product-sample', FLOOR(RAND() * 10000),FLOOR(RAND() * 100)),
+                                            ('product-sample', FLOOR(RAND() * 10000),FLOOR(RAND() * 100)),
+                                            ('product-sample', FLOOR(RAND() * 10000),FLOOR(RAND() * 100)),
+                                            ('product-sample', FLOOR(RAND() * 10000),FLOOR(RAND() * 100)),
+                                            ('product-sample', FLOOR(RAND() * 10000),FLOOR(RAND() * 100)),
+                                            ('product-sample', FLOOR(RAND() * 10000),FLOOR(RAND() * 100)),
+                                            ('product-sample', FLOOR(RAND() * 10000),FLOOR(RAND() * 100)),
+                                            ('product-sample', FLOOR(RAND() * 10000),FLOOR(RAND() * 100));

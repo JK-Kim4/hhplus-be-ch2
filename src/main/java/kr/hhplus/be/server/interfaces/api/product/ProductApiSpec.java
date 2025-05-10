@@ -26,5 +26,5 @@ public interface ProductApiSpec {
             @ApiResponse(responseCode = "200", description = "목록 조회 성공",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.Ranks.class)))
     })
-    ResponseEntity<ProductResponse.Ranks> productsRank();
+    ResponseEntity<ProductResponse.Ranks> productsRank(int limit);
 }

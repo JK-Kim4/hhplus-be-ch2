@@ -31,7 +31,9 @@ public class ProductApiController implements ProductApiSpec {
 
     @Override
     @GetMapping("/ranks")
-    public ResponseEntity<ProductResponse.Ranks> productsRank() {
-        return null;
+    public ResponseEntity<ProductResponse.Ranks> productsRank(
+            @RequestParam(defaultValue = "3") int limit) {
+        ProductInfo.Ranks rankWithLimit = productService.findRankWithLimit(limit);
+        return ResponseEntity.ok(ProductResponse.Ranks.from(rankWithLimit));
     }
 }
