@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.interfaces.common.aspect;
+package kr.hhplus.be.server.common.aspect;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;

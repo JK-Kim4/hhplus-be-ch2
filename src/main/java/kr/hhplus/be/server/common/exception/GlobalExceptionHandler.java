@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.interfaces.common.exception;
+package kr.hhplus.be.server.common.exception;
 
 import jakarta.persistence.NoResultException;
 import lombok.extern.slf4j.Slf4j;
