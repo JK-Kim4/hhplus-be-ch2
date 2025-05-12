@@ -26,13 +26,13 @@ public class DistributedLockAspect {
 
     @Around("@annotation(distributedLock)")
     public Object applyLock(ProceedingJoinPoint joinPoint, DistributedLock distributedLock) throws Throwable {
-        String key = keyGenerator.generateKeyV2(joinPoint, distributedLock.prefix(), distributedLock.key());
-        LockExecutor executorV2 = getLockExecutorV2(distributedLock.executor());
+        String key = keyGenerator.generateKey(joinPoint, distributedLock.prefix(), distributedLock.key());
+        LockExecutor executorV2 = getLockExecutor(distributedLock.executor());
         return executeWithLock(executorV2, key, distributedLock, joinPoint);
     }
 
-    private LockExecutor getLockExecutorV2(LockExecutorType type) {
-        return lockExecutorRegistry.getV2(type);
+    private LockExecutor getLockExecutor(LockExecutorType type) {
+        return lockExecutorRegistry.get(type);
     }
 
     private Object executeWithLock(LockExecutor executorV2, String key, DistributedLock distributedLock, ProceedingJoinPoint joinPoint) throws Throwable {

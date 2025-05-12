@@ -16,7 +16,7 @@ public class LockKeyGenerator {
     private final ExpressionParser parser = new SpelExpressionParser();
     private final DefaultParameterNameDiscoverer discoverer = new DefaultParameterNameDiscoverer();
 
-    public String generateKeyV2(ProceedingJoinPoint joinPoint, String prefix, String keyExpression) {
+    public String generateKey(ProceedingJoinPoint joinPoint, String prefix, String keyExpression) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         Object[] args = joinPoint.getArgs();

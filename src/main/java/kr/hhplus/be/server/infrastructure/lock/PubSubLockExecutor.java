@@ -17,7 +17,6 @@ public class PubSubLockExecutor implements LockExecutor {
         this.redissonClient = redissonClient;
     }
 
-
     @Override
     public LockExecutorType getType() {
         return LockExecutorType.PUBSUB;

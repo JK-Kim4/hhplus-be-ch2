@@ -18,7 +18,7 @@ public class LockExecutorRegistry {
                 .collect(Collectors.toMap(LockExecutor::getType, Function.identity()));
     }
 
-    public LockExecutor getV2(LockExecutorType type) {
+    public LockExecutor get(LockExecutorType type) {
         LockExecutor executor = executors.get(type);
         if (executor == null) {
             throw new IllegalStateException("No LockExecutor found for: " + type);
