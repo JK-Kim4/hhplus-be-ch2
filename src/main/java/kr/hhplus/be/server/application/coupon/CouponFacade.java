@@ -3,7 +3,8 @@ package kr.hhplus.be.server.application.coupon;
 import kr.hhplus.be.server.domain.coupon.CouponInfo;
 import kr.hhplus.be.server.domain.coupon.CouponService;
 import kr.hhplus.be.server.domain.coupon.UserCoupon;
-import kr.hhplus.be.server.interfaces.common.annotation.DistributedLock;
+import kr.hhplus.be.server.common.annotation.DistributedLock;
+import kr.hhplus.be.server.common.lock.LockExecutorType;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,14 +20,17 @@ public class CouponFacade {
         this.couponService = couponService;
     }
 
-    @DistributedLock(prefix = "couponId", key = "#criteria.couponId")
+    @DistributedLock(prefix = "couponId", key = "#criteria.couponId", executor = LockExecutorType.PUBSUB)
     public CouponResult.Issue issue(CouponCriteria.Issue criteria){
-        CouponInfo.Coupon coupon
-                = couponService.findByIdWithPessimisticLock(criteria.getCouponId());
+
+        System.out.println("비지니스 로직 실행 [Thread name: " + Thread.currentThread().getName() + "]");
+        CouponInfo.Coupon coupon =
+            couponService.findByIdWithPessimisticLock(criteria.getCouponId());
 
 
-        Optional<UserCoupon> userCouponOptional
-                = couponService.findUserCouponByCouponIdAndUserId(coupon.getCoupon().getId(), criteria.getUserId()).getUserCoupon();
+        Optional<UserCoupon> userCouponOptional =
+            couponService.findUserCouponByCouponIdAndUserId(coupon.getCoupon().getId(), criteria.getUserId()).getUserCoupon();
+
         if(userCouponOptional.isPresent()){
             throw new IllegalArgumentException("이미 발급된 쿠폰입니다.");
         }
