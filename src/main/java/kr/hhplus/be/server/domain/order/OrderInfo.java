@@ -6,6 +6,8 @@ import lombok.Getter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class OrderInfo {
 
@@ -54,6 +56,13 @@ public class OrderInfo {
     @Getter
     public static class OrderItems {
         List<OrderInfo.OrderItem> orderItems;
+
+        public Map<Long, Long> getOrderItemCountMap(){
+            return orderItems.stream()
+                    .collect(Collectors.groupingBy(
+                            OrderItem::getProductId,
+                            Collectors.summingLong(OrderItem::getQuantity)));
+        }
 
         public static OrderItems fromList(List<kr.hhplus.be.server.domain.order.OrderItem> orderItems) {
             return OrderItems.builder().orderItems(orderItems.stream().map(OrderItem::from).toList()).build();

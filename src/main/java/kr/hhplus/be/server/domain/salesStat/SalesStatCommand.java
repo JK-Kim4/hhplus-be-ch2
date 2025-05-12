@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.salesStat;
 
+import kr.hhplus.be.server.application.salesStat.SalesStatResult;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -26,6 +27,16 @@ public class SalesStatCommand {
     @Getter
     public static class Creates {
         List<Create> creates;
+
+        public static SalesStatCommand.Creates fromResultList(List<SalesStatResult.SalesStat> salesStats){
+            return Creates.builder()
+                    .creates(salesStats.stream().map( (ss) ->
+                        SalesStatCommand.Create.of(
+                                ss.getProductId(),
+                                ss.getSalesDate(),
+                                ss.getSalesAmount()
+                        )).toList()).build();
+        }
 
         public static SalesStatCommand.Creates fromList(List<SalesStatInfo.SalesStat> salesStats) {
             return SalesStatCommand.Creates.builder()

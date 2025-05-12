@@ -1,8 +1,9 @@
-package kr.hhplus.be.server.application.salesStat;
+package kr.hhplus.be.server.application.schduler;
 
+import kr.hhplus.be.server.application.salesStat.SalesStatCriteria;
+import kr.hhplus.be.server.application.salesStat.SalesStatFacade;
+import kr.hhplus.be.server.application.salesStat.SalesStatResult;
 import kr.hhplus.be.server.domain.product.ProductService;
-import kr.hhplus.be.server.domain.salesStat.SalesStatCommand;
-import kr.hhplus.be.server.domain.salesStat.SalesStatInfo;
 import kr.hhplus.be.server.domain.salesStat.SalesStatService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -16,11 +17,14 @@ import java.time.LocalDate;
 public class SalesStatScheduler {
 
     private final SalesStatService salesStatService;
+    private final SalesStatFacade salesStatFacade;
     private final ProductService productService;
 
     public SalesStatScheduler(SalesStatService salesStatService,
+                              SalesStatFacade salesStatFacade,
                               ProductService productService) {
         this.salesStatService = salesStatService;
+        this.salesStatFacade = salesStatFacade;
         this.productService = productService;
     }
 
@@ -29,10 +33,10 @@ public class SalesStatScheduler {
     public void calculateSalesStat(){
         LocalDate targetDate = LocalDate.now().minusDays(1);
 
-        SalesStatInfo.SalesStats salesStatsByDate =
-                salesStatService.getSalesStatsByDate(SalesStatCommand.SalesStats.of(targetDate));
+        SalesStatResult.SalesStats salesStats =
+                salesStatFacade.getSalesStatsByDate(SalesStatCriteria.TargetDate.of(targetDate));
 
-        salesStatService.createAll(salesStatsByDate.toCreatesCommand());
+        salesStatService.createAll(salesStats.toCreatesCommand());
 
         setRankDefaultCache();
     }

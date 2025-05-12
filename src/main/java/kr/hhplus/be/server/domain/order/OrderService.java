@@ -9,6 +9,7 @@ import kr.hhplus.be.server.domain.product.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class OrderService {
@@ -27,6 +28,12 @@ public class OrderService {
     public OrderInfo.OrderItems findOrderItemsByOrderId(Long orderId){
         Order order = orderRepository.findById(orderId).orElseThrow(NoResultException::new);
         return OrderInfo.OrderItems.fromList(order.getOrderItems());
+    }
+
+    public OrderInfo.OrderItems findOrderItemsByOrderIds(Set<Long> orderIds) {
+        List<OrderItem> orderItems = orderRepository.findOrderItemsByOrderIds(orderIds);
+
+        return OrderInfo.OrderItems.fromList(orderItems);
     }
 
     public void validationUserOrder(Long userId){
