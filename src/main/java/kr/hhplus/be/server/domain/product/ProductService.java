@@ -3,6 +3,7 @@ package kr.hhplus.be.server.domain.product;
 import jakarta.persistence.NoResultException;
 import kr.hhplus.be.server.domain.salesStat.SalesStat;
 import kr.hhplus.be.server.domain.salesStat.SalesStatRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,14 +25,14 @@ public class ProductService {
         this.salesStatRepository = salesStatRepository;
     }
 
-//    @Cacheable(value = "products:list", key = "'offset:' + #offset + ':limit:' + #limit")
+    @Cacheable(value = "products:list", key = "'offset:' + #offset + ':limit:' + #limit")
     public ProductInfo.Products findAll(int offset, int limit){
 
         List<Product> all = productRepository.findAll(offset, limit);
         return ProductInfo.Products.fromList(all);
     }
 
-//    @Cacheable(value = "products:rank", key = "'limit:' + #limit")
+    @Cacheable(value = "products:rank", key = "'limit:' + #limit")
     public ProductInfo.Ranks findRankWithLimit(int limit){
         LocalDate targetDate = LocalDate.now().minusDays(1);
 

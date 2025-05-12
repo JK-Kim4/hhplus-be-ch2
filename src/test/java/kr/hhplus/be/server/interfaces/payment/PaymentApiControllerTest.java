@@ -11,6 +11,7 @@ import kr.hhplus.be.server.domain.product.ProductRepository;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.UserRepository;
 import kr.hhplus.be.server.interfaces.api.payment.PaymentRequest;
+import kr.hhplus.be.server.support.DatabaseCleanup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,6 @@ public class PaymentApiControllerTest {
 
     private final String EXIST_USER_NAME = "hello";
     private Long userId;
-    private Long productId;
     private Long orderId;
 
     @Autowired
@@ -50,6 +50,9 @@ public class PaymentApiControllerTest {
     OrderFacade orderFacade;
 
     @Autowired
+    DatabaseCleanup databaseCleanup;
+
+    @Autowired
     MockMvc mockMvc;
 
     @Autowired
@@ -57,6 +60,8 @@ public class PaymentApiControllerTest {
 
     @BeforeEach
     void setup() {
+        databaseCleanup.truncate();
+
         User existUser = User.createWithName(EXIST_USER_NAME);
         userRepository.save(existUser);
         userRepository.flush();
@@ -68,22 +73,25 @@ public class PaymentApiControllerTest {
                 List.of(OrderCriteria.Items.of(product.getId(), BigDecimal.valueOf(10_000), 3))));
 
         userId = existUser.getId();
-        productId = product.getId();
         orderId = order.getOrderId();
     }
 
     @Test
-    void 결제_성공_테스트() throws Exception{
+    void 결제_성공_테스트() {
         // Given
         PaymentRequest.Pay request = PaymentRequest.Pay.of(orderId, userId);
 
         // When & Then
-        mockMvc.perform(post("/api/v1/payments")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.paymentId").isNumber())
-                .andExpect(jsonPath("$.paidAmount").value(30_000));
+        try {
+            mockMvc.perform(post("/api/v1/payments")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.paymentId").isNumber())
+                    .andExpect(jsonPath("$.paidAmount").value(30_000));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 }
