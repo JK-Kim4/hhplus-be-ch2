@@ -1,5 +1,7 @@
-package kr.hhplus.be.server.interfaces.common.lock;
+package kr.hhplus.be.server.common.lock;
 
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -14,7 +16,11 @@ public class LockKeyGenerator {
     private final ExpressionParser parser = new SpelExpressionParser();
     private final DefaultParameterNameDiscoverer discoverer = new DefaultParameterNameDiscoverer();
 
-    public String generateKey(Method method, Object[] args, String prefix, String keyExpression) {
+    public String generateKeyV2(ProceedingJoinPoint joinPoint, String prefix, String keyExpression) {
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        Method method = signature.getMethod();
+        Object[] args = joinPoint.getArgs();
+
         String[] paramNames = discoverer.getParameterNames(method);
         StandardEvaluationContext context = new StandardEvaluationContext();
         if (paramNames != null) {

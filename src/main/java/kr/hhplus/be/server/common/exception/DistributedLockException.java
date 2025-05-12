@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.interfaces.common.exception;
+package kr.hhplus.be.server.common.exception;
 
 public class DistributedLockException extends RuntimeException {
     public DistributedLockException(String message, Throwable cause) {
