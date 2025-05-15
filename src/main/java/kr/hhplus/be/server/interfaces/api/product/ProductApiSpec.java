@@ -26,5 +26,14 @@ public interface ProductApiSpec {
             @ApiResponse(responseCode = "200", description = "목록 조회 성공",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.Ranks.class)))
     })
-    ResponseEntity<ProductResponse.Ranks> productsRank(int limit);
+    ResponseEntity<ProductResponse.Ranks> last3DaysRank();
+
+
+    @Operation(summary = "실시간 인기 판매 상품 TOP3 조회",
+            description = "실시간 인기 판매 상품 TOP3 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "목록 조회 성공",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.Ranks.class)))
+    })
+    ResponseEntity<ProductResponse.Ranks> realTimeRank();
 }

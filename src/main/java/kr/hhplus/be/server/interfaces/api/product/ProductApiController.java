@@ -18,7 +18,6 @@ public class ProductApiController implements ProductApiSpec {
         this.productService = productService;
     }
 
-
     @Override
     @GetMapping
     public ResponseEntity<ProductResponse.Products> products(
@@ -30,10 +29,16 @@ public class ProductApiController implements ProductApiSpec {
     }
 
     @Override
-    @GetMapping("/ranks")
-    public ResponseEntity<ProductResponse.Ranks> productsRank(
-            @RequestParam(defaultValue = "3") int limit) {
-        ProductInfo.Ranks rankWithLimit = productService.findRankWithLimit(limit);
+    @GetMapping("/ranking/last3days")
+    public ResponseEntity<ProductResponse.Ranks> last3DaysRank () {
+        ProductInfo.Ranks last3DaysRank = productService.findLast3DaysRank();
+        return ResponseEntity.ok(ProductResponse.Ranks.from(last3DaysRank));
+    }
+
+    @Override
+    @GetMapping("/ranking/realtime")
+    public ResponseEntity<ProductResponse.Ranks> realTimeRank() {
+        ProductInfo.Ranks rankWithLimit = productService.findRealTimeRank();
         return ResponseEntity.ok(ProductResponse.Ranks.from(rankWithLimit));
     }
 }
