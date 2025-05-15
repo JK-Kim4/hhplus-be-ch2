@@ -2,6 +2,7 @@ package kr.hhplus.be.server.application.salesStat;
 
 import kr.hhplus.be.server.domain.order.OrderInfo;
 import kr.hhplus.be.server.domain.order.OrderService;
+import kr.hhplus.be.server.domain.redis.RedisKeys;
 import kr.hhplus.be.server.domain.salesStat.RedisSalesStatService;
 import kr.hhplus.be.server.domain.salesStat.SalesStatCommand;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,6 @@ import java.util.Map;
 @Transactional
 public class SalesStatProcessor {
 
-    public static final String SALES_REPORT_KEY_PREFIX = "products:dailySalesReport:";
     public static final String SALES_REPORT_IGNORE_VALUE = "__created__";
     private final OrderService orderService;
     private final RedisSalesStatService redisSalesStatService;
@@ -51,6 +51,6 @@ public class SalesStatProcessor {
     }
 
     public static String getDailySalesReportKey(LocalDate date){
-        return SALES_REPORT_KEY_PREFIX + date.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        return RedisKeys.DAILY_SALES_REPORT.format(date.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
     }
 }

@@ -24,4 +24,7 @@ public class UserRequest {
             return UserCriteria.Create.builder().username(username).build();
         }
     }
+
+    public class Coupons {
+    }
 }

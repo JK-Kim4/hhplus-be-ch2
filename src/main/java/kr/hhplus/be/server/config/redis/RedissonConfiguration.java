@@ -2,6 +2,7 @@ package kr.hhplus.be.server.config.redis;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
+import org.redisson.codec.JsonJacksonCodec;
 import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +23,7 @@ public class RedissonConfiguration {
     public RedissonClient redissonClient() {
         RedissonClient redisson = null;
         Config config = new Config();
+        config.setCodec(new JsonJacksonCodec());
         config.useSingleServer()
                 .setAddress(REDISSON_HOST_PREFIX + redisHost + ":" + redisPort)
                 .setConnectionPoolSize(100)

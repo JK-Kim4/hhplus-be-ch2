@@ -5,6 +5,7 @@ import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserCouponJpaRepository extends JpaRepository<UserCoupon, Long> {
@@ -12,4 +13,6 @@ public interface UserCouponJpaRepository extends JpaRepository<UserCoupon, Long>
     @Query("select uc from UserCoupon uc where uc.coupon.id = :couponId and uc.userId = :userId")
     Optional<UserCoupon> findByCouponIdAndUserId(@Param("couponId") Long couponId, @Param("userId") Long userId);
 
+    @Query("select uc from UserCoupon uc where uc.userId = :userId")
+    List<UserCoupon> findByUserId(@Param("userId") Long userId);
 }

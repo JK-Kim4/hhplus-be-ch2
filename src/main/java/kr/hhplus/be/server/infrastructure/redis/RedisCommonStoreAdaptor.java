@@ -26,6 +26,18 @@ public class RedisCommonStoreAdaptor implements RedisCommonStore {
     }
 
     @Override
+    public void removeWithKeys(String... keys) {
+        for (String key : keys) {
+            redisTemplate.delete(key);
+        }
+    }
+
+    @Override
+    public void getAtomicLong(String key) {
+        redisTemplate.opsForValue().set(key, key);
+    }
+
+    @Override
     public void setExpireTtl(String key, Duration duration) {
         redisTemplate.expire(key, duration);
     }
@@ -35,4 +47,8 @@ public class RedisCommonStoreAdaptor implements RedisCommonStore {
         return redisTemplate.getExpire(key);
     }
 
+    @Override
+    public void writeSimpleKey(String key) {
+        redisTemplate.opsForValue().set(key, key);
+    }
 }

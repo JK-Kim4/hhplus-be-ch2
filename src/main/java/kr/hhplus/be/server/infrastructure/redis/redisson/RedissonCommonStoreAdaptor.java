@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.infrastructure.redis;
+package kr.hhplus.be.server.infrastructure.redis.redisson;
 
 import kr.hhplus.be.server.domain.redis.RedisCommonStore;
 import org.redisson.api.RBucket;
@@ -27,6 +27,13 @@ public class RedissonCommonStoreAdaptor implements RedisCommonStore {
     }
 
     @Override
+    public void removeWithKeys(String... keys) {
+        for (String key : keys) {
+            redissonClient.getKeys().delete(key);
+        }
+    }
+
+    @Override
     public void setExpireTtl(String key, Duration duration) {
         // TTL 설정은 키가 어떤 자료형이든 상관없이 getBucket을 사용하면 대부분 OK
         RBucket<Object> bucket = redissonClient.getBucket(key);
@@ -38,4 +45,15 @@ public class RedissonCommonStoreAdaptor implements RedisCommonStore {
         RBucket<Object> bucket = redissonClient.getBucket(key);
         return bucket.remainTimeToLive();
     }
+
+    @Override
+    public void writeSimpleKey(String key) {
+        RBucket<String> bucket = redissonClient.getBucket(key);
+        bucket.set(key);
+    }
+
+    public void getAtomicLong(String key){
+        redissonClient.getAtomicLong(key);
+    }
+
 }

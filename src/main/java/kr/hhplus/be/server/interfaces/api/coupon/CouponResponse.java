@@ -33,4 +33,27 @@ public class CouponResponse {
             this.expiredAt = expiredAt;
         }
     }
+
+    @Getter
+    public static class RequestIssue {
+
+        Long requestTimeMillis;
+        Long userId;
+        Long couponId;
+
+        public static RequestIssue from(CouponResult.RequestIssue info) {
+            return RequestIssue.builder()
+                    .couponId(info.getCouponId())
+                    .userId(info.getUserId())
+                    .requestTimeMillis(info.getRequestTimeMillis())
+                    .build();
+        }
+
+        @Builder
+        private RequestIssue(Long requestTimeMillis, Long userId, Long couponId) {
+            this.requestTimeMillis = requestTimeMillis;
+            this.userId = userId;
+            this.couponId = couponId;
+        }
+    }
 }
