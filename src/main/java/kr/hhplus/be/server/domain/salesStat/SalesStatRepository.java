@@ -10,4 +10,7 @@ public interface SalesStatRepository {
     void saveAll(List<SalesStat> salesStats);
 
     List<SalesStat> findAllBySalesDate(LocalDate targetDate, int limit);
+
+    List<SalesStat> findAll();
+
 }
