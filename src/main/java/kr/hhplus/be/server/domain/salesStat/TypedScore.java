@@ -1,6 +1,5 @@
 package kr.hhplus.be.server.domain.salesStat;
 
-public record TypedScore<T>(T value, double score) {
-
+public record TypedScore(String member, double score) {
 
 }

@@ -2,11 +2,10 @@ package kr.hhplus.be.server.infrastructure.redis;
 
 import kr.hhplus.be.server.domain.redis.RedisCommonStore;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
 
-@Repository
+//@Repository
 public class RedisCommonStoreAdaptor implements RedisCommonStore {
 
     private final RedisTemplate<String, String> redisTemplate;

@@ -4,15 +4,14 @@ import kr.hhplus.be.server.domain.redis.RedisZSetStore;
 import kr.hhplus.be.server.domain.salesStat.TypedScore;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
-import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-@Repository
-public class RedisZSetStoreAdaptor implements RedisZSetStore {
+//@Repository
+public class RedisZSetStoreAdaptor implements RedisZSetStore<TypedScore> {
 
     private final RedisTemplate<String, String> redisTemplate;
 
@@ -22,7 +21,7 @@ public class RedisZSetStoreAdaptor implements RedisZSetStore {
     }
 
     @Override
-    public List<TypedScore<String>> reverseRangeWithScores(String key) {
+    public List<TypedScore> reverseRangeWithScores(String key) {
         Set<ZSetOperations.TypedTuple<String>> redisResults = redisTemplate.opsForZSet()
                 .reverseRangeWithScores(key, 0, -1);
 
@@ -31,12 +30,12 @@ public class RedisZSetStoreAdaptor implements RedisZSetStore {
         }
 
         return redisResults.stream()
-                .map(tuple -> new TypedScore<>(tuple.getValue(), tuple.getScore()))
+                .map(tuple -> new TypedScore(tuple.getValue(), tuple.getScore()))
                 .toList();
     }
 
     @Override
-    public List<TypedScore<String>> reverseRangeWithScores(String key, long start, long end) {
+    public List<TypedScore> reverseRangeWithScores(String key, long start, long end) {
         Set<ZSetOperations.TypedTuple<String>> redisResults = redisTemplate.opsForZSet()
                 .reverseRangeWithScores(key, start, end);
 
@@ -45,12 +44,12 @@ public class RedisZSetStoreAdaptor implements RedisZSetStore {
         }
 
         return redisResults.stream()
-                .map(tuple -> new TypedScore<>(tuple.getValue(), tuple.getScore()))
+                .map(tuple -> new TypedScore(tuple.getValue(), tuple.getScore()))
                 .toList();
     }
 
     @Override
-    public List<TypedScore<String>> rangeWithScores(String key) {
+    public List<TypedScore> rangeWithScores(String key) {
         Set<ZSetOperations.TypedTuple<String>> redisResults = redisTemplate.opsForZSet()
                 .rangeWithScores(key, 0, -1);
 
@@ -59,7 +58,7 @@ public class RedisZSetStoreAdaptor implements RedisZSetStore {
         }
 
         return redisResults.stream()
-                .map(tuple -> new TypedScore<>(tuple.getValue(), tuple.getScore()))
+                .map(tuple -> new TypedScore(tuple.getValue(), tuple.getScore()))
                 .toList();
     }
 

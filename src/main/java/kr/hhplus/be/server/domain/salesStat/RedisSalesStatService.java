@@ -10,11 +10,11 @@ import java.time.Duration;
 @Service
 public class RedisSalesStatService {
 
-    private final RedisZSetStore<String> redisZSetStore;
+    private final RedisZSetStore<TypedScore> redisZSetStore;
     private final RedisCommonStore redisCommonStore;
 
     public RedisSalesStatService(
-            RedisZSetStore redisZSetStore,
+            RedisZSetStore<TypedScore> redisZSetStore,
             RedisCommonStore redisCommonStore) {
         this.redisZSetStore = redisZSetStore;
         this.redisCommonStore = redisCommonStore;

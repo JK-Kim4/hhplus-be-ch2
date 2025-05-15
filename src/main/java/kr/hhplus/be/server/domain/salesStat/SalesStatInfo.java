@@ -23,10 +23,10 @@ public class SalesStatInfo {
             return SalesStats.builder().salesStats(stats).build();
         }
 
-        public static SalesStats fromRedisReports(Set<TypedScore<String>> reports){
+        public static SalesStats fromRedisReports(Set<TypedScore> reports){
             List<SalesStat> stats = reports.stream()
                     .map((report)-> SalesStatInfo.SalesStat.of(
-                            Long.parseLong(report.value()),
+                            Long.parseLong(report.member()),
                             null,
                             (long)report.score()
                     )).toList();
@@ -114,14 +114,14 @@ public class SalesStatInfo {
 
     @Getter
     public static class RedisTypedScoreSet {
-        List<TypedScore<String>> typedScores;
+        List<TypedScore> typedScores;
 
-        public static RedisTypedScoreSet of(List<TypedScore<String>> typedScores) {
+        public static RedisTypedScoreSet of(List<TypedScore> typedScores) {
             return RedisTypedScoreSet.builder().typedScores(typedScores).build();
         }
 
         @Builder
-        private RedisTypedScoreSet(List<TypedScore<String>> typedScores) {
+        private RedisTypedScoreSet(List<TypedScore> typedScores) {
             this.typedScores = typedScores;
         }
     }

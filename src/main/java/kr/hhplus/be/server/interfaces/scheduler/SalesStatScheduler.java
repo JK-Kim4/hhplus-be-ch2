@@ -34,7 +34,7 @@ public class SalesStatScheduler {
 
         List<SalesStatInfo.SalesReport> list = typedScoreSet.getTypedScores().stream()
                 .map(report -> SalesStatInfo.SalesReport.of(
-                        Long.parseLong(report.value()),
+                        Long.parseLong(report.member()),
                         targetDate,
                         (long) report.score()
                 )).toList();
