@@ -2,6 +2,7 @@ package kr.hhplus.be.server.interfaces.scheduler;
 
 import kr.hhplus.be.server.application.salesStat.SalesStatProcessor;
 import kr.hhplus.be.server.domain.salesStat.*;
+import kr.hhplus.be.server.interfaces.scheduler.salesStat.SalesStatScheduler;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
