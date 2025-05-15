@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.product.cache;
+package kr.hhplus.be.server.integration.redis;
 
 import kr.hhplus.be.server.domain.product.ProductService;
 import org.junit.jupiter.api.BeforeEach;
