@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.concurrent.payment;
+package kr.hhplus.be.server.integration.concurrent.payment;
 
 import kr.hhplus.be.server.application.payment.PaymentCriteria;
 import kr.hhplus.be.server.application.payment.PaymentFacade;

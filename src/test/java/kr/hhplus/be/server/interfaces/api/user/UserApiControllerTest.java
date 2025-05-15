@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.interfaces.user;
+package kr.hhplus.be.server.interfaces.api.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.hhplus.be.server.domain.user.User;

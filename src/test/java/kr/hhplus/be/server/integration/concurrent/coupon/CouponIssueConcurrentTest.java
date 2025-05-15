@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.concurrent.coupon;
+package kr.hhplus.be.server.integration.concurrent.coupon;
 
 import kr.hhplus.be.server.application.coupon.CouponCriteria;
 import kr.hhplus.be.server.application.coupon.CouponFacade;

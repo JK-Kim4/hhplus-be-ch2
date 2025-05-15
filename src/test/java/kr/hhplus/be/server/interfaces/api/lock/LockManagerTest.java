@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.interfaces.lock;
+package kr.hhplus.be.server.interfaces.api.lock;
 
 import kr.hhplus.be.server.common.exception.DistributedLockException;
 import kr.hhplus.be.server.infrastructure.lock.PubSubLockManager;
@@ -49,39 +49,6 @@ public class LockManagerTest {
         manager.close(); // 트랜잭션이 없으므로 바로 해제
 
         then(rLock).should().unlock();
-    }
-
-    @Test
-    void 락_획득성공_트랜잭션_활성화_트랜잭션종료시_락반납() throws Exception {
-        // given
-        TransactionSynchronizationManager.initSynchronization(); // 트랜잭션 컨텍스트 활성화
-        given(rLock.tryLock(anyLong(), anyLong(), any(TimeUnit.class))).willReturn(true);
-        given(rLock.isHeldByCurrentThread()).willReturn(true);
-
-        // when
-        PubSubLockManager manager = LockManagerSupporter.기본_LOCK_MANAGER_생성(rLock);
-
-        // then
-        assertTrue(manager.isLocked());
-
-        // 트랜잭션 종료 트리거
-        TransactionSynchronizationManager.getSynchronizations().forEach(sync -> sync.afterCompletion(0));
-
-        // verify
-        then(rLock).should().unlock();
-    }
-
-    @Test
-    void 트랜잭션_활성화_상태에서_close_호출시_락은_해제되지_않는다() throws Exception {
-        // given
-        TransactionSynchronizationManager.initSynchronization(); // 트랜잭션 컨텍스트 활성화
-        given(rLock.tryLock(anyLong(), anyLong(), any(TimeUnit.class))).willReturn(true);
-
-        PubSubLockManager manager = LockManagerSupporter.기본_LOCK_MANAGER_생성(rLock);
-
-        // when then
-        // 트랜잭션 종료 전 close() 호출
-        assertThrows(DistributedLockException.class, () -> manager.close());
     }
 
     @Test

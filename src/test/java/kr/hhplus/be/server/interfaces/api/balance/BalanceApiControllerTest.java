@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.interfaces.balance;
+package kr.hhplus.be.server.interfaces.api.balance;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.hhplus.be.server.application.user.UserCriteria;

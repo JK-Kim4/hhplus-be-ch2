@@ -23,7 +23,6 @@ public class CouponFacade {
     @DistributedLock(prefix = "couponId", key = "#criteria.couponId", executor = LockExecutorType.PUBSUB)
     public CouponResult.Issue issue(CouponCriteria.Issue criteria){
 
-        System.out.println("비지니스 로직 실행 [Thread name: " + Thread.currentThread().getName() + "]");
         CouponInfo.Coupon coupon =
             couponService.findByIdWithPessimisticLock(criteria.getCouponId());
 

@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.interfaces.coupon;
+package kr.hhplus.be.server.interfaces.api.coupon;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.hhplus.be.server.domain.coupon.Coupon;
