@@ -31,7 +31,7 @@ public class SalesStatProcessorTest {
     SalesStatProcessor salesStatProcessor;
 
     @Autowired
-    RedisZSetStore<String> redisZSetStore;
+    RedisZSetStore redisZSetStore;
 
     @Autowired
     RedisCommonStore redisCommonStore;
@@ -69,9 +69,9 @@ public class SalesStatProcessorTest {
         salesStatProcessor.dailySalesReportProcess(order.getId(), key);
 
         //then
-        List<TypedScore<String>> zSetRangeWithScoresByKey = redisZSetStore.rangeWithScores(key);
+        List<TypedScore> zSetRangeWithScoresByKey = redisZSetStore.rangeWithScores(key);
 
-        Assertions.assertThat(zSetRangeWithScoresByKey.stream().map(TypedScore::value).toList())
+        Assertions.assertThat(zSetRangeWithScoresByKey.stream().map(TypedScore::member).toList())
                 .contains("1", "2", "3");
     }
 

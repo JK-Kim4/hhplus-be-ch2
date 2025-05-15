@@ -108,7 +108,7 @@ public class ProductService {
     }
 
     private ProductInfo.Ranks fetchRankFromRedis(String key) {
-        List<TypedScore<String>> typedScores = redisZSetStore.reverseRangeWithScores(key, 0, 2);
+        List<TypedScore> typedScores = redisZSetStore.reverseRangeWithScores(key, 0, 2);
 
         if (typedScores.isEmpty()) {
             return findLast3DaysRank();
@@ -122,9 +122,9 @@ public class ProductService {
         return ProductInfo.Ranks.of(typedScores, products, LocalDate.now());
     }
 
-    private List<Long> extractProductIds(List<TypedScore<String>> typedScores) {
+    private List<Long> extractProductIds(List<TypedScore> typedScores) {
         return typedScores.stream()
-                .map(TypedScore::value)
+                .map(TypedScore::member)
                 .map(Long::parseLong)
                 .toList();
     }

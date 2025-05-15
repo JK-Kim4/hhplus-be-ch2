@@ -180,7 +180,7 @@ public class ProductInfo {
                     ).toList()).build();
         }
 
-        public static Ranks of(List<TypedScore<String>> typedScores, List<kr.hhplus.be.server.domain.product.Product> products, LocalDate nowDate) {
+        public static Ranks of(List<TypedScore> typedScores, List<kr.hhplus.be.server.domain.product.Product> products, LocalDate nowDate) {
             Map<Long, kr.hhplus.be.server.domain.product.Product> productMap = products.stream()
                     .collect(java.util.stream.Collectors.toMap(
                             kr.hhplus.be.server.domain.product.Product::getId,
@@ -189,12 +189,13 @@ public class ProductInfo {
             List<Rank> ranks = new ArrayList<>();
             int rank = 1;
 
-            for (TypedScore<String> report : typedScores) {
-                if (report.value().equals(SalesStatProcessor.SALES_REPORT_IGNORE_VALUE)) {
+            for (TypedScore report : typedScores) {
+
+                if (report.member().equals(SalesStatProcessor.SALES_REPORT_IGNORE_VALUE)) {
                     continue;
                 }
 
-                Long productId = Long.parseLong(report.value());
+                Long productId = Long.parseLong(report.member());
                 kr.hhplus.be.server.domain.product.Product product = productMap.get(productId);
 
                 if (product == null) {
