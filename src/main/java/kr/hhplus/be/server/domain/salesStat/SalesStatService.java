@@ -2,6 +2,7 @@ package kr.hhplus.be.server.domain.salesStat;
 
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -26,4 +27,15 @@ public class SalesStatService {
         salesStatRepository.saveAll(salesStats);
     }
 
+
+    public List<SalesStatInfo.SalesReport> getSalesReportsFromRedisTypedScoreSet(
+            SalesStatInfo.RedisTypedScoreSet typedScoreSet,
+            LocalDate targetDate) {
+        return typedScoreSet.getTypedScores().stream()
+                .map(report -> SalesStatInfo.SalesReport.of(
+                        Long.parseLong(report.member()),
+                        targetDate,
+                        (long) report.score()
+                )).toList();
+    }
 }

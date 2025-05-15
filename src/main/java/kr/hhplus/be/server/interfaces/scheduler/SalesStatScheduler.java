@@ -32,14 +32,8 @@ public class SalesStatScheduler {
 
         SalesStatInfo.RedisTypedScoreSet typedScoreSet = redisSalesStatService.findReverseRangeWithScoresSetByKey(targetKey);
 
-        List<SalesStatInfo.SalesReport> list = typedScoreSet.getTypedScores().stream()
-                .map(report -> SalesStatInfo.SalesReport.of(
-                        Long.parseLong(report.member()),
-                        targetDate,
-                        (long) report.score()
-                )).toList();
+        List<SalesStatInfo.SalesReport> list = salesStatService.getSalesReportsFromRedisTypedScoreSet(typedScoreSet,targetDate);
 
-        //저장
         salesStatService.createAll(SalesStatCommand.Creates.fromList(list));
     }
 }
