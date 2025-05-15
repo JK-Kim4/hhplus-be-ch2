@@ -63,6 +63,20 @@ public class RedisZSetStoreAdaptor implements RedisZSetStore<TypedScore> {
     }
 
     @Override
+    public List<TypedScore> rangeWithScores(String key, long start, long end) {
+        Set<ZSetOperations.TypedTuple<String>> redisResults = redisTemplate.opsForZSet()
+                .rangeWithScores(key, start, end);
+
+        if (redisResults == null) {
+            return Collections.emptyList();
+        }
+
+        return redisResults.stream()
+                .map(tuple -> new TypedScore(tuple.getValue(), tuple.getScore()))
+                .toList();
+    }
+
+    @Override
     public Optional<Double> getScore(String key, String member) {
         return Optional.ofNullable(redisTemplate.opsForZSet().score(key, member));
     }
@@ -75,5 +89,10 @@ public class RedisZSetStoreAdaptor implements RedisZSetStore<TypedScore> {
     @Override
     public void incrementScore(String key, String member, double score) {
         redisTemplate.opsForZSet().incrementScore(key, member, score);
+    }
+
+    @Override
+    public boolean add(String key, String member, double score) {
+        return redisTemplate.opsForZSet().add(key, member, score);
     }
 }

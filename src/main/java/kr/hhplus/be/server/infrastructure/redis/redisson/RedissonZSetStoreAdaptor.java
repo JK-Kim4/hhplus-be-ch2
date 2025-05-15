@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.infrastructure.redis;
+package kr.hhplus.be.server.infrastructure.redis.redisson;
 
 import kr.hhplus.be.server.domain.redis.RedisZSetStore;
 import kr.hhplus.be.server.domain.salesStat.TypedScore;
@@ -52,6 +52,16 @@ public class RedissonZSetStoreAdaptor implements RedisZSetStore<TypedScore> {
     }
 
     @Override
+    public List<TypedScore> rangeWithScores(String key, long start, long end) {
+        RScoredSortedSet<String> zset = redissonClient.getScoredSortedSet(key);
+
+        return zset.entryRange((int) start, (int) end).stream()
+                .map(entry
+                        -> new TypedScore(entry.getValue(), entry.getScore()))
+                .toList();
+    }
+
+    @Override
     public Optional<Double> getScore(String key, String member) {
         RScoredSortedSet<String> zset = redissonClient.getScoredSortedSet(key);
         Double score = zset.getScore(member);
@@ -68,5 +78,11 @@ public class RedissonZSetStoreAdaptor implements RedisZSetStore<TypedScore> {
     public void incrementScore(String key, String member, double score) {
         RScoredSortedSet<String> zset = redissonClient.getScoredSortedSet(key);
         zset.addScore(member, score);
+    }
+
+    @Override
+    public boolean add(String key, String member, double score) {
+        RScoredSortedSet<String> zset = redissonClient.getScoredSortedSet(key);
+        return zset.add(score, member);
     }
 }
