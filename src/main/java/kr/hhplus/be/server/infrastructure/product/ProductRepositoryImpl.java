@@ -47,8 +47,13 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public List<Product> findByIdIn(Set<Long> Ids) {
-        return productJpaRepository.findByIdIn(Ids);
+    public List<Product> findByIdIn(Set<Long> ids) {
+        return productJpaRepository.findByIdIn(ids);
+    }
+
+    @Override
+    public List<Product> findByIdIn(List<Long> ids) {
+        return productJpaRepository.findByIdIn(ids);
     }
 
     @Override

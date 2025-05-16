@@ -1,11 +1,14 @@
 package kr.hhplus.be.server.domain.product;
 
+import kr.hhplus.be.server.application.salesStat.SalesStatProcessor;
 import kr.hhplus.be.server.domain.salesStat.SalesStat;
+import kr.hhplus.be.server.domain.salesStat.TypedScore;
 import lombok.*;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -177,6 +180,42 @@ public class ProductInfo {
                     ).toList()).build();
         }
 
+        public static Ranks of(List<TypedScore> typedScores, List<kr.hhplus.be.server.domain.product.Product> products, LocalDate nowDate) {
+            Map<Long, kr.hhplus.be.server.domain.product.Product> productMap = products.stream()
+                    .collect(java.util.stream.Collectors.toMap(
+                            kr.hhplus.be.server.domain.product.Product::getId,
+                            product -> product));
+
+            List<Rank> ranks = new ArrayList<>();
+            int rank = 1;
+
+            for (TypedScore report : typedScores) {
+
+                if (report.member().equals(SalesStatProcessor.SALES_REPORT_IGNORE_VALUE)) {
+                    continue;
+                }
+
+                Long productId = Long.parseLong(report.member());
+                kr.hhplus.be.server.domain.product.Product product = productMap.get(productId);
+
+                if (product == null) {
+                    continue; // 매핑되지 않은 상품은 스킵
+                }
+
+                ranks.add(Rank.of(
+                        productId,
+                        product.getName(),
+                        product.getAmount(),
+                        product.getQuantity(),
+                        rank++,
+                        (long) report.score(),
+                        nowDate
+                ));
+            }
+
+            return Ranks.builder().ranks(ranks).build();
+        }
+
         @Builder
         private Ranks(List<Rank> ranks) {
             this.ranks = ranks;
@@ -218,4 +257,5 @@ public class ProductInfo {
             this.salesDate = salesDate;
         }
     }
+
 }
