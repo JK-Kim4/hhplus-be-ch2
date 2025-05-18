@@ -1,26 +1,18 @@
 package kr.hhplus.be.server.domain.salesStat;
 
-import kr.hhplus.be.server.domain.order.OrderRepository;
-import kr.hhplus.be.server.domain.payment.PaymentRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
-//TODO 2025.05.07 SalesStatService To SalesStatFacade
 @Service
 public class SalesStatService {
 
     private final SalesStatRepository salesStatRepository;
-    private final PaymentRepository paymentRepository;
-    private final OrderRepository orderRepository;
 
     public SalesStatService(
-            SalesStatRepository salesStatRepository,
-            PaymentRepository paymentRepository,
-            OrderRepository orderRepository) {
+            SalesStatRepository salesStatRepository) {
         this.salesStatRepository = salesStatRepository;
-        this.paymentRepository = paymentRepository;
-        this.orderRepository = orderRepository;
     }
 
     public void createAll(SalesStatCommand.Creates command){
@@ -35,4 +27,15 @@ public class SalesStatService {
         salesStatRepository.saveAll(salesStats);
     }
 
+
+    public List<SalesStatInfo.SalesReport> getSalesReportsFromRedisTypedScoreSet(
+            SalesStatInfo.RedisTypedScoreSet typedScoreSet,
+            LocalDate targetDate) {
+        return typedScoreSet.getTypedScores().stream()
+                .map(report -> SalesStatInfo.SalesReport.of(
+                        Long.parseLong(report.member()),
+                        targetDate,
+                        (long) report.score()
+                )).toList();
+    }
 }

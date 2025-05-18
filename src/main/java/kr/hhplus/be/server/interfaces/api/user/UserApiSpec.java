@@ -19,4 +19,12 @@ public interface UserApiSpec {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.Create.class)))
     })
     ResponseEntity<UserResponse.Create> create(UserRequest.Create request);
+
+    @Operation(summary = "사용자 보유 쿠폰 목록 조회",
+            description = "사용자가 보유한 쿠폰 목록을 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.Create.class)))
+    })
+    ResponseEntity<UserResponse.Coupons> coupons(Long userId);
 }

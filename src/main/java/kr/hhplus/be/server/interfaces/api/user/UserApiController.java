@@ -3,10 +3,7 @@ package kr.hhplus.be.server.interfaces.api.user;
 import kr.hhplus.be.server.application.user.UserFacade;
 import kr.hhplus.be.server.application.user.UserResult;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -25,5 +22,13 @@ public class UserApiController implements UserApiSpec{
         UserResult.Create user = userFacade.create(request.toCriteria());
 
         return ResponseEntity.ok(UserResponse.Create.from(user));
+    }
+
+    @Override
+    @GetMapping("/{userId}/coupons")
+    public ResponseEntity<UserResponse.Coupons> coupons(
+            @PathVariable Long userId) {
+        UserResult.Coupons coupons = userFacade.findCouponsByUserId(userId);
+        return ResponseEntity.ok(UserResponse.Coupons.from(coupons.getCoupons()));
     }
 }

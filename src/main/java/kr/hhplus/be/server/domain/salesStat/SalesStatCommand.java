@@ -1,8 +1,11 @@
 package kr.hhplus.be.server.domain.salesStat;
 
+import jakarta.validation.constraints.NotNull;
 import kr.hhplus.be.server.application.salesStat.SalesStatResult;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -38,7 +41,7 @@ public class SalesStatCommand {
                         )).toList()).build();
         }
 
-        public static SalesStatCommand.Creates fromList(List<SalesStatInfo.SalesStat> salesStats) {
+        public static SalesStatCommand.Creates fromList(List<SalesStatInfo.SalesReport> salesStats) {
             return SalesStatCommand.Creates.builder()
                     .creates(salesStats.stream().map((ss) ->
                             SalesStatCommand.Create.of(
@@ -75,6 +78,42 @@ public class SalesStatCommand {
             this.productId = productId;
             this.salesDate = salesDate;
             this.salesAmount = salesAmount;
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class RedisAddSortedSet {
+        @NotNull(message = "Redis 입력 정보가 누락되었습니다. (key)")
+        String key;
+        @NotNull(message = "Redis 입력 정보가 누락되었습니다. (value)")
+        String value;
+        @NotNull(message = "Redis 입력 정보가 누락되었습니다. (score)")
+        double score;
+
+        public static RedisAddSortedSet of(String key, String value, double score) {
+            return RedisAddSortedSet.builder().key(key).value(value).score(score).build();
+        }
+
+        @Builder
+        private RedisAddSortedSet(String key, String value, double score) {
+            this.key = key;
+            this.value = value;
+            this.score = score;
+        }
+    }
+
+    @Getter
+    public static class RedisDeleteKey {
+        String key;
+
+        public static RedisDeleteKey of(String key) {
+            return RedisDeleteKey.builder().key(key).build();
+        }
+
+        @Builder
+        private RedisDeleteKey(String key) {
+            this.key = key;
         }
     }
 }

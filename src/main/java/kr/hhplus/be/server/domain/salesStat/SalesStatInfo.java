@@ -6,6 +6,7 @@ import lombok.Getter;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SalesStatInfo {
@@ -14,16 +15,24 @@ public class SalesStatInfo {
     public static class SalesStats {
         List<SalesStat> salesStats;
 
-        public SalesStatCommand.Creates toCreatesCommand() {
-            return SalesStatCommand.Creates.fromList(this.salesStats);
-        }
-
         public static SalesStats of(Map<Long, Long> salesStatsMap, LocalDate targetDate) {
             List<SalesStat> stats = salesStatsMap.entrySet().stream()
                     .map(entry -> SalesStat.of(entry.getKey(), targetDate, entry.getValue()))
                     .collect(Collectors.toList());
 
             return SalesStats.builder().salesStats(stats).build();
+        }
+
+        public static SalesStats fromRedisReports(Set<TypedScore> reports){
+            List<SalesStat> stats = reports.stream()
+                    .map((report)-> SalesStatInfo.SalesStat.of(
+                            Long.parseLong(report.member()),
+                            null,
+                            (long)report.score()
+                    )).toList();
+
+            return SalesStats.builder().salesStats(stats).build();
+
         }
 
         public Long getSalesAmountByProductId(Long productId){
@@ -97,6 +106,42 @@ public class SalesStatInfo {
 
         @Builder
         private Create(Long productId, LocalDate salesDate, Long salesAmount) {
+            this.productId = productId;
+            this.salesDate = salesDate;
+            this.salesAmount = salesAmount;
+        }
+    }
+
+    @Getter
+    public static class RedisTypedScoreSet {
+        List<TypedScore> typedScores;
+
+        public static RedisTypedScoreSet of(List<TypedScore> typedScores) {
+            return RedisTypedScoreSet.builder().typedScores(typedScores).build();
+        }
+
+        @Builder
+        private RedisTypedScoreSet(List<TypedScore> typedScores) {
+            this.typedScores = typedScores;
+        }
+    }
+
+    @Getter
+    public static class SalesReport {
+        Long productId;
+        LocalDate salesDate;
+        Long salesAmount;
+
+        public static SalesReport of(Long productId, LocalDate salesDate, Long salesAmount) {
+            return SalesReport.builder()
+                    .productId(productId)
+                    .salesDate(salesDate)
+                    .salesAmount(salesAmount)
+                    .build();
+        }
+
+        @Builder
+        private SalesReport(Long productId, LocalDate salesDate, Long salesAmount) {
             this.productId = productId;
             this.salesDate = salesDate;
             this.salesAmount = salesAmount;

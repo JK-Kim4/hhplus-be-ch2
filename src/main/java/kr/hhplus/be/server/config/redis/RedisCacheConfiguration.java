@@ -27,6 +27,10 @@ public class RedisCacheConfiguration {
 
         return RedisCacheManager.builder(connectionFactory)
                 .cacheDefaults(defaultConfig)
+                .withCacheConfiguration("realTime",
+                        defaultConfig.entryTtl(Duration.ofMinutes(30)))
+                .withCacheConfiguration("last3days",
+                        defaultConfig.entryTtl(Duration.ofHours(25)))
                 .build();
     }
 

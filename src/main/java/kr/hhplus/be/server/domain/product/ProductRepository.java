@@ -18,5 +18,7 @@ public interface ProductRepository {
 
     List<Product> findByIdIn(Set<Long> longs);
 
+    List<Product> findByIdIn(List<Long> longs);
+
     List<Product> findAll(Integer offset, Integer limit);
 }

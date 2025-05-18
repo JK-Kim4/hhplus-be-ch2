@@ -30,6 +30,11 @@ public class SalesStatRepositoryImpl implements SalesStatRepository {
     }
 
     @Override
+    public List<SalesStat> findAll() {
+        return salesStatJpaRepository.findAll();
+    }
+
+    @Override
     public List<SalesStat> findAllBySalesDate(LocalDate targetDate, int limit) {
         Pageable pageable = PageRequest.of(0, limit, Sort.by("salesAmount").descending());
         return salesStatJpaRepository.findAllBySalesDate(targetDate, pageable);

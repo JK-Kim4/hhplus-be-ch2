@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.application.payment;
 
+import kr.hhplus.be.server.common.annotation.TrackSales;
 import kr.hhplus.be.server.domain.order.OrderInfo;
 import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.payment.PaymentCommand;
@@ -30,6 +31,8 @@ public class PaymentFacade {
         this.productService = productService;
     }
 
+
+    @TrackSales
     public PaymentResult.Pay pay(PaymentCriteria.Pay criteria){
         //1. 결제 생성
         PaymentInfo.Create paymentCreate = paymentService.create(PaymentCommand.Create.of(criteria.getOrderId()));
