@@ -26,7 +26,7 @@ public class SalesStatAspect {
         PaymentCriteria.Pay pay = extractRequiredPaymentCriteria(joinPoint);
         //비지니스 로직이 정상적으로 수행 && 트랜잭션 종료 이후 결과 반영
         TransactionSynchronizer.runAfterCommit(() -> {
-            salesStatProcessor.dailySalesReportProcess(pay.getOrderId(), SalesStatProcessor.getDailySalesReportKey(LocalDate.now()));
+            salesStatProcessor.dailySalesReportProcess(pay.getOrderId(), LocalDate.now());
         });
     }
 

@@ -69,4 +69,20 @@ public class CouponCommand {
             this.couponId = couponId;
         }
     }
+
+    @Getter
+    public static class RegisterApplicant {
+        Long couponId;
+        Long userId;
+
+        public static RegisterApplicant of(Long couponId, Long userId){
+            return RegisterApplicant.builder().couponId(couponId).userId(userId).build();
+        }
+
+        @Builder
+        private RegisterApplicant(Long couponId, Long userId) {
+            this.couponId = couponId;
+            this.userId = userId;
+        }
+    }
 }

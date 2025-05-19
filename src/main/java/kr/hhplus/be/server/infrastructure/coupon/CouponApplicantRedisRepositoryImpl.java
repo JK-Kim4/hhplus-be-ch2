@@ -1,0 +1,76 @@
+package kr.hhplus.be.server.infrastructure.coupon;
+
+import kr.hhplus.be.server.common.redis.RedisKeys;
+import kr.hhplus.be.server.domain.coupon.couponApplicant.CouponApplicant;
+import kr.hhplus.be.server.domain.coupon.couponApplicant.CouponApplicantInMemoryRepository;
+import org.redisson.api.RScoredSortedSet;
+import org.redisson.api.RSet;
+import org.redisson.api.RedissonClient;
+import org.redisson.client.protocol.ScoredEntry;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public class CouponApplicantRedisRepositoryImpl implements CouponApplicantInMemoryRepository {
+
+    private final RedissonClient redissonClient;
+
+    public CouponApplicantRedisRepositoryImpl(RedissonClient redissonClient) {
+        this.redissonClient = redissonClient;
+    }
+
+    @Override
+    public void registerCouponApplicant(Long couponId, Long userId, long requestTimeMillis) {
+        RScoredSortedSet<Long> redisSalesReport = redissonClient.getScoredSortedSet(RedisKeys.COUPON_REQUEST_ISSUE.format(couponId));
+        redisSalesReport.addScore(userId, requestTimeMillis);
+    }
+
+    @Override
+    public boolean existIssuableCoupon(Long couponId) {
+        return redissonClient.getKeys().countExists(RedisKeys.COUPON_REQUEST_ISSUE.format(couponId)) > 0;
+    }
+
+    @Override
+    public List<Long> findIssuableCouponIds() {
+        RScoredSortedSet<Long> scoredSortedSet = redissonClient.getScoredSortedSet(RedisKeys.COUPON_ISSUABLE_ID_SET.name());
+        return scoredSortedSet.entryRange(0, -1).stream()
+                .map(ScoredEntry::getValue)
+                .toList();
+    }
+
+    @Override
+    public void deleteIssuableCouponKey(Long couponId) {
+        redissonClient.getKeys().delete(RedisKeys.COUPON_ISSUABLE_FLAG.format(couponId));
+        RSet<Long> rSet = redissonClient.getSet(RedisKeys.COUPON_ISSUABLE_ID_SET.name());
+        rSet.remove(couponId);
+    }
+
+    @Override
+    public void deleteCouponApplicantKey(Long couponId) {
+        redissonClient.getScoredSortedSet(RedisKeys.COUPON_REQUEST_ISSUE.format(couponId)).delete();
+    }
+
+    @Override
+    public Optional<CouponApplicant> findByCouponIdAndUserId(Long couponId, Long userId) {
+        RScoredSortedSet<Long> couponApplicantSet = redissonClient.getScoredSortedSet(RedisKeys.COUPON_REQUEST_ISSUE.format(couponId));
+        Double score = couponApplicantSet.getScore(userId);
+        return Optional.of(CouponApplicant.of(userId, couponId, score.longValue()));
+    }
+
+    @Override
+    public Optional<CouponApplicant> findWinnerByCouponIdAndUserId(Long couponId, Long userId) {
+        RScoredSortedSet<Object> couponApplicantSet = redissonClient.getScoredSortedSet(RedisKeys.COUPON_WINNER.format(couponId));
+        Double score = couponApplicantSet.getScore(userId);
+        return Optional.of(CouponApplicant.of(userId, couponId, score.longValue()));
+    }
+
+    @Override
+    public List<CouponApplicant> findByCouponId(Long couponId) {
+        RScoredSortedSet<Long> couponApplicantSet = redissonClient.getScoredSortedSet(RedisKeys.COUPON_REQUEST_ISSUE.format(couponId));
+        return couponApplicantSet.entryRange(0, -1).stream()
+                .map(entry -> CouponApplicant.of(entry.getValue(), couponId, entry.getScore().longValue()))
+                .toList();
+    }
+}

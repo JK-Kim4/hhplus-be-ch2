@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.common.lock;
 
-import kr.hhplus.be.server.infrastructure.lock.LockConfig;
+import kr.hhplus.be.server.application.lock.LockConfig;
 
 public interface LockExecutor {
 

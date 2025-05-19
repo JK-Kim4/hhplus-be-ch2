@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.support;
 
-import kr.hhplus.be.server.infrastructure.lock.LockConfig;
+import kr.hhplus.be.server.application.lock.LockConfig;
 import kr.hhplus.be.server.infrastructure.lock.PubSubLockManager;
 import org.redisson.api.RLock;
 

@@ -18,20 +18,20 @@ public class CouponApiController implements CouponApiSpec {
         this.couponFacade = couponFacade;
     }
 
-    @Override
+    /*@Override
     @PostMapping("/issue")
     public ResponseEntity<CouponResponse.Issue> issue(
             @RequestBody CouponRequest.Issue request) {
 
         CouponResult.Issue issue = couponFacade.issue(request.toCriteria());
         return ResponseEntity.ok(CouponResponse.Issue.from(issue));
-    }
+    }*/
 
     @Override
     @PostMapping("/issueV2")
-    public ResponseEntity<CouponResponse.RequestIssue> issueV2(
+    public ResponseEntity<CouponResponse.RequestRegister> issueV2(
             @RequestBody CouponRequest.Issue request) {
-        CouponResult.RequestIssue requestIssue = couponFacade.requestIssue(request.toCriteria());
-        return ResponseEntity.ok(CouponResponse.RequestIssue.from(requestIssue));
+        CouponResult.RequestRegister requestRegister = couponFacade.requestRegister(request.toRegisterCriteria());
+        return ResponseEntity.ok(CouponResponse.RequestRegister.from(requestRegister));
     }
 }

@@ -19,6 +19,6 @@ public class SalesStatScheduler {
     //매일 자정 당일 판매 집계 영속화, 금일 판매 집계 redis key 생성
     @Scheduled(cron = "0 0 0 * * *")
     public void persistDailySalesStatsAtMidnight(){
-        salesStatFacade.persistRedisSalesStatToDb();
+        salesStatFacade.persistRedisSalesStat();
     }
 }

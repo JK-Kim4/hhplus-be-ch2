@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.infrastructure.lock;
 
+import kr.hhplus.be.server.application.lock.LockConfig;
 import kr.hhplus.be.server.common.exception.DistributedLockException;
 import kr.hhplus.be.server.common.lock.LockManager;
 import org.redisson.api.RLock;

@@ -1,12 +1,13 @@
 package kr.hhplus.be.server.integration.coupon;
 
-import kr.hhplus.be.server.domain.coupon.*;
-import kr.hhplus.be.server.domain.redis.RedisKeys;
-import kr.hhplus.be.server.domain.redis.RedisZSetStore;
-import kr.hhplus.be.server.domain.salesStat.TypedScore;
+import kr.hhplus.be.server.common.redis.RedisKeys;
+import kr.hhplus.be.server.domain.coupon.Coupon;
+import kr.hhplus.be.server.domain.coupon.CouponInfo;
+import kr.hhplus.be.server.domain.coupon.CouponRepository;
+import kr.hhplus.be.server.domain.coupon.CouponService;
+import kr.hhplus.be.server.domain.coupon.couponApplicant.CouponApplicantInMemoryRepository;
 import kr.hhplus.be.server.support.DatabaseCleanup;
 import kr.hhplus.be.server.support.domainSupport.CouponDomainSupporter;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 @Testcontainers
@@ -31,13 +29,10 @@ public class CouponServiceTest {
     CouponService couponService;
 
     @Autowired
-    RedisCouponService redisCouponService;
+    CouponApplicantInMemoryRepository couponApplicantInMemoryRepository;
 
     @Autowired
     CouponRepository couponRepository;
-
-    @Autowired
-    RedisZSetStore redisZSetStore;
 
     @Autowired
     DatabaseCleanup databaseCleanup;
@@ -63,13 +58,13 @@ public class CouponServiceTest {
         RedisKeys.COUPON_REQUEST_ISSUE.format(coupon2.getId());
         RedisKeys.COUPON_REQUEST_ISSUE.format(coupon3.getId());
 
-        redisZSetStore.incrementScore(RedisKeys.COUPON_REQUEST_ISSUE.format(coupon1.getId()), "1", System.currentTimeMillis());
-        redisZSetStore.incrementScore(RedisKeys.COUPON_REQUEST_ISSUE.format(coupon1.getId()), "2", System.currentTimeMillis());
-        redisZSetStore.incrementScore(RedisKeys.COUPON_REQUEST_ISSUE.format(coupon1.getId()), "3", System.currentTimeMillis());
-        redisZSetStore.incrementScore(RedisKeys.COUPON_REQUEST_ISSUE.format(coupon1.getId()), "4", System.currentTimeMillis());
-        redisZSetStore.incrementScore(RedisKeys.COUPON_REQUEST_ISSUE.format(coupon2.getId()), "4", System.currentTimeMillis());
-        redisZSetStore.incrementScore(RedisKeys.COUPON_REQUEST_ISSUE.format(coupon2.getId()), "1", System.currentTimeMillis());
-        redisZSetStore.incrementScore(RedisKeys.COUPON_REQUEST_ISSUE.format(coupon2.getId()), "2", System.currentTimeMillis());
+
+        couponApplicantInMemoryRepository.registerCouponApplicant(coupon1.getId(), 1L, System.currentTimeMillis());
+        couponApplicantInMemoryRepository.registerCouponApplicant(coupon1.getId(), 2L, System.currentTimeMillis());
+        couponApplicantInMemoryRepository.registerCouponApplicant(coupon1.getId(), 3L, System.currentTimeMillis());
+        couponApplicantInMemoryRepository.registerCouponApplicant(coupon1.getId(), 4L, System.currentTimeMillis());
+        couponApplicantInMemoryRepository.registerCouponApplicant(coupon2.getId(), 1L, System.currentTimeMillis());
+        couponApplicantInMemoryRepository.registerCouponApplicant(coupon2.getId(), 2L, System.currentTimeMillis());
 
     }
 
@@ -92,25 +87,5 @@ public class CouponServiceTest {
         assertAll("쿠폰 잔여 수량 조회",
                 () -> assertEquals(10, coupon1Quantity),
                 () -> assertEquals(1, coupon2Quantity));
-    }
-
-    @Test
-    void Redis_저장소에_선착순_쿠폰발급_요청자정보를_조회한다(){
-        //when
-        CouponInfo.FetchFromRedis fetchFromRedis = redisCouponService.fetchApplicantsFromRedis(CouponCommand.FetchFromRedis.of(coupon1.getId(), couponService.getAvailableQuantityByCouponId(coupon1.getId())));
-        //then
-        assertEquals(4, fetchFromRedis.getApplicants().size());
-        Assertions.assertThat(fetchFromRedis.getApplicants().stream().map(TypedScore::member).toList())
-                .contains("1", "2", "3", "4");
-    }
-
-    @Test
-    void 쿠폰_고유번호와_Redis_저장소_발급요청자_목록을_전달받아_쿠폰을_발급한다(){
-        //when
-        CouponInfo.FetchFromRedis fetchFromRedis = redisCouponService.fetchApplicantsFromRedis(CouponCommand.FetchFromRedis.of(coupon1.getId(), couponService.getAvailableQuantityByCouponId(coupon1.getId())));
-        couponService.issueCouponsToApplicants(coupon1.getId(), fetchFromRedis.getApplicants());
-
-        //then
-        verify(couponService, times(fetchFromRedis.getApplicants().size())).issueUserCoupon(any(CouponCommand.Issue.class));
     }
 }

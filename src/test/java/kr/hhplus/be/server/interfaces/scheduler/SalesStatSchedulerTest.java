@@ -1,7 +1,10 @@
 package kr.hhplus.be.server.interfaces.scheduler;
 
-import kr.hhplus.be.server.application.salesStat.SalesStatProcessor;
-import kr.hhplus.be.server.domain.salesStat.*;
+import kr.hhplus.be.server.domain.salesStat.SalesStat;
+import kr.hhplus.be.server.domain.salesStat.SalesStatRepository;
+import kr.hhplus.be.server.domain.salesStat.SalesStatService;
+import kr.hhplus.be.server.domain.salesStat.salesReport.SalesReportCommand;
+import kr.hhplus.be.server.domain.salesStat.salesReport.SalesReportService;
 import kr.hhplus.be.server.interfaces.scheduler.salesStat.SalesStatScheduler;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +28,7 @@ public class SalesStatSchedulerTest {
     SalesStatScheduler salesStatScheduler;
 
     @Autowired
-    RedisSalesStatService redisSalesStatService;
+    SalesReportService salesReportService;
 
     @Autowired
     SalesStatService salesStatService;
@@ -34,18 +37,18 @@ public class SalesStatSchedulerTest {
     SalesStatRepository salesStatRepository;
 
     private final LocalDate targetDate = LocalDate.now().minusDays(1);
-    private final String redisKey = SalesStatProcessor.getDailySalesReportKey(targetDate);
 
     @BeforeEach
     void setUp() {
         // ZADD products:dailySalesReport:{yyyyMMdd} 10 101, 5 102
-        redisSalesStatService.incrementZSetScoreByKeyWithMember(SalesStatCommand.RedisAddSortedSet.of(redisKey, "101", 10));
-        redisSalesStatService.incrementZSetScoreByKeyWithMember(SalesStatCommand.RedisAddSortedSet.of(redisKey, "102", 20));
+        salesReportService.increaseDailySalesReport(SalesReportCommand.IncreaseSalesReport.of(targetDate, 101L, 10.0));
+        salesReportService.increaseDailySalesReport(SalesReportCommand.IncreaseSalesReport.of(targetDate, 102L, 20.0));
     }
 
     @AfterEach
     void tearDown() {
-        redisSalesStatService.removeByKey(SalesStatCommand.RedisDeleteKey.of(redisKey));
+
+        salesReportService.deleteByLocalDate(SalesReportCommand.ReportDate.of(targetDate));
     }
 
 

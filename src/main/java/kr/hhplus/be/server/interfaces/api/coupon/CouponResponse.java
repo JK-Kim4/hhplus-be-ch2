@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 
 public class CouponResponse {
 
+
     @Getter
     public static class Issue {
         Long couponId;
@@ -55,5 +56,30 @@ public class CouponResponse {
             this.userId = userId;
             this.couponId = couponId;
         }
+    }
+
+    @Getter
+    public static class RequestRegister{
+        Long userId;
+        Long couponId;
+        LocalDateTime appliedAt;
+
+        public static RequestRegister from(CouponResult.RequestRegister register){
+            return RequestRegister.builder()
+                    .userId(register.getUserId())
+                    .couponId(register.getCouponId())
+                    .appliedAt(register.getAppliedAt())
+                    .build();
+        }
+
+
+        @Builder
+        private RequestRegister(Long userId, Long couponId, LocalDateTime appliedAt) {
+            this.userId = userId;
+            this.couponId = couponId;
+            this.appliedAt = appliedAt;
+        }
+
+
     }
 }

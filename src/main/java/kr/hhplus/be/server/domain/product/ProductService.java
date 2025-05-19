@@ -2,37 +2,33 @@ package kr.hhplus.be.server.domain.product;
 
 import jakarta.persistence.NoResultException;
 import kr.hhplus.be.server.application.salesStat.SalesStatProcessor;
-import kr.hhplus.be.server.domain.redis.RedisCommonStore;
-import kr.hhplus.be.server.domain.redis.RedisZSetStore;
 import kr.hhplus.be.server.domain.salesStat.SalesStat;
 import kr.hhplus.be.server.domain.salesStat.SalesStatRepository;
-import kr.hhplus.be.server.domain.salesStat.TypedScore;
+import kr.hhplus.be.server.domain.salesStat.salesReport.SalesReport;
+import kr.hhplus.be.server.domain.salesStat.salesReport.SalesReportInMemoryRepository;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-//TODO ProductFacade 분리
 public class ProductService {
 
     private final ProductRepository productRepository;
     private final SalesStatRepository salesStatRepository;
-    private final RedisZSetStore redisZSetStore;
-    private final RedisCommonStore redisCommonStore;
+    private final SalesReportInMemoryRepository salesReportInMemoryRepository;
 
     public ProductService(
             ProductRepository productRepository,
             SalesStatRepository salesStatRepository,
-            RedisZSetStore redisZSetStore,
-            RedisCommonStore redisCommonStore) {
+            SalesReportInMemoryRepository salesReportInMemoryRepository) {
         this.productRepository = productRepository;
         this.salesStatRepository = salesStatRepository;
-        this.redisZSetStore = redisZSetStore;
-        this.redisCommonStore = redisCommonStore;
+        this.salesReportInMemoryRepository = salesReportInMemoryRepository;
     }
 
     @Cacheable(value = "products:list", key = "'offset:' + #offset + ':limit:' + #limit")
@@ -58,8 +54,8 @@ public class ProductService {
     public ProductInfo.Ranks findRealTimeRank(){
         String redisKey = SalesStatProcessor.getDailySalesReportKey(LocalDate.now());
 
-        return redisCommonStore.hasKey(redisKey)
-                ? fetchRankFromRedis(redisKey)
+        return salesReportInMemoryRepository.hasKey(redisKey)
+                ? fetchDailySalesRank(LocalDate.now())
                 : findLast3DaysRank();
     }
 
@@ -107,26 +103,21 @@ public class ProductService {
         return ProductInfo.DecreaseStock.from(product);
     }
 
-    private ProductInfo.Ranks fetchRankFromRedis(String key) {
-        List<TypedScore> typedScores = redisZSetStore.reverseRangeWithScores(key, 0, 2);
+    private ProductInfo.Ranks fetchDailySalesRank(LocalDate targetDate) {
+        List<SalesReport> salesReports = salesReportInMemoryRepository.findAllByReportDate(targetDate).stream()
+                .sorted(Comparator.naturalOrder())
+                .limit(3)
+                .toList();
 
-        if (typedScores.isEmpty()) {
-            return findLast3DaysRank();
-        }
+        List<Long> productIds = salesReports.stream()
+                .map(SalesReport::getProductId)
+                .toList();
 
-        List<Long> productIds = extractProductIds(typedScores);
         List<Product> products = productRepository.findByIdIn(productIds);
 
         productIdsValidation(productIds, products);
 
-        return ProductInfo.Ranks.of(typedScores, products, LocalDate.now());
-    }
-
-    private List<Long> extractProductIds(List<TypedScore> typedScores) {
-        return typedScores.stream()
-                .map(TypedScore::member)
-                .map(Long::parseLong)
-                .toList();
+        return ProductInfo.Ranks.dailyRankOf(salesReports, products);
     }
 
     private void productIdsValidation(List<Long> productIds, List<Product> products){

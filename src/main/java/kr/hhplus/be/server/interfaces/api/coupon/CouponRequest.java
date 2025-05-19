@@ -25,5 +25,12 @@ public class CouponRequest {
         public CouponCriteria.Issue toCriteria() {
             return CouponCriteria.Issue.of(couponId, userId);
         }
+
+        public CouponCriteria.RequestRegister toRegisterCriteria() {
+            return CouponCriteria.RequestRegister.builder()
+                    .couponId(couponId)
+                    .userId(userId)
+                    .build();
+        }
     }
 }

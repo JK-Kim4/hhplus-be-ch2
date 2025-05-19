@@ -5,9 +5,7 @@ import kr.hhplus.be.server.domain.balance.Balance;
 import kr.hhplus.be.server.domain.balance.BalanceRepository;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderRepository;
-import kr.hhplus.be.server.domain.redis.RedisCommonStore;
-import kr.hhplus.be.server.domain.redis.RedisZSetStore;
-import kr.hhplus.be.server.domain.salesStat.TypedScore;
+import kr.hhplus.be.server.domain.salesStat.salesReport.SalesReport;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.UserRepository;
 import kr.hhplus.be.server.support.domainSupport.OrderDomainSupporter;
@@ -15,6 +13,8 @@ import kr.hhplus.be.server.support.domainSupport.UserDomainSupporter;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.redisson.api.RScoredSortedSet;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -31,10 +31,7 @@ public class SalesStatProcessorTest {
     SalesStatProcessor salesStatProcessor;
 
     @Autowired
-    RedisZSetStore redisZSetStore;
-
-    @Autowired
-    RedisCommonStore redisCommonStore;
+    RedissonClient redissonClient;
 
     @Autowired
     UserRepository userRepository;
@@ -65,14 +62,20 @@ public class SalesStatProcessorTest {
     @Test
     void 결제_완료된_주문의_고유번호를_전달받아_판매_상품_정보를_실시간_판매_집계_KEY에_추가한다(){
         //given
-        String key = SalesStatProcessor.getDailySalesReportKey(LocalDate.now());
-        salesStatProcessor.dailySalesReportProcess(order.getId(), key);
+        LocalDate targetDate = LocalDate.of(2025, 1, 1);
+        String key = SalesStatProcessor.getDailySalesReportKey(targetDate);
+        salesStatProcessor.dailySalesReportProcess(order.getId(), targetDate);
 
         //then
-        List<TypedScore> zSetRangeWithScoresByKey = redisZSetStore.rangeWithScores(key);
+        RScoredSortedSet<Long> scoredSortedSet = redissonClient.getScoredSortedSet(key);
+        List<SalesReport> list = scoredSortedSet.entryRange(0, -1).stream().map(
+                entry -> SalesReport.of(entry.getValue(), entry.getScore(), targetDate)
+        ).toList();
 
-        Assertions.assertThat(zSetRangeWithScoresByKey.stream().map(TypedScore::member).toList())
-                .contains("1", "2", "3");
+
+        //then
+        Assertions.assertThat(list.stream().map(SalesReport::getProductId).toList())
+                .contains(1L, 2L, 3L);
     }
 
 }

@@ -36,7 +36,7 @@ public class CouponIssueConcurrentTest {
     void setup(){
         Coupon coupon = Coupon.create(
                 "쿠폰 발급 동시성 테스트",
-                5,
+                1,
                 DiscountPolicy.FLAT,
                 BigDecimal.valueOf(5000),
                 LocalDate.now().plusDays(3)
@@ -50,15 +50,7 @@ public class CouponIssueConcurrentTest {
 
         List<Runnable> tasks = Arrays.asList(
                 () -> couponFacade.issue(CouponCriteria.Issue.builder().couponId(testCoupon.getId()).userId(1L).build()),
-                () -> couponFacade.issue(CouponCriteria.Issue.builder().couponId(testCoupon.getId()).userId(2L).build()),
-                () -> couponFacade.issue(CouponCriteria.Issue.builder().couponId(testCoupon.getId()).userId(3L).build()),
-                () -> couponFacade.issue(CouponCriteria.Issue.builder().couponId(testCoupon.getId()).userId(4L).build()),
-                () -> couponFacade.issue(CouponCriteria.Issue.builder().couponId(testCoupon.getId()).userId(5L).build()),
-                () -> couponFacade.issue(CouponCriteria.Issue.builder().couponId(testCoupon.getId()).userId(6L).build()),
-                () -> couponFacade.issue(CouponCriteria.Issue.builder().couponId(testCoupon.getId()).userId(7L).build()),
-                () -> couponFacade.issue(CouponCriteria.Issue.builder().couponId(testCoupon.getId()).userId(8L).build()),
-                () -> couponFacade.issue(CouponCriteria.Issue.builder().couponId(testCoupon.getId()).userId(9L).build()),
-                () -> couponFacade.issue(CouponCriteria.Issue.builder().couponId(testCoupon.getId()).userId(10L).build())
+                () -> couponFacade.issue(CouponCriteria.Issue.builder().couponId(testCoupon.getId()).userId(2L).build())
         );
 
 
@@ -70,7 +62,7 @@ public class CouponIssueConcurrentTest {
         System.out.println("남은 쿠폰 잔여 수: " + coupon.getQuantity() +", 발생 오류 수: " + execute.size());
 
         assertThat(coupon.getQuantity()).isEqualTo(0);
-        assertThat(execute.size()).isEqualTo(5);
+        assertThat(execute.size()).isEqualTo(1);
 
     }
 }

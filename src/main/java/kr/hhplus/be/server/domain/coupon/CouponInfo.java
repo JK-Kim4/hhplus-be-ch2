@@ -159,4 +159,9 @@ public class CouponInfo {
             this.couponIds = couponIds;
         }
     }
+
+    @Getter
+    public static class RegisterApplicant {
+
+    }
 }

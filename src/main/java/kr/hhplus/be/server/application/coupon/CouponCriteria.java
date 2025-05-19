@@ -28,4 +28,27 @@ public class CouponCriteria {
                     .build();
         }
     }
+
+    @Getter
+    public static class RequestRegister {
+        Long couponId;
+        Long userId;
+
+        @Builder
+        private RequestRegister(Long couponId, Long userId) {
+            this.couponId = couponId;
+            this.userId = userId;
+        }
+
+        public CouponCommand.Issue toCommand() {
+            return CouponCommand.Issue.builder()
+                    .couponId(couponId)
+                    .userId(userId)
+                    .build();
+        }
+
+        public CouponCommand.RegisterApplicant toRegisterCommand() {
+            return CouponCommand.RegisterApplicant.of(couponId, userId);
+        }
+    }
 }

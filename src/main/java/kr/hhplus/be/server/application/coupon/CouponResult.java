@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.application.coupon;
 
 import kr.hhplus.be.server.domain.coupon.CouponInfo;
+import kr.hhplus.be.server.domain.coupon.couponApplicant.CouponApplicantInfo;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -54,6 +55,29 @@ public class CouponResult {
             this.userCouponId = userCouponId;
             this.issuedAt = issuedAt;
             this.expiredAt = expiredAt;
+        }
+    }
+
+    @Getter
+    public static class RequestRegister {
+        Long userId;
+        Long couponId;
+        LocalDateTime appliedAt;
+
+
+        public static RequestRegister from(CouponApplicantInfo.RegisterApplicant registerApplicant) {
+            return RequestRegister.builder()
+                    .userId(registerApplicant.getUserId())
+                    .couponId(registerApplicant.getCouponId())
+                    .appliedAt(registerApplicant.getAppliedAt())
+                    .build();
+        }
+
+        @Builder
+        private RequestRegister(Long userId, Long couponId, LocalDateTime appliedAt) {
+            this.userId = userId;
+            this.couponId = couponId;
+            this.appliedAt = appliedAt;
         }
     }
 }

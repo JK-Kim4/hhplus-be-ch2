@@ -3,6 +3,8 @@ package kr.hhplus.be.server.application.coupon;
 import kr.hhplus.be.server.common.annotation.DistributedLock;
 import kr.hhplus.be.server.common.lock.LockExecutorType;
 import kr.hhplus.be.server.domain.coupon.*;
+import kr.hhplus.be.server.domain.coupon.couponApplicant.CouponApplicantInfo;
+import kr.hhplus.be.server.domain.coupon.couponApplicant.CouponApplicantService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,43 +15,28 @@ import java.util.Optional;
 public class CouponFacade {
 
     private final CouponService couponService;
-    private final RedisCouponService redisCouponService;
+    private final CouponApplicantService couponApplicantService;
 
     public CouponFacade(
             CouponService couponService,
-            RedisCouponService redisCouponService) {
+            CouponApplicantService couponApplicantService) {
         this.couponService = couponService;
-        this.redisCouponService = redisCouponService;
+        this.couponApplicantService = couponApplicantService;
     }
 
-    public CouponResult.RequestIssue requestIssue(CouponCriteria.Issue criteria){
-        redisCouponService.validationCouponRequest(criteria.toCommand());
-        CouponInfo.RequestIssue requestIssue = redisCouponService.insertUserIdInIssuanceSet(criteria.toCommand());
+    public CouponResult.RequestRegister requestRegister(CouponCriteria.RequestRegister criteria){
+        couponApplicantService.validationRegister(criteria.toCommand());
+        CouponApplicantInfo.RegisterApplicant registerApplicant = couponApplicantService.registerCouponApplicant(criteria.toRegisterCommand());
 
-        return CouponResult.RequestIssue.from(requestIssue);
-    }
-
-    public void issueCouponsFromRedisApplicants(){
-        //발급 가능 쿠폰 Id 조회
-        CouponInfo.AvailableCouponIds availableCouponIds = couponService.getIssuableCouponIds();
-
-        //발급 가능 쿠폰이 존재하지 않을 경우 탈출
-        if(availableCouponIds.getCouponIds().isEmpty()){return;}
-
-        //Redis Member 조회
-        for(Long couponId : availableCouponIds.getCouponIds()){
-            Integer availableQuantity = couponService.getAvailableQuantityByCouponId(couponId);
-            CouponInfo.FetchFromRedis fetchFromRedis = redisCouponService.fetchApplicantsFromRedis(CouponCommand.FetchFromRedis.of(couponId, availableQuantity));
-
-            couponService.issueCouponsToApplicants(couponId, fetchFromRedis.getApplicants());
-        }
+        return CouponResult.RequestRegister.from(registerApplicant);
     }
 
     public void deleteExpiredRedisCouponKeys(){
         CouponInfo.ExpiredCouponIds expiredCouponIds = couponService.getExpiredCouponIds();
 
         for(Long couponId : expiredCouponIds.getCouponIds()){
-            redisCouponService.deleteRedisCouponKey(CouponCommand.DeleteKey.of(couponId));
+            //redisCouponService.deleteRedisCouponKey(CouponCommand.DeleteKey.of(couponId));
+            couponApplicantService.deleteExpiredCouponKeys(CouponCommand.DeleteKey.of(couponId));
         }
     }
 
@@ -70,5 +57,19 @@ public class CouponFacade {
         CouponInfo.Issue result = couponService.issueUserCoupon(criteria.toCommand());
 
         return CouponResult.Issue.from(result);
+    }
+
+    public void issueCoupons() {
+        CouponApplicantInfo.IssuableCoupons issuableCouponIds = couponApplicantService.findIssuableCouponIds();
+
+        for(Long couponId: issuableCouponIds.getIssuableCouponIds()){
+            Integer availableQuantity = couponService.getAvailableQuantityByCouponId(couponId);
+            //CouponInfo.FetchFromRedis fetchFromRedis = redisCouponService.fetchApplicantsFromRedis(CouponCommand.FetchFromRedis.of(couponId, availableQuantity));
+            CouponApplicantInfo.Applicants applicants = couponApplicantService.fetchApplicantUserIds(couponId);
+
+            //couponService.issueCouponsToApplicants(couponId, fetchFromRedis.getApplicants());
+            couponService.issueCouponToApplicantsV2(couponId, applicants.getUserIds());
+        }
+
     }
 }

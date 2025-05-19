@@ -2,6 +2,7 @@ package kr.hhplus.be.server.domain.salesStat;
 
 import jakarta.validation.constraints.NotNull;
 import kr.hhplus.be.server.application.salesStat.SalesStatResult;
+import kr.hhplus.be.server.domain.salesStat.salesReport.SalesReport;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,6 +32,17 @@ public class SalesStatCommand {
     public static class Creates {
         List<Create> creates;
 
+        public static Creates fromReportList(List<SalesReport> reports) {
+            return Creates.builder()
+                    .creates(reports.stream().map( report ->
+                            SalesStatCommand.Create.of(
+                                    report.getProductId(),
+                                    report.getReportDate(),
+                                    report.getSalesScore().longValue()
+                            )
+                    ).toList()).build();
+        }
+
         public static SalesStatCommand.Creates fromResultList(List<SalesStatResult.SalesStat> salesStats){
             return Creates.builder()
                     .creates(salesStats.stream().map( (ss) ->
@@ -56,7 +68,6 @@ public class SalesStatCommand {
         private Creates(List<Create> creates) {
             this.creates = creates;
         }
-
     }
 
     @Getter

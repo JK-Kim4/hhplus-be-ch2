@@ -2,7 +2,7 @@ package kr.hhplus.be.server.common.aspect;
 
 import kr.hhplus.be.server.common.annotation.DistributedLock;
 import kr.hhplus.be.server.common.lock.*;
-import kr.hhplus.be.server.infrastructure.lock.LockConfig;
+import kr.hhplus.be.server.application.lock.LockConfig;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
