@@ -1,5 +1,7 @@
 package kr.hhplus.be.server.config.redis;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.codec.JsonJacksonCodec;
@@ -23,7 +25,13 @@ public class RedissonConfiguration {
     public RedissonClient redissonClient() {
         RedissonClient redisson = null;
         Config config = new Config();
-        config.setCodec(new JsonJacksonCodec());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule()); // LocalDateTime 지원 추가
+        objectMapper.findAndRegisterModules();
+
+        JsonJacksonCodec jsonCodec = new JsonJacksonCodec(objectMapper);
+        config.setCodec(jsonCodec);
         config.useSingleServer()
                 .setAddress(REDISSON_HOST_PREFIX + redisHost + ":" + redisPort)
                 .setConnectionPoolSize(100)

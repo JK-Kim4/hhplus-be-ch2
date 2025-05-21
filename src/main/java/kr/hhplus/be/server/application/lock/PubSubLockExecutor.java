@@ -1,9 +1,10 @@
 package kr.hhplus.be.server.application.lock;
 
 import kr.hhplus.be.server.common.TransactionSynchronizer;
-import kr.hhplus.be.server.common.lock.LockCallBack;
-import kr.hhplus.be.server.common.lock.LockExecutor;
-import kr.hhplus.be.server.common.lock.LockExecutorType;
+import kr.hhplus.be.server.common.executor.LockExecutor;
+import kr.hhplus.be.server.infrastructure.lock.LockCallBack;
+import kr.hhplus.be.server.infrastructure.lock.LockConfig;
+import kr.hhplus.be.server.infrastructure.lock.LockExecutorType;
 import kr.hhplus.be.server.infrastructure.lock.PubSubLockManager;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;

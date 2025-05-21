@@ -1,13 +1,14 @@
 package kr.hhplus.be.server.domain.coupon;
 
 import jakarta.persistence.NoResultException;
-import kr.hhplus.be.server.domain.salesStat.TypedScore;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Service
+@Transactional
 public class CouponService {
 
     private final CouponRepository couponRepository;
@@ -55,13 +56,6 @@ public class CouponService {
 
     public Integer getAvailableQuantityByCouponId(Long couponId) {
         return couponRepository.getAvailableQuantityByCouponId(couponId);
-    }
-
-    public void issueCouponsToApplicants(Long couponId, List<TypedScore> requestUserSetByRedisKey) {
-        requestUserSetByRedisKey.forEach(typedScore ->
-                    this.issueUserCoupon(
-                        CouponCommand.Issue.of(couponId, Long.valueOf(typedScore.member())))
-        );
     }
 
     public void issueCouponToApplicantsV2(Long couponId, List<Long> applicantIds) {

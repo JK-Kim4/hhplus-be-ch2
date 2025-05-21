@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.application.coupon;
 
 import kr.hhplus.be.server.common.annotation.DistributedLock;
-import kr.hhplus.be.server.common.lock.LockExecutorType;
+import kr.hhplus.be.server.infrastructure.lock.LockExecutorType;
 import kr.hhplus.be.server.domain.coupon.*;
 import kr.hhplus.be.server.domain.coupon.couponApplicant.CouponApplicantInfo;
 import kr.hhplus.be.server.domain.coupon.couponApplicant.CouponApplicantService;
