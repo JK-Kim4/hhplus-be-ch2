@@ -1,8 +1,7 @@
 package kr.hhplus.be.server.common.aspect;
 
 import kr.hhplus.be.server.common.annotation.DistributedLock;
-import kr.hhplus.be.server.common.lock.*;
-import kr.hhplus.be.server.application.lock.LockConfig;
+import kr.hhplus.be.server.infrastructure.lock.*;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -27,15 +26,15 @@ public class DistributedLockAspect {
     @Around("@annotation(distributedLock)")
     public Object applyLock(ProceedingJoinPoint joinPoint, DistributedLock distributedLock) throws Throwable {
         String key = keyGenerator.generateKey(joinPoint, distributedLock.prefix(), distributedLock.key());
-        LockExecutor executorV2 = getLockExecutor(distributedLock.executor());
+        LockCallBack.LockExecutor executorV2 = getLockExecutor(distributedLock.executor());
         return executeWithLock(executorV2, key, distributedLock, joinPoint);
     }
 
-    private LockExecutor getLockExecutor(LockExecutorType type) {
+    private LockCallBack.LockExecutor getLockExecutor(LockExecutorType type) {
         return lockExecutorRegistry.get(type);
     }
 
-    private Object executeWithLock(LockExecutor executorV2, String key, DistributedLock distributedLock, ProceedingJoinPoint joinPoint) throws Throwable {
+    private Object executeWithLock(LockCallBack.LockExecutor executorV2, String key, DistributedLock distributedLock, ProceedingJoinPoint joinPoint) throws Throwable {
         return executorV2.execute(key, joinPoint::proceed, new LockConfig(
                 distributedLock.waitTime(),
                 distributedLock.leaseTime(),

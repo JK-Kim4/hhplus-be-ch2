@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.common.annotation;
 
-import kr.hhplus.be.server.common.lock.LockExecutorType;
+import kr.hhplus.be.server.infrastructure.lock.LockExecutorType;
 
 import java.lang.annotation.*;
 import java.util.concurrent.TimeUnit;
