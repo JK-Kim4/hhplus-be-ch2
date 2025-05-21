@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.domain.payment;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.math.BigDecimal;
@@ -50,20 +51,27 @@ public class PaymentInfo {
         }
     }
 
-    @Getter
+    @Getter @EqualsAndHashCode
     public static class Complete {
 
         Long paymentId;
+        Long orderId;
         BigDecimal paidAmount;
         LocalDateTime paidAt;
 
         public static Complete from(kr.hhplus.be.server.domain.payment.Payment payment) {
-            return Complete.builder().paymentId(payment.getId()).paidAmount(payment.getFinalPrice()).paidAt(payment.getPaidAt()).build();
+            return Complete.builder()
+                        .paymentId(payment.getId())
+                        .orderId(payment.getOrderId())
+                        .paidAmount(payment.getFinalPrice())
+                        .paidAt(payment.getPaidAt())
+                    .build();
         }
 
         @Builder
-        private Complete(Long paymentId, BigDecimal paidAmount, LocalDateTime paidAt) {
+        private Complete(Long paymentId, Long orderId, BigDecimal paidAmount, LocalDateTime paidAt) {
             this.paymentId = paymentId;
+            this.orderId = orderId;
             this.paidAmount = paidAmount;
             this.paidAt = paidAt;
         }

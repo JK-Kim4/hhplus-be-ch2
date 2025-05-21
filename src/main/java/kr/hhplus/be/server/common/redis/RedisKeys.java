@@ -11,7 +11,8 @@ public enum RedisKeys {
     COUPON_REQUEST_ISSUE("coupon:request:%s", true),
     COUPON_WINNER("coupon:winner:%s", true),
     COUPON_META("coupon:meta", false),
-    COUPON_ACTIVE("coupon:active", false);
+    COUPON_ACTIVE("coupon:active", false),
+    EXCEPTION_HISTORY("exception:history:%s", true);
 
     private final String pattern;
     private final boolean formattable;
