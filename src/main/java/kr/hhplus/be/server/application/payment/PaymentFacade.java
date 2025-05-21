@@ -3,9 +3,7 @@ package kr.hhplus.be.server.application.payment;
 import kr.hhplus.be.server.common.annotation.TrackSales;
 import kr.hhplus.be.server.domain.order.OrderInfo;
 import kr.hhplus.be.server.domain.order.OrderService;
-import kr.hhplus.be.server.domain.payment.PaymentCommand;
-import kr.hhplus.be.server.domain.payment.PaymentInfo;
-import kr.hhplus.be.server.domain.payment.PaymentService;
+import kr.hhplus.be.server.domain.payment.*;
 import kr.hhplus.be.server.domain.product.ProductCommand;
 import kr.hhplus.be.server.domain.product.ProductInfo;
 import kr.hhplus.be.server.domain.product.ProductService;
@@ -21,14 +19,17 @@ public class PaymentFacade {
     private final PaymentService paymentService;
     private final OrderService orderService;
     private final ProductService productService;
+    private final PaymentEventPublisher paymentEventPublisher;
 
     public PaymentFacade(
             PaymentService paymentService,
             OrderService orderService,
-            ProductService productService) {
+            ProductService productService,
+            PaymentEventPublisher paymentEventPublisher) {
         this.paymentService = paymentService;
         this.orderService = orderService;
         this.productService = productService;
+        this.paymentEventPublisher = paymentEventPublisher;
     }
 
 
@@ -50,6 +51,9 @@ public class PaymentFacade {
 
         //5. 결과 저장
         PaymentInfo.Complete complete = paymentService.complete(PaymentCommand.Complete.of(criteria.getOrderId(), paymentCreate.getPaymentId()));
+
+        //6. 결제 데이터 플랫폼 전송
+        paymentEventPublisher.complete(PaymentCompleteEvent.from(complete));
 
         return PaymentResult.Pay.from(complete);
     }
