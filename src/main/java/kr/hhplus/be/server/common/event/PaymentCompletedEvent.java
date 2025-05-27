@@ -1,21 +1,24 @@
-package kr.hhplus.be.server.domain.payment;
+package kr.hhplus.be.server.common.event;
 
+import kr.hhplus.be.server.domain.payment.PaymentInfo;
 import kr.hhplus.be.server.domain.product.Price;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter @ToString
+@EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PaymentCompleteEvent {
+public class PaymentCompletedEvent implements Serializable {
 
     private Long paymentId;
     private Long orderId;
     private Price paymentPrice;
     private LocalDateTime paidAt;
 
-    public static PaymentCompleteEvent from(PaymentInfo.Complete info){
-        return PaymentCompleteEvent.builder()
+    public static PaymentCompletedEvent from(PaymentInfo.Complete info){
+        return PaymentCompletedEvent.builder()
                 .paymentId(info.getPaymentId())
                 .orderId(info.getOrderId())
                 .paymentPrice(Price.of(info.getPaidAmount()))
@@ -34,7 +37,7 @@ public class PaymentCompleteEvent {
 
 
     @Builder
-    private PaymentCompleteEvent(Long paymentId, Long orderId, Price paymentPrice, LocalDateTime paidAt) {
+    private PaymentCompletedEvent(Long paymentId, Long orderId, Price paymentPrice, LocalDateTime paidAt) {
         this.paymentId = paymentId;
         this.orderId = orderId;
         this.paymentPrice = paymentPrice;

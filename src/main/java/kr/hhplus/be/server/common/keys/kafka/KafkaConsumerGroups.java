@@ -1,0 +1,10 @@
+package kr.hhplus.be.server.common.keys.kafka;
+
+public class KafkaConsumerGroups {
+
+    protected KafkaConsumerGroups(){
+        throw new IllegalStateException("External topics class cannot be instantiated");
+    }
+
+    public static final String PAYMENT_COMPLETE_GROUP = "payment-complete-group";
+}
