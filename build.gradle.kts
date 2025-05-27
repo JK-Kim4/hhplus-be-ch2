@@ -41,6 +41,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-aop")
 	implementation("org.springframework.boot:spring-boot-starter-cache")
 	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+	implementation("org.springframework.kafka:spring-kafka")
 
 
 	// Lombok
@@ -58,6 +59,8 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-testcontainers")
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:mysql")
+	testImplementation("org.testcontainers:kafka:1.19.7")
+	testImplementation("org.springframework.kafka:spring-kafka-test")
 	testImplementation("org.instancio:instancio-junit:5.4.0")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
