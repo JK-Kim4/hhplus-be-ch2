@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.integration.salesstat.salesReport;
 
-import kr.hhplus.be.server.common.keys.RedisKeys;
+import kr.hhplus.be.server.common.keys.CacheKeys;
 import kr.hhplus.be.server.domain.salesstat.salesReport.SalesReport;
 import kr.hhplus.be.server.domain.salesstat.salesReport.SalesReportCommand;
 import kr.hhplus.be.server.domain.salesstat.salesReport.SalesReportService;
@@ -56,7 +56,7 @@ public class SalesReportServiceTest {
         Long member = 1L;
         Double score = 50.0;
         LocalDate targetDate = LocalDate.of(2022, 1, 1);
-        RScoredSortedSet<Long> scoredSortedSet = redissonClient.getScoredSortedSet(RedisKeys.DAILY_SALES_REPORT.format(targetDate));
+        RScoredSortedSet<Long> scoredSortedSet = redissonClient.getScoredSortedSet(CacheKeys.DAILY_SALES_REPORT.format(targetDate));
         scoredSortedSet.addScore(member, score);
 
         //when//then
@@ -69,7 +69,7 @@ public class SalesReportServiceTest {
         Long member = 1L;
         Double score = 50.0;
         LocalDate targetDate = LocalDate.of(2022, 1, 1);
-        RScoredSortedSet<Long> scoredSortedSet = redissonClient.getScoredSortedSet(RedisKeys.DAILY_SALES_REPORT.format(targetDate));
+        RScoredSortedSet<Long> scoredSortedSet = redissonClient.getScoredSortedSet(CacheKeys.DAILY_SALES_REPORT.format(targetDate));
         scoredSortedSet.addScore(member, score);
         assertTrue(salesReportService.existByLocalDate(SalesReportCommand.ReportDate.of(targetDate)));
 
@@ -86,7 +86,7 @@ public class SalesReportServiceTest {
         Long member = 1L;
         Double score = 50.0;
         LocalDate targetDate = LocalDate.of(2022, 1, 1);
-        RScoredSortedSet<Long> scoredSortedSet = redissonClient.getScoredSortedSet(RedisKeys.DAILY_SALES_REPORT.format(targetDate));
+        RScoredSortedSet<Long> scoredSortedSet = redissonClient.getScoredSortedSet(CacheKeys.DAILY_SALES_REPORT.format(targetDate));
         scoredSortedSet.addScore(member, score);
         SalesReportCommand.SalesReport command = SalesReportCommand.SalesReport.of(targetDate, member);
         assertTrue(salesReportService.existByLocalDate(SalesReportCommand.ReportDate.of(targetDate)));

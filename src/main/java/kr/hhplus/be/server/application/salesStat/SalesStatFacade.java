@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.application.salesstat;
 
-import kr.hhplus.be.server.common.keys.RedisKeys;
+import kr.hhplus.be.server.common.keys.CacheKeys;
 import kr.hhplus.be.server.domain.order.OrderInfo;
 import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.salesstat.SalesStatCommand;
@@ -58,7 +58,7 @@ public class SalesStatFacade {
     }
 
     public static String getDailySalesReportKey(LocalDate date){
-        return RedisKeys.DAILY_SALES_REPORT.format(date);
+        return CacheKeys.DAILY_SALES_REPORT.format(date);
     }
 
     private void setSalesReportKeyTtlIfNotExist(boolean isExist, LocalDate reportDate, Duration duration) {

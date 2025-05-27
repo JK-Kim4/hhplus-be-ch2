@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.integration.history.exception;
 
-import kr.hhplus.be.server.common.keys.RedisKeys;
+import kr.hhplus.be.server.common.keys.CacheKeys;
 import kr.hhplus.be.server.domain.history.exception.ExceptionHistory;
 import kr.hhplus.be.server.domain.history.exception.ExceptionHistoryFactory;
 import kr.hhplus.be.server.domain.history.exception.ExceptionHistoryService;
@@ -37,7 +37,7 @@ public class ExceptionHistoryServiceTest {
 
         //when
         exceptionHistoryService.saveExceptionHistory(localDate, exceptionHistory);
-        Set<ExceptionHistory> set = redissonClient.getSet(RedisKeys.EXCEPTION_HISTORY.format(localDate));
+        Set<ExceptionHistory> set = redissonClient.getSet(CacheKeys.EXCEPTION_HISTORY.format(localDate));
 
         //then
         Assertions.assertEquals(exceptionHistory, set.iterator().next());

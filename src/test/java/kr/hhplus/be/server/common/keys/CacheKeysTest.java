@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class RedisKeysTest {
+public class CacheKeysTest {
 
     @Nested
     @DisplayName("format 메소드 사용할 수 없는 KEY")
@@ -19,14 +19,14 @@ public class RedisKeysTest {
         void COUPON_ACTIVE_키는_format_메소드를_사용할수없다() {
             //then
             assertThrows(UnsupportedOperationException.class, () ->
-                    RedisKeys.COUPON_ACTIVE.format("format"));
+                    CacheKeys.COUPON_ACTIVE.format("format"));
         }
 
         @Test
         void COUPON_META_키는_format_메소드를_사용할수없다() {
             //then
             assertThrows(UnsupportedOperationException.class, () ->
-                    RedisKeys.COUPON_META.format("format"));
+                    CacheKeys.COUPON_META.format("format"));
         }
     }
 
@@ -39,7 +39,7 @@ public class RedisKeysTest {
             //given
             String expected = "products:dailySalesReport:20231001";
             //when
-            String result = RedisKeys.DAILY_SALES_REPORT.format("20231001");
+            String result = CacheKeys.DAILY_SALES_REPORT.format("20231001");
             //then
             assertEquals(expected, result);
         }
@@ -49,7 +49,7 @@ public class RedisKeysTest {
             //given
             String expected = "coupon:issuable:20231001";
             //when
-            String result = RedisKeys.COUPON_ISSUABLE_FLAG.format("20231001");
+            String result = CacheKeys.COUPON_ISSUABLE_FLAG.format("20231001");
             //then
             assertEquals(expected, result);
 
@@ -61,7 +61,7 @@ public class RedisKeysTest {
             //given
             String expected = "coupon:request:20231001";
             //when
-            String result = RedisKeys.COUPON_REQUEST_ISSUE.format("20231001");
+            String result = CacheKeys.COUPON_REQUEST_ISSUE.format("20231001");
             //then
             assertEquals(expected, result);
 
@@ -74,7 +74,7 @@ public class RedisKeysTest {
             String expected = "products:dailySalesReport:20231001";
 
             //when
-            String result = RedisKeys.DAILY_SALES_REPORT.format(reportDate);
+            String result = CacheKeys.DAILY_SALES_REPORT.format(reportDate);
 
             //then
             assertEquals(expected, result);

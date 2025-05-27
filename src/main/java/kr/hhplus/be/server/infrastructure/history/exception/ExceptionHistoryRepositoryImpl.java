@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.infrastructure.history.exception;
 
-import kr.hhplus.be.server.common.keys.RedisKeys;
+import kr.hhplus.be.server.common.keys.CacheKeys;
 import kr.hhplus.be.server.domain.history.exception.ExceptionHistory;
 import kr.hhplus.be.server.domain.history.exception.ExceptionHistoryRepository;
 import org.redisson.api.RedissonClient;
@@ -20,13 +20,13 @@ public class ExceptionHistoryRepositoryImpl implements ExceptionHistoryRepositor
 
     @Override
     public void save(LocalDate exceptionDate, ExceptionHistory exceptionHistory) {
-        String key = RedisKeys.EXCEPTION_HISTORY.format(exceptionDate);
+        String key = CacheKeys.EXCEPTION_HISTORY.format(exceptionDate);
         redissonClient.getSet(key).add(exceptionHistory);
     }
 
     @Override
     public Set<ExceptionHistory> findByDate(LocalDate exceptionDate) {
-        String key = RedisKeys.EXCEPTION_HISTORY.format(exceptionDate);
+        String key = CacheKeys.EXCEPTION_HISTORY.format(exceptionDate);
         return redissonClient.getSet(key);
     }
 }
