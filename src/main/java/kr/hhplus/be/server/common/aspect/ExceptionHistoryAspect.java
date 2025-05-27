@@ -30,6 +30,7 @@ public class ExceptionHistoryAspect {
 
         boolean retryable = exceptionRecordable.retryable();
 
+        //TODO 생성 책임 Service로
         ExceptionHistory history = ExceptionHistoryFactory.create(methodName, args, retryable);
         log.error("Exception occurred in method: {} with args: {}. Retryable: {}", methodName, args, retryable);
 

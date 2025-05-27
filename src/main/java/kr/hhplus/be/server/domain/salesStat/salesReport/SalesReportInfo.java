@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.salesStat.salesReport;
+package kr.hhplus.be.server.domain.salesstat.salesReport;
 
 public class SalesReportInfo {
 }

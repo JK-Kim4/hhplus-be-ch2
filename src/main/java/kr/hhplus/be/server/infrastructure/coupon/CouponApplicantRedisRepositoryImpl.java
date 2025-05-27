@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.infrastructure.coupon;
 
-import kr.hhplus.be.server.common.redis.RedisKeys;
+import kr.hhplus.be.server.common.keys.RedisKeys;
 import kr.hhplus.be.server.domain.coupon.couponApplicant.CouponApplicant;
 import kr.hhplus.be.server.domain.coupon.couponApplicant.CouponApplicantInMemoryRepository;
 import org.redisson.api.RScoredSortedSet;

@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.infrastructure.history.exception;
 
-import kr.hhplus.be.server.common.redis.RedisKeys;
+import kr.hhplus.be.server.common.keys.RedisKeys;
 import kr.hhplus.be.server.domain.history.exception.ExceptionHistory;
 import kr.hhplus.be.server.domain.history.exception.ExceptionHistoryRepository;
 import org.redisson.api.RedissonClient;

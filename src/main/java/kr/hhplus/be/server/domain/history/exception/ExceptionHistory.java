@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+//TODO History Type
 @EqualsAndHashCode
 @Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ExceptionHistory {

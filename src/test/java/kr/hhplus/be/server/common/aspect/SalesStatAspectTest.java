@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.common.aspect;
 
 import kr.hhplus.be.server.application.payment.PaymentCriteria;
-import kr.hhplus.be.server.application.salesStat.SalesStatProcessor;
+import kr.hhplus.be.server.application.salesstat.SalesStatFacade;
 import kr.hhplus.be.server.common.TransactionSynchronizer;
 import kr.hhplus.be.server.support.DummyService;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,15 +16,15 @@ import static org.mockito.Mockito.*;
 
 public class SalesStatAspectTest {
 
-    private SalesStatProcessor salesStatProcessor;
+    private SalesStatFacade salesStatFacade;
     private DummyService dummyService;
 
     @BeforeEach
     void setUp() {
-        salesStatProcessor = mock(SalesStatProcessor.class);
+        salesStatFacade = mock(SalesStatFacade.class);
 
         // AspectJ 프록시 구성
-        SalesStatAspect aspect = new SalesStatAspect(salesStatProcessor);
+        SalesStatAspect aspect = new SalesStatAspect(salesStatFacade);
         DummyService target = new DummyService();
 
         AspectJProxyFactory factory = new AspectJProxyFactory(target);
@@ -46,7 +46,7 @@ public class SalesStatAspectTest {
 
             dummyService.TrackSales_결제_테스트(pay);
 
-            verify(salesStatProcessor, times(1))
+            verify(salesStatFacade, times(1))
                     .dailySalesReportProcess(1L, LocalDate.now());
         }
     }

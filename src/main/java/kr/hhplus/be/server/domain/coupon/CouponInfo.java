@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.domain.coupon;
 
-import kr.hhplus.be.server.domain.salesStat.TypedScore;
+import kr.hhplus.be.server.domain.salesstat.TypedScore;
 import lombok.Builder;
 import lombok.Getter;
 

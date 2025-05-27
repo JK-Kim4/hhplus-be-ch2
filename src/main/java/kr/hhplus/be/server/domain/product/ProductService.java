@@ -1,11 +1,11 @@
 package kr.hhplus.be.server.domain.product;
 
 import jakarta.persistence.NoResultException;
-import kr.hhplus.be.server.application.salesStat.SalesStatProcessor;
-import kr.hhplus.be.server.domain.salesStat.SalesStat;
-import kr.hhplus.be.server.domain.salesStat.SalesStatRepository;
-import kr.hhplus.be.server.domain.salesStat.salesReport.SalesReport;
-import kr.hhplus.be.server.domain.salesStat.salesReport.SalesReportInMemoryRepository;
+import kr.hhplus.be.server.common.keys.CacheKeys;
+import kr.hhplus.be.server.domain.salesstat.SalesStat;
+import kr.hhplus.be.server.domain.salesstat.SalesStatRepository;
+import kr.hhplus.be.server.domain.salesstat.salesReport.SalesReport;
+import kr.hhplus.be.server.domain.salesstat.salesReport.SalesReportInMemoryRepository;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -31,14 +31,14 @@ public class ProductService {
         this.salesReportInMemoryRepository = salesReportInMemoryRepository;
     }
 
-    @Cacheable(value = "products:list", key = "'offset:' + #offset + ':limit:' + #limit")
+    //@Cacheable(value = "products:list", key = "'offset:' + #offset + ':limit:' + #limit")
     public ProductInfo.Products findAll(int offset, int limit){
 
         List<Product> all = productRepository.findAll(offset, limit);
         return ProductInfo.Products.fromList(all);
     }
 
-    @Cacheable(value = "last3days", key = "'salesRank'")
+    //@Cacheable(value = "last3days", key = "'salesRank'")
     public ProductInfo.Ranks findLast3DaysRank(){
         LocalDate targetDate = LocalDate.now().minusDays(1);
 
@@ -52,7 +52,7 @@ public class ProductService {
 
     @Cacheable(value = "realTime", key = "'salesRank'")
     public ProductInfo.Ranks findRealTimeRank(){
-        String redisKey = SalesStatProcessor.getDailySalesReportKey(LocalDate.now());
+        String redisKey = CacheKeys.DAILY_SALES_REPORT.format(LocalDate.now());
 
         return salesReportInMemoryRepository.hasKey(redisKey)
                 ? fetchDailySalesRank(LocalDate.now())

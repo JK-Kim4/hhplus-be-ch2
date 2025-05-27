@@ -1,13 +1,13 @@
 package kr.hhplus.be.server.integration.coupon;
 
-import kr.hhplus.be.server.common.redis.RedisKeys;
+import kr.hhplus.be.server.common.keys.RedisKeys;
 import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.coupon.CouponInfo;
 import kr.hhplus.be.server.domain.coupon.CouponRepository;
 import kr.hhplus.be.server.domain.coupon.CouponService;
 import kr.hhplus.be.server.domain.coupon.couponApplicant.CouponApplicantInMemoryRepository;
 import kr.hhplus.be.server.support.DatabaseCleanup;
-import kr.hhplus.be.server.support.domainSupport.CouponDomainSupporter;
+import kr.hhplus.be.server.support.domainsupport.CouponDomainSupporter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
