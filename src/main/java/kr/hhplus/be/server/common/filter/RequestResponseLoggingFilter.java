@@ -14,8 +14,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.stream.Collectors;
-@Component
 @Slf4j
+@Component
 public class RequestResponseLoggingFilter extends OncePerRequestFilter {
 
     @Override
