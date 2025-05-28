@@ -24,6 +24,11 @@ public class CouponFacade {
         this.couponApplicantService = couponApplicantService;
     }
 
+    public CouponResult.UserCoupons findUserCouponsByUserId(CouponCriteria.UserCoupon command){
+        CouponInfo.UserCoupons userCoupons = couponService.findUserCouponByUserId(command.getUserId());
+        return CouponResult.UserCoupons.from(userCoupons);
+    }
+
     public CouponResult.RequestRegister requestRegister(CouponCriteria.RequestRegister criteria){
         couponApplicantService.validationRegister(criteria.toCommand());
         CouponApplicantInfo.RegisterApplicant registerApplicant = couponApplicantService.registerCouponApplicant(criteria.toRegisterCommand());
@@ -35,7 +40,6 @@ public class CouponFacade {
         CouponInfo.ExpiredCouponIds expiredCouponIds = couponService.getExpiredCouponIds();
 
         for(Long couponId : expiredCouponIds.getCouponIds()){
-            //redisCouponService.deleteRedisCouponKey(CouponCommand.DeleteKey.of(couponId));
             couponApplicantService.deleteExpiredCouponKeys(CouponCommand.DeleteKey.of(couponId));
         }
     }
@@ -64,10 +68,7 @@ public class CouponFacade {
 
         for(Long couponId: issuableCouponIds.getIssuableCouponIds()){
             Integer availableQuantity = couponService.getAvailableQuantityByCouponId(couponId);
-            //CouponInfo.FetchFromRedis fetchFromRedis = redisCouponService.fetchApplicantsFromRedis(CouponCommand.FetchFromRedis.of(couponId, availableQuantity));
             CouponApplicantInfo.Applicants applicants = couponApplicantService.fetchApplicantUserIds(couponId);
-
-            //couponService.issueCouponsToApplicants(couponId, fetchFromRedis.getApplicants());
             couponService.issueCouponToApplicantsV2(couponId, applicants.getUserIds());
         }
 

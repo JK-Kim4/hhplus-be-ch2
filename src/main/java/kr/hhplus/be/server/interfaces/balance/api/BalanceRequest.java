@@ -6,7 +6,20 @@ import lombok.Getter;
 
 import java.math.BigDecimal;
 
+@Getter
 public class BalanceRequest {
+
+    private Long userId;
+    private Long balanceId;
+
+    public BalanceCommand toCommand() {
+        return BalanceCommand.of(userId, balanceId);
+    }
+
+    @Builder
+    public BalanceRequest(Long userId) {
+        this.userId = userId;
+    }
 
     @Getter
     public static class Charge {

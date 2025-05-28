@@ -6,7 +6,27 @@ import lombok.Getter;
 
 import java.math.BigDecimal;
 
+@Getter
 public class BalanceResponse {
+
+    Long userId;
+    Long balanceId;
+    BigDecimal point;
+
+    public static BalanceResponse from(BalanceInfo balance) {
+        return BalanceResponse.builder()
+                .userId(balance.getUserId())
+                .balanceId(balance.getBalanceId())
+                .point(balance.getPoint())
+                .build();
+    }
+
+    @Builder
+    private BalanceResponse(Long userId, Long balanceId, BigDecimal point) {
+        this.userId = userId;
+        this.balanceId = balanceId;
+        this.point = point;
+    }
 
     @Getter
     public static class Charge {

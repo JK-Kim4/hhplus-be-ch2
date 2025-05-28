@@ -33,4 +33,18 @@ public class CouponRequest {
                     .build();
         }
     }
+
+    @Getter
+    public static class UserCoupon {
+        Long userId;
+
+        @Builder
+        private UserCoupon(Long userId) {
+            this.userId = userId;
+        }
+
+        public CouponCriteria.UserCoupon toCriteria() {
+            return CouponCriteria.UserCoupon.of(userId);
+        }
+    }
 }

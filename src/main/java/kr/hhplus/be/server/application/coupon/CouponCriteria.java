@@ -51,4 +51,18 @@ public class CouponCriteria {
             return CouponCommand.RegisterApplicant.of(couponId, userId);
         }
     }
+
+    @Getter
+    public static class UserCoupon {
+        Long userId;
+
+        public static UserCoupon of(Long userId){
+            return UserCoupon.builder().userId(userId).build();
+        }
+
+        @Builder
+        private UserCoupon(Long userId) {
+            this.userId = userId;
+        }
+    }
 }

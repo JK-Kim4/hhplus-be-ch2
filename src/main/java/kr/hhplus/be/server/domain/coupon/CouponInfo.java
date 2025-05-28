@@ -19,12 +19,12 @@ public class CouponInfo {
         LocalDateTime issuedAt;
         LocalDate expiredAt;
 
-        public static Issue from(UserCoupon userCoupon) {
+        public static Issue from(kr.hhplus.be.server.domain.coupon.UserCoupon userCoupon) {
             return Issue.builder()
-                    .couponId(userCoupon.getCoupon().getId())
+                    .couponId(userCoupon.getCouponId())
                     .userCouponId(userCoupon.getId())
                     .issuedAt(userCoupon.getIssuedAt())
-                    .expiredAt(userCoupon.getCoupon().getExpireDate())
+                    .expiredAt(userCoupon.getExpireDate())
                     .build();
         }
 
@@ -39,15 +39,55 @@ public class CouponInfo {
     }
 
     @Getter
-    public static class UserCouponOptional {
-        Optional<UserCoupon> userCoupon;
+    public static class UserCoupon {
+        Long userCouponId;
+        Long couponId;
+        Long userId;
+        String couponName;
+        String discountPolicy;
+        BigDecimal discountRate;
+        LocalDate expiredAt;
+        LocalDateTime issuedAt;
+        LocalDateTime usedAt;
+
+        public static UserCoupon from(kr.hhplus.be.server.domain.coupon.UserCoupon userCoupon){
+            return UserCoupon.builder()
+                    .userCouponId(userCoupon.getCouponId())
+                    .couponId(userCoupon.getCouponId())
+                    .userId(userCoupon.getUserId())
+                    .couponName(userCoupon.getCouponName())
+                    .discountPolicy(userCoupon.getCouponDiscountPolicy())
+                    .discountRate(userCoupon.getDiscountRate())
+                    .expiredAt(userCoupon.getExpireDate())
+                    .issuedAt(userCoupon.getIssuedAt())
+                    .usedAt(userCoupon.getUsedAt())
+                    .build();
+        }
 
         @Builder
-        private UserCouponOptional(Optional<UserCoupon> userCoupon) {
+        public UserCoupon(Long userCouponId, Long couponId, Long userId, String couponName, String discountPolicy, BigDecimal discountRate, LocalDate expiredAt, LocalDateTime issuedAt, LocalDateTime usedAt) {
+            this.userCouponId = userCouponId;
+            this.couponId = couponId;
+            this.userId = userId;
+            this.couponName = couponName;
+            this.discountPolicy = discountPolicy;
+            this.discountRate = discountRate;
+            this.expiredAt = expiredAt;
+            this.issuedAt = issuedAt;
+            this.usedAt = usedAt;
+        }
+    }
+
+    @Getter
+    public static class UserCouponOptional {
+        Optional<kr.hhplus.be.server.domain.coupon.UserCoupon>  userCoupon;
+
+        @Builder
+        private UserCouponOptional(Optional<kr.hhplus.be.server.domain.coupon.UserCoupon> userCoupon) {
             this.userCoupon = userCoupon;
         }
 
-        public static UserCouponOptional from(Optional<UserCoupon> userCoupon) {
+        public static UserCouponOptional from(Optional<kr.hhplus.be.server.domain.coupon.UserCoupon> userCoupon) {
             return UserCouponOptional.builder().userCoupon(userCoupon).build();
         }
     }
@@ -163,5 +203,22 @@ public class CouponInfo {
     @Getter
     public static class RegisterApplicant {
 
+    }
+
+    @Getter
+    public static class UserCoupons {
+        List<UserCoupon> userCoupons;
+
+
+        public static UserCoupons from(List<kr.hhplus.be.server.domain.coupon.UserCoupon> userCoupons) {
+            return UserCoupons.builder()
+                    .userCoupons(userCoupons.stream().map(UserCoupon::from).toList())
+                    .build();
+        }
+
+        @Builder
+        private UserCoupons(List<UserCoupon> userCoupons) {
+            this.userCoupons = userCoupons;
+        }
     }
 }
