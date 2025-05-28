@@ -29,7 +29,7 @@ public class CouponApplicantRedisRepositoryImpl implements CouponApplicantInMemo
 
     @Override
     public boolean existIssuableCoupon(Long couponId) {
-        return redissonClient.getKeys().countExists(CacheKeys.COUPON_REQUEST_ISSUE.format(couponId)) > 0;
+        return redissonClient.getKeys().countExists(CacheKeys.COUPON_ISSUABLE_FLAG.format(couponId)) > 0;
     }
 
     @Override
