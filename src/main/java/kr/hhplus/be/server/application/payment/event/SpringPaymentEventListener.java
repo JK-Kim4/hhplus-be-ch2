@@ -1,6 +1,5 @@
 package kr.hhplus.be.server.application.payment.event;
 
-import kr.hhplus.be.server.common.annotation.ExceptionRecordable;
 import kr.hhplus.be.server.common.event.PaymentCompletedEvent;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -17,7 +16,6 @@ public class SpringPaymentEventListener {
     }
 
     @Async
-    @ExceptionRecordable(retryable = true)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handlePaymentCompleteEvent(PaymentCompletedEvent event) {
         paymentEventPublisher.complete(event);

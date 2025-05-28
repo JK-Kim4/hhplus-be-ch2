@@ -13,7 +13,8 @@ public enum CacheKeys {
     COUPON_META("coupon:meta", false),
     COUPON_ACTIVE("coupon:active", false),
     EXCEPTION_HISTORY("exception:history:%s", true),
-    IDEMPOTENCY_PAYMENT("idempotency:payment:%s", true),;
+    IDEMPOTENCY_PAYMENT("idempotency:payment:%s", true),
+    FAILED_RETRY_LOG("failed:retryLog", false),;
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
 
