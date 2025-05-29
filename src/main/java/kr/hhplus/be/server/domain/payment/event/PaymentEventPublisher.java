@@ -1,6 +1,4 @@
-package kr.hhplus.be.server.application.payment.event;
-
-import kr.hhplus.be.server.common.event.PaymentCompletedEvent;
+package kr.hhplus.be.server.domain.payment.event;
 
 public interface PaymentEventPublisher {
 
