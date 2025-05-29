@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.integration.kafka;
 
-import kr.hhplus.be.server.common.event.PaymentCompletedEvent;
+import kr.hhplus.be.server.domain.payment.event.PaymentCompletedEvent;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 

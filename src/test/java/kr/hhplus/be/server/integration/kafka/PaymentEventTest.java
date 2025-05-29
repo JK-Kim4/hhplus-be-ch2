@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.integration.kafka;
 
-import kr.hhplus.be.server.common.event.PaymentCompletedEvent;
 import kr.hhplus.be.server.config.KafkaTestContainerConfig;
 import kr.hhplus.be.server.domain.payment.PaymentInfo;
+import kr.hhplus.be.server.domain.payment.event.PaymentCompletedEvent;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.awaitility.Awaitility;

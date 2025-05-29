@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.application.payment;
 
 import kr.hhplus.be.server.common.annotation.TrackSales;
-import kr.hhplus.be.server.common.event.PaymentCompletedEvent;
+import kr.hhplus.be.server.domain.payment.event.PaymentCompletedEvent;
 import kr.hhplus.be.server.domain.order.OrderInfo;
 import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.payment.*;

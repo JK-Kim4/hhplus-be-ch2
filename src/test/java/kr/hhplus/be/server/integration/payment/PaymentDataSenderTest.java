@@ -2,7 +2,7 @@ package kr.hhplus.be.server.integration.payment;
 
 import kr.hhplus.be.server.application.payment.PaymentDataSender;
 import kr.hhplus.be.server.application.port.DataPlatformPort;
-import kr.hhplus.be.server.common.event.PaymentCompletedEvent;
+import kr.hhplus.be.server.domain.payment.event.PaymentCompletedEvent;
 import kr.hhplus.be.server.domain.product.Price;
 import kr.hhplus.be.server.domain.retryfailedlog.RetryFailedLogService;
 import org.junit.jupiter.api.Test;

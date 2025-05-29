@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.infrastructure.payment.event;
 
-import kr.hhplus.be.server.application.payment.event.PaymentEventPublisher;
+import kr.hhplus.be.server.domain.payment.event.PaymentEventPublisher;
 import kr.hhplus.be.server.common.keys.kafka.KafkaTopics;
-import kr.hhplus.be.server.common.event.PaymentCompletedEvent;
+import kr.hhplus.be.server.domain.payment.event.PaymentCompletedEvent;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
