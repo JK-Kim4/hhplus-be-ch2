@@ -1,6 +1,5 @@
 package kr.hhplus.be.server.infrastructure.payment.event;
 
-import kr.hhplus.be.server.common.keys.CacheKeys;
 import kr.hhplus.be.server.domain.payment.PaymentEventInMemoryRepository;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
@@ -17,12 +16,12 @@ public class PaymentEventRedisRepository implements PaymentEventInMemoryReposito
 
     @Override
     public void saveIdempotencyKey(String value) {
-        RBucket<String> bucket = redissonClient.getBucket(CacheKeys.IDEMPOTENCY_PAYMENT.format(value));
+        RBucket<String> bucket = redissonClient.getBucket(value);
         bucket.set(value);
     }
 
     @Override
     public boolean hasIdempotencyKey(String value) {
-        return redissonClient.getBucket(CacheKeys.IDEMPOTENCY_PAYMENT.format(value)).isExists();
+        return redissonClient.getBucket(value).isExists();
     }
 }

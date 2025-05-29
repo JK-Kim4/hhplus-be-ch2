@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.support.domainsupport;
+package kr.hhplus.be.server.support.domain;
 
 import kr.hhplus.be.server.domain.balance.Balance;
 import kr.hhplus.be.server.domain.balance.Point;
@@ -6,7 +6,7 @@ import kr.hhplus.be.server.domain.user.User;
 
 import java.math.BigDecimal;
 
-public class UserDomainSupporter {
+public class UserDomainSupport {
 
     public static User 기본_사용자_생성() {
         User user = User.createWithName("사용자");

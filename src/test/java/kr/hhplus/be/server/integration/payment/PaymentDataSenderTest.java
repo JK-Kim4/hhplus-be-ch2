@@ -3,7 +3,6 @@ package kr.hhplus.be.server.integration.payment;
 import kr.hhplus.be.server.application.payment.PaymentDataSender;
 import kr.hhplus.be.server.application.port.DataPlatformPort;
 import kr.hhplus.be.server.common.event.PaymentCompletedEvent;
-import kr.hhplus.be.server.domain.product.Price;
 import kr.hhplus.be.server.domain.retryfailedlog.RetryFailedLogService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -32,12 +31,12 @@ public class PaymentDataSenderTest {
     @Test
     void 데이터플랫폼_전송시_재시도전략에_실패하면_복구로직이_실행된다(){
         //given
-        PaymentCompletedEvent event = PaymentCompletedEvent.builder()
-                .paymentId(1L)
-                .orderId(10L)
-                .paymentPrice(Price.of(BigDecimal.valueOf(10000L)))
-                .paidAt(LocalDateTime.of(2023, 10, 1, 12, 0))
-                .build();
+        PaymentCompletedEvent event = PaymentCompletedEvent.of(
+                1L,
+                10L,
+                BigDecimal.valueOf(10000L),
+                LocalDateTime.of(2023, 10, 1, 12, 0)
+        );
 
         Mockito.doThrow(new RuntimeException("Timeout occurred"))
                 .when(dataPlatformPort).sendPaymentData(event);

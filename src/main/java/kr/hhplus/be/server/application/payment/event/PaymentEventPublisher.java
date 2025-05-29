@@ -4,7 +4,7 @@ import kr.hhplus.be.server.common.event.PaymentCompletedEvent;
 
 public interface PaymentEventPublisher {
 
-    void complete(PaymentCompletedEvent event);
+    void send(PaymentCompletedEvent event);
 
     void fail(PaymentCompletedEvent event);
 

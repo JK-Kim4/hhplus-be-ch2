@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.support.domainsupport;
+package kr.hhplus.be.server.support.domain;
 
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderItem;
@@ -7,7 +7,7 @@ import kr.hhplus.be.server.domain.product.Price;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class OrderDomainSupporter {
+public class OrderDomainSupport {
 
     public static Order 기본_주문_생성(){
         List<OrderItem> items = List.of(

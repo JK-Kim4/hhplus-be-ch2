@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.support.domainsupport;
+package kr.hhplus.be.server.support.domain;
 
 import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.coupon.DiscountPolicy;
@@ -7,7 +7,7 @@ import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public class CouponDomainSupporter {
+public class CouponDomainSupport {
 
     public static Coupon 수량정보를_전달받아_유효_테스트쿠폰_생성(Integer quantity){
         return Coupon.create("test coupon", quantity, DiscountPolicy.FLAT, BigDecimal.valueOf(10000), LocalDate.now().plusDays(7));

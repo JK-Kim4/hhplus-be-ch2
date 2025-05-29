@@ -4,6 +4,9 @@ import kr.hhplus.be.server.domain.coupon.CouponCommand;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
 public class CouponCriteria {
 
     @Getter
@@ -63,6 +66,28 @@ public class CouponCriteria {
         @Builder
         private UserCoupon(Long userId) {
             this.userId = userId;
+        }
+    }
+
+    @Getter
+    public static class Create {
+        String name;
+        Integer quantity;
+        String discountPolicy;
+        BigDecimal discountAmount;
+        LocalDate expireDate;
+
+        public CouponCommand.Create toCommand() {
+            return CouponCommand.Create.of(name, quantity, discountPolicy, discountAmount, expireDate);
+        }
+
+        @Builder
+        private Create(String name, Integer quantity, String discountPolicy, BigDecimal discountAmount, LocalDate expireDate) {
+            this.name = name;
+            this.quantity = quantity;
+            this.discountPolicy = discountPolicy;
+            this.discountAmount = discountAmount;
+            this.expireDate = expireDate;
         }
     }
 }

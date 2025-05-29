@@ -221,4 +221,18 @@ public class CouponInfo {
             this.userCoupons = userCoupons;
         }
     }
+
+    @Getter
+    public static class Create {
+        Long couponId;
+
+        public static Create from(kr.hhplus.be.server.domain.coupon.Coupon coupon) {
+            return Create.builder().couponId(coupon.getId()).build();
+        }
+
+        @Builder
+        private Create(Long couponId) {
+            this.couponId = couponId;
+        }
+    }
 }

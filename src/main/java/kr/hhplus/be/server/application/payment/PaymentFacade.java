@@ -57,7 +57,13 @@ public class PaymentFacade {
         PaymentInfo.Complete complete = paymentService.complete(PaymentCommand.Complete.of(criteria.getOrderId(), paymentCreate.getPaymentId()));
 
         //6. 결제 데이터 플랫폼 전송
-        applicationEventPublisher.publishEvent(PaymentCompletedEvent.from(complete));
+        applicationEventPublisher.publishEvent(
+            PaymentCompletedEvent.of(
+                complete.getPaymentId(),
+                complete.getOrderId(),
+                complete.getPaidAmount(),
+                complete.getPaidAt()
+        ));
 
         return PaymentResult.Pay.from(complete);
     }

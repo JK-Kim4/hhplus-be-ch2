@@ -115,6 +115,34 @@ public class CouponResponse {
             this.appliedAt = appliedAt;
         }
 
+    }
 
+    @Getter
+    public static class Void{
+        String message;
+
+        public static Void of(String message){
+            return Void.builder().message(message).build();
+        }
+
+        @Builder
+        private Void(String message) {
+            this.message = message;
+        }
+    }
+
+    @Getter
+    public static class Create {
+        Long couponId;
+
+
+        @Builder
+        private Create(Long couponId) {
+            this.couponId = couponId;
+        }
+
+        public static Create from(CouponResult.Create create) {
+            return Create.builder().couponId(create.getCouponId()).build();
+        }
     }
 }
