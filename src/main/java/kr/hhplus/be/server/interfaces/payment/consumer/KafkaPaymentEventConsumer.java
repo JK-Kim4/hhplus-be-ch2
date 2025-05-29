@@ -34,14 +34,14 @@ public class KafkaPaymentEventConsumer {
             groupId = KafkaConsumerGroups.PAYMENT_COMPLETE_GROUP)
     public void listen(PaymentCompletedEvent event) {
 
-        if(paymentEventService.hasIdempotencyKey(event)){
+        if(paymentEventService.hasPaymentCompletedIdempotencyKey(event)){
             logger.info("Idempotency key already exists. Event: {}", event);
             return;
         }
 
         try {
             paymentDataSender.sendWithRetry(event);
-            paymentEventService.saveIdempotencyKey(event);
+            paymentEventService.savePaymentCompletedIdempotencyKey(event);
         }catch (Exception e){
             // DLQ 전송
             paymentEventPublisher.fail(event);
