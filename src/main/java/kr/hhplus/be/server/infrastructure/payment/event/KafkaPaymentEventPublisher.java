@@ -16,7 +16,7 @@ public class KafkaPaymentEventPublisher implements PaymentEventPublisher {
     }
 
     @Override
-    public void complete(PaymentCompletedEvent event) {
+    public void send(PaymentCompletedEvent event) {
         kafkaTemplate.send(KafkaTopics.PAYMENT_COMPLETED_TOPIC, event);
     }
 
