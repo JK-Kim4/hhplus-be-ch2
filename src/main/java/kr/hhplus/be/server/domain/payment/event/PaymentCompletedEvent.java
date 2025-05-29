@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.common.event;
+package kr.hhplus.be.server.domain.payment.event;
 
 import kr.hhplus.be.server.domain.payment.PaymentInfo;
 import lombok.*;
