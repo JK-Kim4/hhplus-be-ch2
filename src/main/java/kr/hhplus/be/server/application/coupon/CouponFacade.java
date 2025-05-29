@@ -32,8 +32,16 @@ public class CouponFacade {
         this.couponEventPublisher = couponEventPublisher;
     }
 
-    public CouponResult.UserCoupons findUserCouponsByUserId(CouponCriteria.UserCoupon command){
-        CouponInfo.UserCoupons userCoupons = couponService.findUserCouponByUserId(command.getUserId());
+    public CouponResult.Create create(CouponCriteria.Create criteria){
+        CouponInfo.Create create = couponService.create(criteria.toCommand());
+
+        couponApplicantService.registerCouponKeys(create.getCouponId());
+
+        return CouponResult.Create.from(create);
+    }
+
+    public CouponResult.UserCoupons findUserCouponsByUserId(CouponCriteria.UserCoupon criteria){
+        CouponInfo.UserCoupons userCoupons = couponService.findUserCouponByUserId(criteria.getUserId());
         return CouponResult.UserCoupons.from(userCoupons);
     }
 
@@ -71,6 +79,16 @@ public class CouponFacade {
         return CouponResult.Issue.from(result);
     }
 
+    public void issueV2(CouponCriteria.Issue criteria){
+        couponApplicantService.validationIssuableCoupon(criteria.toCommand());
+
+        couponApplicantService.contains(criteria.toCommand());
+
+        CouponIssueRequestedEvent event = CouponIssueRequestedEvent.of(criteria.getCouponId(), criteria.getUserId());
+
+        couponEventPublisher.send(event);
+    }
+
     public void issueCoupons() {
         CouponApplicantInfo.IssuableCoupons issuableCouponIds = couponApplicantService.findIssuableCouponIds();
 
@@ -80,9 +98,5 @@ public class CouponFacade {
             couponService.issueCouponToApplicantsV2(couponId, applicants.getUserIds());
         }
 
-    }
-
-    public void publishCouponIssuedEvent(CouponCriteria.Issue criteria) {
-        couponEventPublisher.send(CouponIssueRequestedEvent.of(criteria.getCouponId(), criteria.getUserId()));
     }
 }

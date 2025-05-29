@@ -1,13 +1,20 @@
 package kr.hhplus.be.server.interfaces.coupon.api;
 
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import kr.hhplus.be.server.application.coupon.CouponCriteria;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class CouponRequest {
 
-    @Getter
-    public static class Issue {
+    @Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class Issue implements Serializable {
 
         Long couponId;
         Long userId;
@@ -45,6 +52,40 @@ public class CouponRequest {
 
         public CouponCriteria.UserCoupon toCriteria() {
             return CouponCriteria.UserCoupon.of(userId);
+        }
+    }
+
+    @Getter
+    public static class Create {
+
+        String name;
+        @NonNull @Min(1)
+        Integer quantity;
+        @NotBlank @Pattern(regexp = "FLAT|RATE")
+        String discountPolicy;
+        @NonNull
+        BigDecimal discountAmount; // 정액이면 금액, 정률이면 비율(%)
+        @Future(message = "만료일은 오늘 이후여야 합니다.")
+        LocalDate expireDate;
+
+
+        public CouponCriteria.Create toCriteria() {
+            return CouponCriteria.Create.builder()
+                    .name(name)
+                    .quantity(quantity)
+                    .discountPolicy(discountPolicy)
+                    .discountAmount(discountAmount)
+                    .expireDate(expireDate)
+                    .build();
+        }
+
+        @Builder
+        private Create(String name, Integer quantity, String discountPolicy, BigDecimal discountAmount, LocalDate expireDate) {
+            this.name = name;
+            this.quantity = quantity;
+            this.discountPolicy = discountPolicy;
+            this.discountAmount = discountAmount;
+            this.expireDate = expireDate;
         }
     }
 }
