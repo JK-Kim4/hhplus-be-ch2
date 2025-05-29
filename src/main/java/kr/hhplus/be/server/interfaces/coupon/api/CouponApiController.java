@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.interfaces.coupon.api;
 
+import jakarta.validation.Valid;
 import kr.hhplus.be.server.application.coupon.CouponFacade;
 import kr.hhplus.be.server.application.coupon.CouponResult;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,14 @@ public class CouponApiController implements CouponApiSpec {
     }
 
     @Override
+    @PostMapping
+    public ResponseEntity<CouponResponse.Create> create(
+            @RequestBody @Valid CouponRequest.Create request) {
+        CouponResult.Create create = couponFacade.create(request.toCriteria());
+        return ResponseEntity.ok(CouponResponse.Create.from(create));
+    }
+
+    @Override
     @GetMapping("/user-coupon/user/{userId}")
     public ResponseEntity<CouponResponse.UserCoupons> issue(CouponRequest.UserCoupon request) {
         CouponResult.UserCoupons userCoupons = couponFacade.findUserCouponsByUserId(request.toCriteria());
@@ -28,5 +37,13 @@ public class CouponApiController implements CouponApiSpec {
             @RequestBody CouponRequest.Issue request) {
         CouponResult.RequestRegister requestRegister = couponFacade.requestRegister(request.toRegisterCriteria());
         return ResponseEntity.ok(CouponResponse.RequestRegister.from(requestRegister));
+    }
+
+    @Override
+    @PostMapping("/issueV2")
+    public ResponseEntity<CouponResponse.Void> issueV2(
+            @RequestBody CouponRequest.Issue request) {
+        couponFacade.issueV2(request.toCriteria());
+        return ResponseEntity.ok(CouponResponse.Void.of("쿠폰 발급 요청 성공"));
     }
 }
