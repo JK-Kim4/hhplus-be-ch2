@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.integration.redis;
 
 import kr.hhplus.be.server.infrastructure.lock.PubSubLockManager;
-import kr.hhplus.be.server.support.LockManagerSupporter;
+import kr.hhplus.be.server.support.LockManagerSupport;
 import org.junit.jupiter.api.Test;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -28,7 +28,7 @@ public class RedisDistributedLockTest {
         String lockKey = "test:integration:success";
         RLock lock = redissonClient.getLock(lockKey);
 
-        try(PubSubLockManager manager = LockManagerSupporter.기본_LOCK_MANAGER_생성(lock)) {
+        try(PubSubLockManager manager = LockManagerSupport.기본_LOCK_MANAGER_생성(lock)) {
             assertTrue(manager.isLocked());
         }
     }
@@ -43,7 +43,7 @@ public class RedisDistributedLockTest {
 
         try {
             assertThrows(RuntimeException.class, () -> {
-                try (PubSubLockManager manager = LockManagerSupporter.기본_LOCK_MANAGER_생성(lock)) {
+                try (PubSubLockManager manager = LockManagerSupport.기본_LOCK_MANAGER_생성(lock)) {
                     // 이 블록이 실행되면 안 됨
                     throw new IllegalStateException("실행되면 안됨");
                 }
@@ -59,7 +59,7 @@ public class RedisDistributedLockTest {
     void leaseTime_이후에는_락이_자동으로_풀려야_한다() throws Exception {
         String lockKey = "test:integration:ttl";
         RLock lock = redissonClient.getLock(lockKey);
-        try (PubSubLockManager manager = LockManagerSupporter.기본_LOCK_MANAGER_생성(lock)) {
+        try (PubSubLockManager manager = LockManagerSupport.기본_LOCK_MANAGER_생성(lock)) {
             System.out.println("[1] 락 획득 및 유지 중");
             Thread.sleep(1000);
         }
@@ -68,7 +68,7 @@ public class RedisDistributedLockTest {
         Thread.sleep(2500);
 
         // 다시 락을 시도
-        try (PubSubLockManager manager = LockManagerSupporter.기본_LOCK_MANAGER_생성(lock)) {
+        try (PubSubLockManager manager = LockManagerSupport.기본_LOCK_MANAGER_생성(lock)) {
             //Lock 해제 시 획득 성공
             assertTrue(manager.isLocked());
         }
