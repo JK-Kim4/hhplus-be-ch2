@@ -7,4 +7,5 @@ public class KafkaConsumerGroups {
     }
 
     public static final String PAYMENT_COMPLETE_GROUP = "payment-complete-group";
+    public static final String COUPON_ISSUE_REQUESTED_GROUP = "coupon-issue-requested-group";
 }

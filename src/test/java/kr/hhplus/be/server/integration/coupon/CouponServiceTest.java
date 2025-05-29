@@ -7,7 +7,7 @@ import kr.hhplus.be.server.domain.coupon.CouponRepository;
 import kr.hhplus.be.server.domain.coupon.CouponService;
 import kr.hhplus.be.server.domain.coupon.couponApplicant.CouponApplicantInMemoryRepository;
 import kr.hhplus.be.server.support.DatabaseCleanup;
-import kr.hhplus.be.server.support.domainsupport.CouponDomainSupporter;
+import kr.hhplus.be.server.support.domain.CouponDomainSupport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,12 +136,12 @@ public class CouponServiceTest {
 
 
     private void 쿠폰_테스트데이터_셋업(){
-        coupon1 = CouponDomainSupporter.수량정보를_전달받아_유효_테스트쿠폰_생성(10);
-        coupon2 = CouponDomainSupporter.수량정보를_전달받아_유효_테스트쿠폰_생성(1);
-        coupon3 = CouponDomainSupporter.수량정보를_전달받아_유효_테스트쿠폰_생성(0);
+        coupon1 = CouponDomainSupport.수량정보를_전달받아_유효_테스트쿠폰_생성(10);
+        coupon2 = CouponDomainSupport.수량정보를_전달받아_유효_테스트쿠폰_생성(1);
+        coupon3 = CouponDomainSupport.수량정보를_전달받아_유효_테스트쿠폰_생성(0);
 
         couponRepository.saveAll(List.of(coupon1, coupon2, coupon3));
-        couponRepository.save(CouponDomainSupporter.기간만료_쿠폰_생성());
+        couponRepository.save(CouponDomainSupport.기간만료_쿠폰_생성());
 
         CacheKeys.COUPON_REQUEST_ISSUE.format(coupon1.getId());
         CacheKeys.COUPON_REQUEST_ISSUE.format(coupon2.getId());

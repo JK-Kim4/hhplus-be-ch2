@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.application.payment.event;
 
 import kr.hhplus.be.server.common.event.PaymentCompletedEvent;
+import kr.hhplus.be.server.common.keys.CacheKeys;
 import kr.hhplus.be.server.common.keys.IdempotencyKeyGenerator;
 import kr.hhplus.be.server.domain.payment.PaymentEventInMemoryRepository;
 import org.springframework.stereotype.Service;
@@ -14,14 +15,14 @@ public class PaymentEventService {
         this.paymentEventInMemoryRepository = paymentEventInMemoryRepository;
     }
 
-    public void saveIdempotencyKey(PaymentCompletedEvent event) {
+    public void savePaymentCompletedIdempotencyKey(PaymentCompletedEvent event) {
         String idempotencyKey = IdempotencyKeyGenerator.generateIdempotencyKey(event);
-        paymentEventInMemoryRepository.saveIdempotencyKey(idempotencyKey);
+        paymentEventInMemoryRepository.saveIdempotencyKey(CacheKeys.IDEMPOTENCY_PAYMENT_COMPLETE.format(idempotencyKey));
     }
 
-    public boolean hasIdempotencyKey(PaymentCompletedEvent event) {
+    public boolean hasPaymentCompletedIdempotencyKey(PaymentCompletedEvent event) {
         String idempotencyKey = IdempotencyKeyGenerator.generateIdempotencyKey(event);
-        return paymentEventInMemoryRepository.hasIdempotencyKey(idempotencyKey);
+        return paymentEventInMemoryRepository.hasIdempotencyKey(CacheKeys.IDEMPOTENCY_PAYMENT_COMPLETE.format(idempotencyKey));
     }
 
 }

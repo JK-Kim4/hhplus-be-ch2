@@ -6,7 +6,7 @@ import org.redisson.api.RLock;
 
 import java.util.concurrent.TimeUnit;
 
-public class LockManagerSupporter {
+public class LockManagerSupport {
 
     public static PubSubLockManager 기본_LOCK_MANAGER_생성(RLock lock){
         return new PubSubLockManager(lock,

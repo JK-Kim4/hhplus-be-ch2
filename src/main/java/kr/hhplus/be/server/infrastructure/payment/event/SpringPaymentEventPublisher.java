@@ -21,7 +21,7 @@ public class SpringPaymentEventPublisher implements PaymentEventPublisher {
     }
 
     @Override
-    public void complete(PaymentCompletedEvent event) {
+    public void send(PaymentCompletedEvent event) {
         applicationEventPublisher.publishEvent(event);
     }
 

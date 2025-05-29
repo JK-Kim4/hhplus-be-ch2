@@ -9,8 +9,8 @@ import kr.hhplus.be.server.domain.order.OrderRepository;
 import kr.hhplus.be.server.domain.salesstat.salesReport.SalesReport;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.UserRepository;
-import kr.hhplus.be.server.support.domainsupport.OrderDomainSupporter;
-import kr.hhplus.be.server.support.domainsupport.UserDomainSupporter;
+import kr.hhplus.be.server.support.domain.OrderDomainSupport;
+import kr.hhplus.be.server.support.domain.UserDomainSupport;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,11 +48,11 @@ public class SalesStatFacadeTest {
 
     @BeforeEach
     void setup(){
-        User user = UserDomainSupporter.기본_사용자_생성();
+        User user = UserDomainSupport.기본_사용자_생성();
         userRepository.save(user);
-        Balance balance = UserDomainSupporter.사용자_잔고_생성(user.getId(), BigDecimal.valueOf(100_000));
+        Balance balance = UserDomainSupport.사용자_잔고_생성(user.getId(), BigDecimal.valueOf(100_000));
         balanceRepository.save(balance);
-        order = OrderDomainSupporter.사용자_고유번호를_전달받아_기본_주문_생성(user.getId());
+        order = OrderDomainSupport.사용자_고유번호를_전달받아_기본_주문_생성(user.getId());
         orderRepository.save(order);
 
 

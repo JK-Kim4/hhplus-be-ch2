@@ -1,5 +1,7 @@
 package kr.hhplus.be.server.application.coupon;
 
+import kr.hhplus.be.server.common.event.CouponIssueRequestedEvent;
+import kr.hhplus.be.server.common.keys.IdempotencyKeyGenerator;
 import kr.hhplus.be.server.domain.coupon.CouponInfo;
 import kr.hhplus.be.server.domain.coupon.couponApplicant.CouponApplicantInfo;
 import lombok.Builder;
@@ -35,6 +37,22 @@ public class CouponResult {
             this.userCouponId = userCouponId;
             this.issuedAt = issuedAt;
             this.expiredAt = expiredAt;
+        }
+    }
+
+    @Getter
+    public static class IssueV2 {
+        String issueEventKey;
+
+        public static IssueV2 from(CouponIssueRequestedEvent event) {
+            return IssueV2.builder()
+                    .issueEventKey(IdempotencyKeyGenerator.generateIdempotencyKey(event))
+                    .build();
+        }
+
+        @Builder
+        private IssueV2(String issueEventKey) {
+            this.issueEventKey = issueEventKey;
         }
     }
 
@@ -115,6 +133,20 @@ public class CouponResult {
             this.discountRate = discountRate;
             this.expiredAt = expiredAt;
             this.issuedAt = issuedAt;
+        }
+    }
+
+    @Getter
+    public static class Create {
+        Long couponId;
+
+        public static Create from(CouponInfo.Create create) {
+            return Create.builder().couponId(create.getCouponId()).build();
+        }
+
+        @Builder
+        private Create(Long couponId) {
+            this.couponId = couponId;
         }
     }
 }
