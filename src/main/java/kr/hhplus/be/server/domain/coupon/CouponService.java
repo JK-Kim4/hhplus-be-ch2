@@ -88,4 +88,9 @@ public class CouponService {
                 .map(Coupon::getId)
                 .toList());
     }
+
+    public CouponInfo.UserCoupons findUserCouponByUserId(Long userId) {
+        List<UserCoupon> userCoupons = userCouponRepository.findByUserId(userId);
+        return CouponInfo.UserCoupons.from(userCoupons);
+    }
 }

@@ -1,9 +1,9 @@
 package kr.hhplus.be.server.application.port;
 
-import kr.hhplus.be.server.domain.payment.PaymentInfo;
+import kr.hhplus.be.server.domain.payment.event.PaymentCompletedEvent;
 
 public interface DataPlatformPort {
 
-    void sendPaymentData(PaymentInfo.Complete payment);
+    void sendPaymentData(PaymentCompletedEvent event);
 
 }

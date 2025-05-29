@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.domain.product;
 
-import kr.hhplus.be.server.domain.salesStat.SalesStat;
-import kr.hhplus.be.server.domain.salesStat.salesReport.SalesReport;
+import kr.hhplus.be.server.domain.salesstat.SalesStat;
+import kr.hhplus.be.server.domain.salesstat.salesReport.SalesReport;
 import lombok.*;
 
 import java.io.Serializable;

@@ -7,8 +7,6 @@ import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-
 @Service
 public class PaymentService {
 
@@ -59,11 +57,4 @@ public class PaymentService {
         return PaymentInfo.Complete.from(payment);
     }
 
-    public PaymentInfo.Payments findAllByPaidDate(LocalDate targetDate) {
-
-
-
-
-        return null;
-    }
 }

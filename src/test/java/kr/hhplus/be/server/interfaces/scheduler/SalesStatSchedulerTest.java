@@ -1,16 +1,17 @@
 package kr.hhplus.be.server.interfaces.scheduler;
 
-import kr.hhplus.be.server.domain.salesStat.SalesStat;
-import kr.hhplus.be.server.domain.salesStat.SalesStatRepository;
-import kr.hhplus.be.server.domain.salesStat.SalesStatService;
-import kr.hhplus.be.server.domain.salesStat.salesReport.SalesReportCommand;
-import kr.hhplus.be.server.domain.salesStat.salesReport.SalesReportService;
-import kr.hhplus.be.server.interfaces.scheduler.salesStat.SalesStatScheduler;
+import kr.hhplus.be.server.domain.salesstat.SalesStat;
+import kr.hhplus.be.server.domain.salesstat.SalesStatRepository;
+import kr.hhplus.be.server.domain.salesstat.SalesStatService;
+import kr.hhplus.be.server.domain.salesstat.salesReport.SalesReportCommand;
+import kr.hhplus.be.server.domain.salesstat.salesReport.SalesReportService;
+import kr.hhplus.be.server.interfaces.salesstat.scheduler.SalesStatScheduler;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
@@ -22,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Testcontainers
+@ActiveProfiles("test")
 public class SalesStatSchedulerTest {
 
     @Autowired

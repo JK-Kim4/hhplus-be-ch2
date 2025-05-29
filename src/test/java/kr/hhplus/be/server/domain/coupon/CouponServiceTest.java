@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.domain.coupon;
 
 import jakarta.persistence.NoResultException;
-import kr.hhplus.be.server.support.domainSupport.CouponDomainSupporter;
+import kr.hhplus.be.server.support.domainsupport.CouponDomainSupporter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

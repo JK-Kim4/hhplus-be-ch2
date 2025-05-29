@@ -39,4 +39,9 @@ public class PaymentRepositoryImpl implements PaymentRepository {
         LocalDateTime end = targetDate.plusDays(1).atStartOfDay().minusNanos(1);
         return paymentJpaRepository.findAllByPaidAtBetween(start, end);
     }
+
+    @Override
+    public Optional<Payment> findByOrderId(Long orderId) {
+        return paymentJpaRepository.findByOrderId(orderId);
+    }
 }

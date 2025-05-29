@@ -5,7 +5,24 @@ import lombok.Getter;
 
 import java.math.BigDecimal;
 
+@Getter
 public class BalanceCommand {
+
+    Long userId;
+    Long balanceId;
+
+    public static BalanceCommand of(Long userId, Long balanceId){
+        return BalanceCommand.builder()
+                .userId(userId)
+                .balanceId(balanceId)
+                .build();
+    }
+
+    @Builder
+    private BalanceCommand(Long userId, Long balanceId) {
+        this.userId = userId;
+        this.balanceId = balanceId;
+    }
 
 
     @Getter

@@ -1,10 +1,13 @@
 package kr.hhplus.be.server.domain.product;
 
 import jakarta.persistence.Embeddable;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 
 @Embeddable
+@EqualsAndHashCode @ToString
 public class Price {
 
     private BigDecimal amount;

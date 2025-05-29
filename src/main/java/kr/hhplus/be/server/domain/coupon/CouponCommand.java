@@ -85,4 +85,15 @@ public class CouponCommand {
             this.userId = userId;
         }
     }
+
+    @Getter
+    public static class UserCoupon {
+        Long userId;
+
+
+        @Builder
+        private UserCoupon(Long userId) {
+            this.userId = userId;
+        }
+    }
 }

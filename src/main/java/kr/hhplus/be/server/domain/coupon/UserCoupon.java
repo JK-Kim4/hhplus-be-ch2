@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity @Getter
@@ -51,6 +52,14 @@ public class UserCoupon {
         return this.usedAt != null;
     }
 
+    public Long getCouponId(){
+        return coupon.getId();
+    }
+
+    public String getCouponName() {
+        return coupon.getName();
+    }
+
     public BigDecimal calculateDiscountAmount(BigDecimal orderTotalAmount) {
         validateUsability();
         return coupon.calculateDiscount(orderTotalAmount);
@@ -64,5 +73,17 @@ public class UserCoupon {
         if (coupon.isExpired()) {
             throw new IllegalStateException("만료된 쿠폰입니다.");
         }
+    }
+
+    public String getCouponDiscountPolicy() {
+        return coupon.getDiscountPolicy().name();
+    }
+
+    public BigDecimal getDiscountRate() {
+        return coupon.getDiscountAmount();
+    }
+
+    public LocalDate getExpireDate() {
+        return coupon.getExpireDate();
     }
 }
