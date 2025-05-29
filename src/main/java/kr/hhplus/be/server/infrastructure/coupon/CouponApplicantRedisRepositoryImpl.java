@@ -3,6 +3,7 @@ package kr.hhplus.be.server.infrastructure.coupon;
 import kr.hhplus.be.server.common.keys.CacheKeys;
 import kr.hhplus.be.server.domain.coupon.couponApplicant.CouponApplicant;
 import kr.hhplus.be.server.domain.coupon.couponApplicant.CouponApplicantInMemoryRepository;
+import org.redisson.api.RBucket;
 import org.redisson.api.RScoredSortedSet;
 import org.redisson.api.RSet;
 import org.redisson.api.RedissonClient;
@@ -23,8 +24,14 @@ public class CouponApplicantRedisRepositoryImpl implements CouponApplicantInMemo
 
     @Override
     public void registerCouponApplicant(Long couponId, Long userId, long requestTimeMillis) {
-        RScoredSortedSet<Long> redisSalesReport = redissonClient.getScoredSortedSet(CacheKeys.COUPON_REQUEST_ISSUE.format(couponId));
-        redisSalesReport.addScore(userId, requestTimeMillis);
+        RScoredSortedSet<Long> CouponApplicants = redissonClient.getScoredSortedSet(CacheKeys.COUPON_REQUEST_ISSUE.format(couponId));
+        CouponApplicants.addScore(userId, requestTimeMillis);
+    }
+
+    @Override
+    public boolean containsCouponApplicant(Long couponId, Long userId) {
+        RScoredSortedSet<Long> CouponApplicants = redissonClient.getScoredSortedSet(CacheKeys.COUPON_REQUEST_ISSUE.format(couponId));
+        return CouponApplicants.contains(userId);
     }
 
     @Override
@@ -72,5 +79,11 @@ public class CouponApplicantRedisRepositoryImpl implements CouponApplicantInMemo
         return couponApplicantSet.entryRange(0, -1).stream()
                 .map(entry -> CouponApplicant.of(entry.getValue(), couponId, entry.getScore().longValue()))
                 .toList();
+    }
+
+    @Override
+    public void registerCouponIssuableKey(Long couponId) {
+        RBucket<String> issuableKey = redissonClient.getBucket(CacheKeys.COUPON_ISSUABLE_FLAG.format(couponId));
+        issuableKey.set(CacheKeys.COUPON_ISSUABLE_FLAG.format(couponId));
     }
 }
