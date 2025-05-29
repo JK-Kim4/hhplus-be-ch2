@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.interfaces.payment.consumer;
 
-import kr.hhplus.be.server.application.payment.event.PaymentEventPublisher;
-import kr.hhplus.be.server.application.payment.event.PaymentEventService;
-import kr.hhplus.be.server.common.event.PaymentCompletedEvent;
+import kr.hhplus.be.server.domain.payment.event.PaymentEventPublisher;
+import kr.hhplus.be.server.domain.payment.event.PaymentEventService;
+import kr.hhplus.be.server.domain.payment.event.PaymentCompletedEvent;
 import kr.hhplus.be.server.common.keys.kafka.KafkaConsumerGroups;
 import kr.hhplus.be.server.common.keys.kafka.KafkaTopics;
 import kr.hhplus.be.server.application.payment.PaymentDataSender;
