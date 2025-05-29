@@ -1,0 +1,11 @@
+package kr.hhplus.be.server.integration.coupon.event;
+
+import org.springframework.boot.test.context.SpringBootTest;
+import org.testcontainers.junit.jupiter.Testcontainers;
+
+@SpringBootTest
+@Testcontainers
+public class CouponEventTest {
+
+
+}

@@ -1,16 +1,15 @@
-package kr.hhplus.be.server.infrastructure.payment.event;
+package kr.hhplus.be.server.infrastructure.coupon.event;
 
-import kr.hhplus.be.server.domain.payment.PaymentEventInMemoryRepository;
+import kr.hhplus.be.server.domain.coupon.CouponEventInMemoryRepository;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class PaymentEventRedisRepository implements PaymentEventInMemoryRepository {
+public class CouponEventRedisRepository implements CouponEventInMemoryRepository {
 
     private final RedissonClient redissonClient;
-
-    public PaymentEventRedisRepository(RedissonClient redissonClient) {
+    public CouponEventRedisRepository(RedissonClient redissonClient) {
         this.redissonClient = redissonClient;
     }
 
@@ -22,6 +21,6 @@ public class PaymentEventRedisRepository implements PaymentEventInMemoryReposito
 
     @Override
     public boolean hasIdempotencyKey(String value) {
-        return redissonClient.getBucket(value).isExists();
+        return false;
     }
 }

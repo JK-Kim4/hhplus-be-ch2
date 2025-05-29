@@ -1,10 +1,15 @@
 package kr.hhplus.be.server.application.coupon;
 
+import kr.hhplus.be.server.application.coupon.event.CouponEventPublisher;
 import kr.hhplus.be.server.common.annotation.DistributedLock;
-import kr.hhplus.be.server.infrastructure.lock.LockExecutorType;
-import kr.hhplus.be.server.domain.coupon.*;
+import kr.hhplus.be.server.common.event.CouponIssueRequestedEvent;
+import kr.hhplus.be.server.domain.coupon.CouponCommand;
+import kr.hhplus.be.server.domain.coupon.CouponInfo;
+import kr.hhplus.be.server.domain.coupon.CouponService;
+import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.domain.coupon.couponApplicant.CouponApplicantInfo;
 import kr.hhplus.be.server.domain.coupon.couponApplicant.CouponApplicantService;
+import kr.hhplus.be.server.infrastructure.lock.LockExecutorType;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,12 +21,15 @@ public class CouponFacade {
 
     private final CouponService couponService;
     private final CouponApplicantService couponApplicantService;
+    private final CouponEventPublisher couponEventPublisher;
 
     public CouponFacade(
             CouponService couponService,
-            CouponApplicantService couponApplicantService) {
+            CouponApplicantService couponApplicantService,
+            CouponEventPublisher couponEventPublisher) {
         this.couponService = couponService;
         this.couponApplicantService = couponApplicantService;
+        this.couponEventPublisher = couponEventPublisher;
     }
 
     public CouponResult.UserCoupons findUserCouponsByUserId(CouponCriteria.UserCoupon command){
@@ -72,5 +80,9 @@ public class CouponFacade {
             couponService.issueCouponToApplicantsV2(couponId, applicants.getUserIds());
         }
 
+    }
+
+    public void publishCouponIssuedEvent(CouponCriteria.Issue criteria) {
+        couponEventPublisher.send(CouponIssueRequestedEvent.of(criteria.getCouponId(), criteria.getUserId()));
     }
 }

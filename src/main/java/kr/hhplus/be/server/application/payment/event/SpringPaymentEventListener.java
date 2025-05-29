@@ -18,6 +18,6 @@ public class SpringPaymentEventListener {
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handlePaymentCompleteEvent(PaymentCompletedEvent event) {
-        paymentEventPublisher.complete(event);
+        paymentEventPublisher.send(event);
     }
 }
