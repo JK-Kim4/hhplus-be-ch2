@@ -3,8 +3,8 @@ package kr.hhplus.be.server.integration.payment.event;
 
 import kr.hhplus.be.server.domain.payment.PaymentInfo;
 import kr.hhplus.be.server.domain.payment.event.PaymentCompletedEvent;
-import kr.hhplus.be.server.domain.payment.event.PaymentEventPublisher;
-import kr.hhplus.be.server.support.TestConsumer;
+import kr.hhplus.be.server.support.kafka.TestConsumer;
+import kr.hhplus.be.server.support.kafka.TestProducer;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 public class PaymentEventTest {
 
     @MockitoSpyBean
-    PaymentEventPublisher paymentEventPublisher;
+    TestProducer paymentTestProducer;
 
     @Autowired
     TestConsumer.PaymentCompletedEventConsumer testConsumer;
@@ -39,7 +39,7 @@ public class PaymentEventTest {
         );
 
         // when: 트랜잭션 커밋 후 실행되도록 트랜잭션을 강제 시작/커밋
-        paymentEventPublisher.send(event);
+        paymentTestProducer.send(event);
 
         // then: Awaitility로 비동기 실행을 대기
         Awaitility.await()
