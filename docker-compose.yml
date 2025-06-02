@@ -1,51 +1,22 @@
-version: '3'
 services:
-  mysql:
-    image: mysql:8.0
-    ports:
-      - "3307:3306"
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_USER=application
-      - MYSQL_PASSWORD=application
-      - MYSQL_DATABASE=hhplus
-    volumes:
-      - ./data/mysql/:/var/lib/mysql
 
-  redis-master:
-    container_name: redis-master
-    image: redis:7
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: my-spring-app
     ports:
-      - "6379:6379"
-    command: [ "redis-server", "--appendonly", "yes" ]
-
-  kafka:
-    image: confluentinc/cp-kafka:latest # 공식 Confluent 서버 이미지 내 kafka-topics, kafka-console-producer, kafka-console-consumer 등 포함
-    ports:
-      - "29092:29092"
+      - "8080:8080"
     environment:
-      KAFKA_NODE_ID: 1
-      KAFKA_PROCESS_ROLES: 'broker,controller'
-      #KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
-      KAFKA_LISTENERS: 'PLAINTEXT://kafka:9092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:29092' ## Kafka 수신 리스너 설정
-      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092' ## 클라이언트에게 노출되는 주소입니다. localhost:29092로 Kafka 접근 가능하게 설정.
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT' ## 보안 프로토콜 설정
-      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
-      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      CLUSTER_ID: 'ciWo7IWazngRchmPES6q5A=='
-      KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
-  kafka-ui:
-    image: provectuslabs/kafka-ui:latest
-    ports:
-      - "18080:8080"
-    environment:
-      KAFKA_CLUSTERS_0_NAME: local
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
-    depends_on:
-      - kafka
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/hhplus
+      SPRING_DATASOURCE_USERNAME: application
+      SPRING_DATASOURCE_PASSWORD: application
+      SPRING_REDIS_HOST: redis
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    networks:
+      - my-app-network
 
 networks:
-  default:
-    driver: bridge
+  my-app-network:
+    external: true
