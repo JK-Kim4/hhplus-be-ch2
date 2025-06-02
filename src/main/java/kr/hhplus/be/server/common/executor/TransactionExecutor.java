@@ -1,11 +1,11 @@
-package kr.hhplus.be.server.common;
+package kr.hhplus.be.server.common.executor;
 
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-public class TransactionSynchronizer {
+public class TransactionExecutor {
 
-    private TransactionSynchronizer() {
+    private TransactionExecutor() {
         throw new UnsupportedOperationException("Utility class");
     }
 
