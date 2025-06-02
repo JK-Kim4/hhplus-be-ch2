@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.support;
 
 import kr.hhplus.be.server.common.event.CouponIssueRequestedEvent;
-import kr.hhplus.be.server.common.event.PaymentCompletedEvent;
 import kr.hhplus.be.server.common.keys.kafka.KafkaTopics;
+import kr.hhplus.be.server.domain.payment.event.PaymentCompletedEvent;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 

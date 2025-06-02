@@ -1,10 +1,10 @@
 package kr.hhplus.be.server.infrastructure.payment.event;
 
 import kr.hhplus.be.server.domain.payment.event.PaymentCompletedEvent;
+import kr.hhplus.be.server.domain.payment.event.PaymentEventPublisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Component;
 
 /*
 * SpringPaymentEventPublisher

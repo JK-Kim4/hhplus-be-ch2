@@ -1,8 +1,9 @@
 package kr.hhplus.be.server.integration.payment.event;
 
-import kr.hhplus.be.server.application.payment.event.PaymentEventPublisher;
-import kr.hhplus.be.server.common.event.PaymentCompletedEvent;
+
 import kr.hhplus.be.server.domain.payment.PaymentInfo;
+import kr.hhplus.be.server.domain.payment.event.PaymentCompletedEvent;
+import kr.hhplus.be.server.domain.payment.event.PaymentEventPublisher;
 import kr.hhplus.be.server.support.TestConsumer;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Assertions;
