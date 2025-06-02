@@ -1,7 +1,6 @@
 package kr.hhplus.be.server.support;
 
 import kr.hhplus.be.server.application.payment.PaymentCriteria;
-import kr.hhplus.be.server.common.annotation.ExceptionRecordable;
 import kr.hhplus.be.server.common.annotation.TrackSales;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +22,6 @@ public class DummyService {
         return "OK";
     }
 
-    @ExceptionRecordable
     @Transactional
     public String ExceptionRecordable_String_parameter_테스트(String param1, String param2){
         this.throwException();

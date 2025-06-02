@@ -13,4 +13,6 @@ public interface PaymentRepository {
     Optional<Payment> findById(Long paymentId);
 
     List<Payment> findAllByPaidDate(LocalDate targetDate);
+
+    Optional<Payment> findByOrderId(Long orderId);
 }

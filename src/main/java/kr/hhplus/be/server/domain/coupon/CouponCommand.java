@@ -3,6 +3,9 @@ package kr.hhplus.be.server.domain.coupon;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
 public class CouponCommand {
 
     @Getter
@@ -84,5 +87,46 @@ public class CouponCommand {
             this.couponId = couponId;
             this.userId = userId;
         }
+    }
+
+    @Getter
+    public static class UserCoupon {
+        Long userId;
+
+
+        @Builder
+        private UserCoupon(Long userId) {
+            this.userId = userId;
+        }
+    }
+
+    @Getter
+    public static class Create {
+        String name;
+        Integer quantity;
+        String discountPolicy;
+        BigDecimal discountAmount;
+        LocalDate expireDate;
+
+        public static Create of(String name, Integer quantity, String discountPolicy, BigDecimal discountAmount, LocalDate expireDate){
+            return Create.builder()
+                    .name(name)
+                    .quantity(quantity)
+                    .discountPolicy(discountPolicy)
+                    .discountAmount(discountAmount)
+                    .expireDate(expireDate)
+                    .build();
+        }
+
+        @Builder
+        private Create(String name, Integer quantity, String discountPolicy, BigDecimal discountAmount, LocalDate expireDate) {
+            this.name = name;
+            this.quantity = quantity;
+            this.discountPolicy = discountPolicy;
+            this.discountAmount = discountAmount;
+            this.expireDate = expireDate;
+        }
+
+
     }
 }

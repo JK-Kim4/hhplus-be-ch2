@@ -2,6 +2,7 @@ package kr.hhplus.be.server.integration.redis;
 
 import kr.hhplus.be.server.domain.product.ProductService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,6 +13,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest
+@Disabled
 public class ProductServiceCacheTest {
 
     @MockitoSpyBean

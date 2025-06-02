@@ -3,6 +3,8 @@ package kr.hhplus.be.server.domain.balance;
 import jakarta.persistence.NoResultException;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+
 @Service
 public class BalanceService {
 
@@ -11,6 +13,13 @@ public class BalanceService {
     public BalanceService(BalanceRepository balanceRepository) {
         this.balanceRepository = balanceRepository;
     }
+
+    public BalanceInfo findByUserId(BalanceCommand command) {
+        Balance balance = balanceRepository.findByUserId(command.getUserId())
+                .orElse(Balance.create(command.getUserId(), Point.create(BigDecimal.ZERO)));
+        return BalanceInfo.from(balance);
+    }
+
 
     public BalanceInfo.Create create(BalanceCommand.Create command){
         Balance balance = Balance.create(command.getUserId(), Point.create(command.getPoint()));

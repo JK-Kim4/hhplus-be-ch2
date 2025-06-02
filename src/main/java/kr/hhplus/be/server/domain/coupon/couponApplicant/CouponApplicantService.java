@@ -57,6 +57,18 @@ public class CouponApplicantService {
         isAlreadyWinner(command.getCouponId(), command.getUserId());
     }
 
+    public void validationIssuableCoupon(CouponCommand.Issue command) {
+        existIssuableCoupon(command.getCouponId());
+
+        if(contains(command)){
+            throw new IllegalArgumentException("발급 요청 처리중입니다.");
+        }
+
+        LocalDateTime dateTime = LocalDateTime.now();
+        long millis = dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        couponApplicantInMemoryRepository.registerCouponApplicant(command.getCouponId(), command.getUserId(), millis);
+    }
+
     public CouponApplicantInfo.IssuableCoupons findIssuableCouponIds() {
         return CouponApplicantInfo.IssuableCoupons.of(couponApplicantInMemoryRepository.findIssuableCouponIds());
     }
@@ -73,5 +85,13 @@ public class CouponApplicantService {
 
     public void deleteCouponApplicantKey(CouponCommand.DeleteKey command) {
         couponApplicantInMemoryRepository.deleteCouponApplicantKey(command.getCouponId());
+    }
+
+    public boolean contains(CouponCommand.Issue command) {
+        return couponApplicantInMemoryRepository.containsCouponApplicant(command.getCouponId(), command.getUserId());
+    }
+
+    public void registerCouponKeys(Long couponId) {
+        couponApplicantInMemoryRepository.registerCouponIssuableKey(couponId);
     }
 }

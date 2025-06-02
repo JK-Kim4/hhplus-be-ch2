@@ -5,7 +5,28 @@ import lombok.Getter;
 
 import java.math.BigDecimal;
 
+@Getter
 public class BalanceInfo {
+
+    Long userId;
+    Long balanceId;
+    BigDecimal point;
+
+
+    public static BalanceInfo from(Balance balance) {
+        return BalanceInfo.builder()
+                .userId(balance.getUserId())
+                .balanceId(balance.getId())
+                .point(balance.getPoint().getAmount())
+                .build();
+    }
+
+    @Builder
+    private BalanceInfo(Long userId, Long balanceId, BigDecimal point) {
+        this.userId = userId;
+        this.balanceId = balanceId;
+        this.point = point;
+    }
 
     @Getter
     public static class Create {

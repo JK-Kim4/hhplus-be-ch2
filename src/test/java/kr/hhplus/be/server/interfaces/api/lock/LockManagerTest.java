@@ -2,7 +2,7 @@ package kr.hhplus.be.server.interfaces.api.lock;
 
 import kr.hhplus.be.server.common.exception.DistributedLockException;
 import kr.hhplus.be.server.infrastructure.lock.PubSubLockManager;
-import kr.hhplus.be.server.support.LockManagerSupporter;
+import kr.hhplus.be.server.support.LockManagerSupport;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,7 +42,7 @@ public class LockManagerTest {
         given(rLock.isHeldByCurrentThread()).willReturn(true);
 
         // when
-        PubSubLockManager manager = LockManagerSupporter.기본_LOCK_MANAGER_생성(rLock);
+        PubSubLockManager manager = LockManagerSupport.기본_LOCK_MANAGER_생성(rLock);
 
         // then
         assertTrue(manager.isLocked());
@@ -58,7 +58,7 @@ public class LockManagerTest {
 
         // expect
         assertThrows(DistributedLockException.class, () -> {
-            LockManagerSupporter.기본_LOCK_MANAGER_생성(rLock);
+            LockManagerSupport.기본_LOCK_MANAGER_생성(rLock);
         });
 
     }

@@ -3,10 +3,14 @@ package kr.hhplus.be.server.application.payment;
 import kr.hhplus.be.server.common.annotation.TrackSales;
 import kr.hhplus.be.server.domain.order.OrderInfo;
 import kr.hhplus.be.server.domain.order.OrderService;
-import kr.hhplus.be.server.domain.payment.*;
+import kr.hhplus.be.server.domain.payment.PaymentCommand;
+import kr.hhplus.be.server.domain.payment.PaymentInfo;
+import kr.hhplus.be.server.domain.payment.PaymentService;
+import kr.hhplus.be.server.domain.payment.event.PaymentCompletedEvent;
 import kr.hhplus.be.server.domain.product.ProductCommand;
 import kr.hhplus.be.server.domain.product.ProductInfo;
 import kr.hhplus.be.server.domain.product.ProductService;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,22 +23,24 @@ public class PaymentFacade {
     private final PaymentService paymentService;
     private final OrderService orderService;
     private final ProductService productService;
-    private final PaymentEventPublisher paymentEventPublisher;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public PaymentFacade(
             PaymentService paymentService,
             OrderService orderService,
             ProductService productService,
-            PaymentEventPublisher paymentEventPublisher) {
+            ApplicationEventPublisher applicationEventPublisher) {
         this.paymentService = paymentService;
         this.orderService = orderService;
         this.productService = productService;
-        this.paymentEventPublisher = paymentEventPublisher;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
 
     @TrackSales
     public PaymentResult.Pay pay(PaymentCriteria.Pay criteria){
+        //TODO validation
+
         //1. 결제 생성
         PaymentInfo.Create paymentCreate = paymentService.create(PaymentCommand.Create.of(criteria.getOrderId()));
 
@@ -53,7 +59,13 @@ public class PaymentFacade {
         PaymentInfo.Complete complete = paymentService.complete(PaymentCommand.Complete.of(criteria.getOrderId(), paymentCreate.getPaymentId()));
 
         //6. 결제 데이터 플랫폼 전송
-        paymentEventPublisher.complete(PaymentCompleteEvent.from(complete));
+        applicationEventPublisher.publishEvent(
+            PaymentCompletedEvent.of(
+                complete.getPaymentId(),
+                complete.getOrderId(),
+                complete.getPaidAmount(),
+                complete.getPaidAt()
+        ));
 
         return PaymentResult.Pay.from(complete);
     }

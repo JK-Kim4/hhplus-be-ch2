@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.common.aspect;
 
 import kr.hhplus.be.server.application.payment.PaymentCriteria;
-import kr.hhplus.be.server.application.salesStat.SalesStatProcessor;
+import kr.hhplus.be.server.application.salesstat.SalesStatFacade;
 import kr.hhplus.be.server.common.TransactionSynchronizer;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -14,11 +14,10 @@ import java.time.LocalDate;
 @Component
 public class SalesStatAspect {
 
+    private final SalesStatFacade salesStatFacade;
 
-    private final SalesStatProcessor salesStatProcessor;
-
-    public SalesStatAspect(SalesStatProcessor salesStatProcessor) {
-        this.salesStatProcessor = salesStatProcessor;
+    public SalesStatAspect(SalesStatFacade salesStatFacade) {
+        this.salesStatFacade = salesStatFacade;
     }
 
     @AfterReturning(pointcut = "@annotation(kr.hhplus.be.server.common.annotation.TrackSales)")
@@ -26,7 +25,7 @@ public class SalesStatAspect {
         PaymentCriteria.Pay pay = extractRequiredPaymentCriteria(joinPoint);
         //비지니스 로직이 정상적으로 수행 && 트랜잭션 종료 이후 결과 반영
         TransactionSynchronizer.runAfterCommit(() -> {
-            salesStatProcessor.dailySalesReportProcess(pay.getOrderId(), LocalDate.now());
+            salesStatFacade.dailySalesReportProcess(pay.getOrderId(), LocalDate.now());
         });
     }
 

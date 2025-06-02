@@ -5,7 +5,7 @@ import kr.hhplus.be.server.application.user.UserCriteria;
 import kr.hhplus.be.server.application.user.UserFacade;
 import kr.hhplus.be.server.application.user.UserResult;
 import kr.hhplus.be.server.domain.user.UserRepository;
-import kr.hhplus.be.server.interfaces.api.balance.BalanceRequest;
+import kr.hhplus.be.server.interfaces.balance.api.BalanceRequest;
 import kr.hhplus.be.server.support.DatabaseCleanup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

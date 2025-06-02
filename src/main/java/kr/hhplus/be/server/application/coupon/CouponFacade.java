@@ -1,10 +1,15 @@
 package kr.hhplus.be.server.application.coupon;
 
+import kr.hhplus.be.server.application.coupon.event.CouponEventPublisher;
 import kr.hhplus.be.server.common.annotation.DistributedLock;
-import kr.hhplus.be.server.infrastructure.lock.LockExecutorType;
-import kr.hhplus.be.server.domain.coupon.*;
+import kr.hhplus.be.server.common.event.CouponIssueRequestedEvent;
+import kr.hhplus.be.server.domain.coupon.CouponCommand;
+import kr.hhplus.be.server.domain.coupon.CouponInfo;
+import kr.hhplus.be.server.domain.coupon.CouponService;
+import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.domain.coupon.couponApplicant.CouponApplicantInfo;
 import kr.hhplus.be.server.domain.coupon.couponApplicant.CouponApplicantService;
+import kr.hhplus.be.server.infrastructure.lock.LockExecutorType;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,12 +21,28 @@ public class CouponFacade {
 
     private final CouponService couponService;
     private final CouponApplicantService couponApplicantService;
+    private final CouponEventPublisher couponEventPublisher;
 
     public CouponFacade(
             CouponService couponService,
-            CouponApplicantService couponApplicantService) {
+            CouponApplicantService couponApplicantService,
+            CouponEventPublisher couponEventPublisher) {
         this.couponService = couponService;
         this.couponApplicantService = couponApplicantService;
+        this.couponEventPublisher = couponEventPublisher;
+    }
+
+    public CouponResult.Create create(CouponCriteria.Create criteria){
+        CouponInfo.Create create = couponService.create(criteria.toCommand());
+
+        couponApplicantService.registerCouponKeys(create.getCouponId());
+
+        return CouponResult.Create.from(create);
+    }
+
+    public CouponResult.UserCoupons findUserCouponsByUserId(CouponCriteria.UserCoupon criteria){
+        CouponInfo.UserCoupons userCoupons = couponService.findUserCouponByUserId(criteria.getUserId());
+        return CouponResult.UserCoupons.from(userCoupons);
     }
 
     public CouponResult.RequestRegister requestRegister(CouponCriteria.RequestRegister criteria){
@@ -35,7 +56,6 @@ public class CouponFacade {
         CouponInfo.ExpiredCouponIds expiredCouponIds = couponService.getExpiredCouponIds();
 
         for(Long couponId : expiredCouponIds.getCouponIds()){
-            //redisCouponService.deleteRedisCouponKey(CouponCommand.DeleteKey.of(couponId));
             couponApplicantService.deleteExpiredCouponKeys(CouponCommand.DeleteKey.of(couponId));
         }
     }
@@ -59,15 +79,22 @@ public class CouponFacade {
         return CouponResult.Issue.from(result);
     }
 
+    public void issueV2(CouponCriteria.Issue criteria){
+        couponApplicantService.validationIssuableCoupon(criteria.toCommand());
+
+        couponApplicantService.contains(criteria.toCommand());
+
+        CouponIssueRequestedEvent event = CouponIssueRequestedEvent.of(criteria.getCouponId(), criteria.getUserId());
+
+        couponEventPublisher.send(event);
+    }
+
     public void issueCoupons() {
         CouponApplicantInfo.IssuableCoupons issuableCouponIds = couponApplicantService.findIssuableCouponIds();
 
         for(Long couponId: issuableCouponIds.getIssuableCouponIds()){
             Integer availableQuantity = couponService.getAvailableQuantityByCouponId(couponId);
-            //CouponInfo.FetchFromRedis fetchFromRedis = redisCouponService.fetchApplicantsFromRedis(CouponCommand.FetchFromRedis.of(couponId, availableQuantity));
             CouponApplicantInfo.Applicants applicants = couponApplicantService.fetchApplicantUserIds(couponId);
-
-            //couponService.issueCouponsToApplicants(couponId, fetchFromRedis.getApplicants());
             couponService.issueCouponToApplicantsV2(couponId, applicants.getUserIds());
         }
 

@@ -88,4 +88,22 @@ public class CouponService {
                 .map(Coupon::getId)
                 .toList());
     }
+
+    public CouponInfo.UserCoupons findUserCouponByUserId(Long userId) {
+        List<UserCoupon> userCoupons = userCouponRepository.findByUserId(userId);
+        return CouponInfo.UserCoupons.from(userCoupons);
+    }
+
+    public CouponInfo.Create create(CouponCommand.Create command) {
+        Coupon coupon = Coupon.create(
+                command.getName(),
+                command.getQuantity(),
+                DiscountPolicy.valueOf(command.getDiscountPolicy()),
+                command.getDiscountAmount(),
+                command.getExpireDate());
+
+        couponRepository.save(coupon);
+
+        return CouponInfo.Create.from(coupon);
+    }
 }
