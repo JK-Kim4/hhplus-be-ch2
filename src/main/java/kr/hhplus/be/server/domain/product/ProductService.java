@@ -31,7 +31,7 @@ public class ProductService {
         this.salesReportInMemoryRepository = salesReportInMemoryRepository;
     }
 
-    //@Cacheable(value = "products:list", key = "'offset:' + #offset + ':limit:' + #limit")
+    @Cacheable(value = "products:list", key = "'offset:' + #offset + ':limit:' + #limit")
     public ProductInfo.Products findAll(int offset, int limit){
 
         List<Product> all = productRepository.findAll(offset, limit);

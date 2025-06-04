@@ -2,7 +2,7 @@ package kr.hhplus.be.server.common.aspect;
 
 import kr.hhplus.be.server.application.payment.PaymentCriteria;
 import kr.hhplus.be.server.application.salesstat.SalesStatFacade;
-import kr.hhplus.be.server.common.TransactionSynchronizer;
+import kr.hhplus.be.server.common.executor.TransactionExecutor;
 import kr.hhplus.be.server.support.DummyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,8 +36,8 @@ public class SalesStatAspectTest {
     void 트랜잭션커밋후_통계처리를_호출한다() {
         PaymentCriteria.Pay pay = PaymentCriteria.Pay.of(1L, 1L);
 
-        try (MockedStatic<TransactionSynchronizer> mocked = mockStatic(TransactionSynchronizer.class)) {
-            mocked.when(() -> TransactionSynchronizer.runAfterCommit(any()))
+        try (MockedStatic<TransactionExecutor> mocked = mockStatic(TransactionExecutor.class)) {
+            mocked.when(() -> TransactionExecutor.runAfterCommit(any()))
                     .thenAnswer(invocation -> {
                         Runnable runnable = invocation.getArgument(0);
                         runnable.run();  // 즉시 실행
