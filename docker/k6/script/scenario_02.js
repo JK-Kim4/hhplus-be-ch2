@@ -29,19 +29,20 @@ function getNextOrder() {
     return orderPayloads[index];
 }
 
+const STEADY_VUS_LOAD = 300;
+
 export let options = {
     stages: [
-        { duration: '1m', target: 20 },
-        { duration: '1m', target: 40 },
-        { duration: '1m', target: 60 },
-        { duration: '1m', target: 80 },
-        { duration: '1m', target: 100 },
-        { duration: '1m', target: 0 },
+        { duration: '20s', target: Math.ceil(STEADY_VUS_LOAD * 0.25) },
+        { duration: '20s', target: Math.ceil(STEADY_VUS_LOAD * 0.50) },
+        { duration: '20s', target: Math.ceil(STEADY_VUS_LOAD * 0.75) },
+        { duration: '3m', target: STEADY_VUS_LOAD },
+        { duration: '1m',  target: 0 },
     ],
     thresholds: {
-        http_req_duration: ['p(95)<250'],
-        errors: ['count<10'],
-    }
+        http_req_duration: ['p(95)<250'], // p95 250 ms
+        http_req_failed:   ['rate<0.01'], // 오류률 1% 미만
+    },
 };
 
 export default function () {

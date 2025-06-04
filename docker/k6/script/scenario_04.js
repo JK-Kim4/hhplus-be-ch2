@@ -5,13 +5,15 @@ import { Counter } from 'k6/metrics';
 export let errorCount = new Counter('errors');
 const BASE_URL = 'http://localhost:8080';
 
+const SPIKE_STEADY_VUS_LOAD = 1000;
+
 // VU 수만큼 정확히 1회씩 실행
 export let options = {
-    vus: 5000,         // 전체 유저 수 (예: 100명)
-    iterations: 5000,  // VU당 1회 요청
+    vus: Math.ceil(SPIKE_STEADY_VUS_LOAD * 1.2),         // 스파이크 테스트 VU 1000 + 20% 가중치
+    iterations: Math.ceil(SPIKE_STEADY_VUS_LOAD * 1.2),  // VU당 1회 요청
     thresholds: {
-        http_req_duration: ['p(95)<1500'],
-        errors: ['count<2']
+        http_req_duration: ['p(95)<1000'], //1초 이내 응답
+        http_req_failed:   ['rate<0.01'], // 오류률 1% 미만
     }
 };
 

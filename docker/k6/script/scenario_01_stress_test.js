@@ -11,25 +11,23 @@ const warmupIterations = pageList.length;   // 총 반복수를 warm-up + main t
 
 
 // Stress Test 계산용 상수
-const AVG_RPS_PER_VU = 1 / (0.5 + 0.25); // ≈ 1.33
-const TARGET_TPS_STRESS = 1260;          // 평균 TPS의 3배
-const MAX_VUS_STRESS = Math.ceil(TARGET_TPS_STRESS / AVG_RPS_PER_VU); // 948 VU
+const MAX_VUS_STRESS = 800;
 
 export let options = {
     stages: [
         // 선형 램프-업: 0 → 948 VU (총 10분)
-        { duration: '1m', target: Math.ceil(MAX_VUS_STRESS * 0.1)  }, // 95 VU
-        { duration: '1m', target: Math.ceil(MAX_VUS_STRESS * 0.2)  }, // 190 VU
-        { duration: '1m', target: Math.ceil(MAX_VUS_STRESS * 0.3)  }, // 285 VU
-        { duration: '1m', target: Math.ceil(MAX_VUS_STRESS * 0.4)  }, // 380 VU
-        { duration: '1m', target: Math.ceil(MAX_VUS_STRESS * 0.5)  }, // 474 VU
-        { duration: '1m', target: Math.ceil(MAX_VUS_STRESS * 0.6)  }, // 569 VU
-        { duration: '1m', target: Math.ceil(MAX_VUS_STRESS * 0.7)  }, // 664 VU
-        { duration: '1m', target: Math.ceil(MAX_VUS_STRESS * 0.8)  }, // 759 VU
-        { duration: '1m', target: Math.ceil(MAX_VUS_STRESS * 0.9)  }, // 853 VU
-        { duration: '1m', target: MAX_VUS_STRESS },                    // 948 VU
+        { duration: '3m', target: Math.ceil(MAX_VUS_STRESS * 0.1)  },
+        { duration: '1m', target: Math.ceil(MAX_VUS_STRESS * 0.2)  },
+        { duration: '1m', target: Math.ceil(MAX_VUS_STRESS * 0.3)  },
+        { duration: '3m', target: Math.ceil(MAX_VUS_STRESS * 0.4)  },
+        { duration: '1m', target: Math.ceil(MAX_VUS_STRESS * 0.5)  },
+        { duration: '1m', target: Math.ceil(MAX_VUS_STRESS * 0.6)  },
+        { duration: '3m', target: Math.ceil(MAX_VUS_STRESS * 0.7)  },
+        { duration: '1m', target: Math.ceil(MAX_VUS_STRESS * 0.8)  },
+        { duration: '1m', target: Math.ceil(MAX_VUS_STRESS * 0.9)  },
+        { duration: '3m', target: MAX_VUS_STRESS },
 
-        // 최대 부하 유지 3분
+        // 최대 부하 유지 분
         { duration: '3m', target: MAX_VUS_STRESS },
 
         // 추가 스파이크: +30 %
@@ -42,8 +40,10 @@ export let options = {
 
     thresholds: {
         http_req_duration: ['p(95)<500'], // Stress 상황이므로 500 ms로 완화
-        http_req_failed:   ['rate<0.05'], // 오류율 5 % 미만
+        http_req_failed:   ['rate<0.01'], // 오류률 1% 미만
     },
+
+    systemTags: ['status', 'http_req_duration'],
 };
 
 

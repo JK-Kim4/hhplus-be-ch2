@@ -11,22 +11,20 @@ const warmupIterations = pageList.length;   // 총 반복수를 warm-up + main t
 
 
 // scenario_01 Load test options
-const AVG_RPS_PER_VU = 1 / (0.5 + 0.25); // ≈ 1.33
-const TARGET_TPS_LOAD = 420;             // (목표 일 Request)3천만 req/일 +(가중치)20%
-const STEADY_VUS_LOAD = Math.ceil(TARGET_TPS_LOAD / AVG_RPS_PER_VU); // 316
+const STEADY_VUS_LOAD = 300;
 
 export let options = {
     stages: [
-        { duration: '1m', target: Math.ceil(STEADY_VUS_LOAD * 0.25) }, // 79 VU
-        { duration: '1m', target: Math.ceil(STEADY_VUS_LOAD * 0.50) }, // 158 VU
-        { duration: '30s', target: Math.ceil(STEADY_VUS_LOAD * 0.75) }, // 237 VU
-        { duration: '30s', target: STEADY_VUS_LOAD },                   // 316 VU
-        { duration: '2m',  target: STEADY_VUS_LOAD },                   // Steady 2m
-        { duration: '1m',  target: 0 },                                 // Ramp-down
+        { duration: '20s', target: Math.ceil(STEADY_VUS_LOAD * 0.25) },
+        { duration: '20s', target: Math.ceil(STEADY_VUS_LOAD * 0.50) },
+        { duration: '20s', target: Math.ceil(STEADY_VUS_LOAD * 0.75) },
+        { duration: '15s', target: STEADY_VUS_LOAD },
+        { duration: '3m', target: STEADY_VUS_LOAD },
+        { duration: '1m',  target: 0 },
     ],
     thresholds: {
         http_req_duration: ['p(95)<250'], // p95 250 ms
-        errors:           ['rate<0.01'],
+        errors:   ['rate<0.01'], // 오류률 1% 미만
     },
 };
 
