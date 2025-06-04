@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.infrastructure.lock;
 
-import kr.hhplus.be.server.common.TransactionSynchronizer;
+import kr.hhplus.be.server.common.executor.TransactionExecutor;
 import kr.hhplus.be.server.common.executor.LockExecutor;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -33,7 +33,7 @@ public class PubSubLockExecutor implements LockExecutor {
         } catch (Throwable e) {
             throw new RuntimeException("Failed to execute locked task", e);
         } finally {
-            TransactionSynchronizer.runAfterCommit(() -> unlockIfHeld(rLock) );
+            TransactionExecutor.runAfterCommit(() -> unlockIfHeld(rLock) );
         }
     }
 

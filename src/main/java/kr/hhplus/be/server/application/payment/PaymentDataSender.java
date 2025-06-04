@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.application.payment;
 
 import kr.hhplus.be.server.application.port.DataPlatformPort;
-import kr.hhplus.be.server.common.StringUtil;
+import kr.hhplus.be.server.common.utility.StringUtil;
 import kr.hhplus.be.server.domain.payment.event.PaymentCompletedEvent;
 import kr.hhplus.be.server.domain.retryfailedlog.RetryFailedLog;
 import kr.hhplus.be.server.domain.retryfailedlog.RetryFailedLogService;

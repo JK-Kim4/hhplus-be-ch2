@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.domain.retryfailedlog;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.hhplus.be.server.common.StringUtil;
+import kr.hhplus.be.server.common.utility.StringUtil;
 import kr.hhplus.be.server.common.keys.CacheKeys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
