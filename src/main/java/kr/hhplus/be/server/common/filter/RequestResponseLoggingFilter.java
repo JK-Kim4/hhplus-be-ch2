@@ -4,7 +4,10 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -14,9 +17,13 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.stream.Collectors;
-@Slf4j
+
+@Order(2)
+@Profile("local") // 운영 제외 (선택사항)
 @Component
 public class RequestResponseLoggingFilter extends OncePerRequestFilter {
+
+    private final Logger logger = LoggerFactory.getLogger(RequestResponseLoggingFilter.class);
 
     @Override
     protected void doFilterInternal(
@@ -39,7 +46,7 @@ public class RequestResponseLoggingFilter extends OncePerRequestFilter {
             String reqBody = new String(
                     wrappedRequest.getContentAsByteArray(), StandardCharsets.UTF_8);
 
-            log.info("[REQ] {} {} | headers={} | body={}",
+            logger.info("[REQ] {} {} | headers={} | body={}",
                     request.getMethod(),
                     request.getRequestURI(),
                     headersToString(wrappedRequest),
@@ -48,7 +55,7 @@ public class RequestResponseLoggingFilter extends OncePerRequestFilter {
             String resBody = new String(
                     wrappedResponse.getContentAsByteArray(), StandardCharsets.UTF_8);
 
-            log.info("[RES] {} {} | status={} | took {} ms | body={}",
+            logger.info("[RES] {} {} | status={} | took {} ms | body={}",
                     request.getMethod(),
                     request.getRequestURI(),
                     response.getStatus(),
